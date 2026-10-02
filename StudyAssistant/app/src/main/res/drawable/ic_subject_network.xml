@@ -1,0 +1,10 @@
+<!-- Computer Networking: nodes joined by links. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp" android:height="28dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="1.6" android:fillColor="#00000000"
+        android:pathData="M12,7.5L5,16.5M12,7.5L19,16.5M5,16.5L19,16.5" />
+    <path android:fillColor="#FFFFFF" android:pathData="M12,3.2m-2.6,0a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0" />
+    <path android:fillColor="#FFFFFF" android:pathData="M4.6,18.6m-2.3,0a2.3,2.3 0 1,0 4.6,0a2.3,2.3 0 1,0 -4.6,0" />
+    <path android:fillColor="#FFFFFF" android:pathData="M19.4,18.6m-2.3,0a2.3,2.3 0 1,0 4.6,0a2.3,2.3 0 1,0 -4.6,0" />
+</vector>

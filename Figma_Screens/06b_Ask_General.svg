@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <defs><linearGradient id="hero" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3730A3"/><stop offset="0.5" stop-color="#4F46E5"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+  <rect id="Background" width="390" height="844" fill="#FAFAFB"/>
+  <g id="App_bar_1" data-name="App bar">
+  <rect x="0" y="0" width="390" height="92" rx="0" fill="#FFFFFF" />
+  <path d="M32,64 L20,56 L32,48 M20,56 H40" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="52" y="62" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start" letter-spacing="-0.2">CSE346.14</text>
+  </g>
+  <g id="Status_bar_2" data-name="Status bar">
+  <text x="18" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#111827" text-anchor="start">9:41</text>
+  <text x="372" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#111827" text-anchor="end">5G  100%</text>
+  </g>
+  <g id="Question_field_3" data-name="Question field">
+  <rect x="16" y="108" width="358" height="56" rx="18" fill="#F4F5F8" stroke="#EDEEF2" stroke-width="1" />
+  <text x="36" y="142" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#111827" text-anchor="start">Why is the sky blue?</text>
+  </g>
+  <rect x="16" y="176" width="358" height="48" rx="24" fill="#4F46E5" />
+  <text x="195" y="205" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">Ask</text>
+  <g id="Answer_4" data-name="Answer">
+  <rect x="16" y="244" width="358" height="206" rx="22" fill="#EEF2FF" />
+  <path d="M38,264 l4.5,12 l12,4.5 l-12,4.5 l-4.5,12 l-4.5,-12 l-12,-4.5 l12,-4.5 z" fill="#4F46E5" />
+  <text x="66" y="284" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#4F46E5" text-anchor="start">Answered from general knowledge</text>
+  <text x="38" y="320" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#111827" text-anchor="start">Sunlight contains every colour. Air</text>
+  <text x="38" y="340" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#111827" text-anchor="start">molecules scatter short blue wavelengths far</text>
+  <text x="38" y="360" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#111827" text-anchor="start">more than long red ones, so blue light</text>
+  <text x="38" y="380" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#111827" text-anchor="start">bounces around the sky and reaches your eyes</text>
+  <text x="38" y="400" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#111827" text-anchor="start">from every direction.</text>
+  </g>
+  <text x="24" y="486" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="400" fill="#9CA3AF" text-anchor="start">No approved course material covered this, so no sources are listed.</text>
+</svg>

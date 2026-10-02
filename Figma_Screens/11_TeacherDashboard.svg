@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <defs><linearGradient id="hero" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3730A3"/><stop offset="0.5" stop-color="#4F46E5"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+  <rect id="Background" width="390" height="844" fill="#FAFAFB"/>
+  <g id="Hero_gradient_1" data-name="Hero gradient">
+  <path d="M0,0 H390 V128 Q390,158 360,158 H30 Q0,158 0,128 Z" fill="url(#hero)" />
+  </g>
+  <g id="Status_bar_2" data-name="Status bar">
+  <text x="18" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="start">9:41</text>
+  <text x="372" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="end">5G  100%</text>
+  </g>
+  <g id="Greeting_3" data-name="Greeting">
+  <text x="24" y="74" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#C7D2FE" text-anchor="start">Teacher tools</text>
+  <text x="24" y="100" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="start" letter-spacing="-0.5">Radiathun Tasnia</text>
+  </g>
+  <rect x="296" y="74" width="69.4" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.22" />
+  <text x="330.7" y="94" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle">Log out</text>
+  <g id="Tabs_4" data-name="Tabs">
+  <rect x="16" y="168" width="175" height="44" rx="14" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <text x="103" y="196" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="700" fill="#111827" text-anchor="middle">Analytics</text>
+  <rect x="199" y="168" width="175" height="44" rx="14" fill="#EEF2FF" stroke="#4F46E5" stroke-width="1.5" />
+  <text x="286" y="196" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="700" fill="#4F46E5" text-anchor="middle">Notifications</text>
+  </g>
+  <g id="Section_header_5" data-name="Section header">
+  <text x="24" y="250" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">My Courses</text>
+  <rect x="244" y="230" width="117.2" height="38" rx="19" fill="#4F46E5" />
+  <text x="302.6" y="254" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">Create Course</text>
+  </g>
+  <g id="CSE341.8__Computer_Networking_6" data-name="CSE341.8  Computer Networking">
+  <rect x="16" y="268" width="358" height="126" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="36" y="303" width="56" height="56" rx="16" fill="#4F46E5" />
+  <path d="M64,326 L56,337 M64,326 L72,337 M56,337 L72,337" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="64" cy="324" r="3" fill="#FFFFFF" />
+  <circle cx="55" cy="338" r="2.6" fill="#FFFFFF" />
+  <circle cx="73" cy="338" r="2.6" fill="#FFFFFF" />
+  <text x="108" y="309" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">CSE341.8  Computer Net…</text>
+  <text x="108" y="328" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Join Code: NET341  •  1 students</text>
+  <text x="108" y="344" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">1 approved</text>
+  <rect x="108" y="364" width="114.8" height="22" rx="11" fill="#FFFBEB" />
+  <text x="165.4" y="379" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#92400E" text-anchor="middle">1 pending review</text>
+  <rect x="285.6" y="312" width="68.4" height="38" rx="19" fill="#4F46E5" />
+  <text x="319.8" y="336" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">Review</text>
+  </g>
+  <g id="CSE342.14__Computer_Networking_Lab_7" data-name="CSE342.14  Computer Networking Lab">
+  <rect x="16" y="406" width="358" height="104" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="36" y="430" width="56" height="56" rx="16" fill="#0891B2" />
+  <path d="M64,453 L56,464 M64,453 L72,464 M56,464 L72,464" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="64" cy="451" r="3" fill="#FFFFFF" />
+  <circle cx="55" cy="465" r="2.6" fill="#FFFFFF" />
+  <circle cx="73" cy="465" r="2.6" fill="#FFFFFF" />
+  <text x="108" y="454" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">CSE342.14  Computer Ne…</text>
+  <text x="108" y="473" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Join Code: NTL342  •  1 students</text>
+  <text x="108" y="489" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">1 approved</text>
+  <rect x="285.6" y="439" width="68.4" height="38" rx="19" fill="#4F46E5" />
+  <text x="319.8" y="463" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">Upload</text>
+  </g>
+  <g id="CSE346.14__Information_System_Design_8" data-name="CSE346.14  Information System Design">
+  <rect x="16" y="522" width="358" height="104" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="36" y="546" width="56" height="56" rx="16" fill="#059669" />
+  <rect x="55" y="566.5" width="18" height="15" rx="2" fill="none" stroke="#FFFFFF" stroke-width="1.7" />
+  <path d="M55,571 h18" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M62.5,574.5 l-2.5,2.5 l2.5,2.5 M65.5,574.5 l2.5,2.5 l-2.5,2.5" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="108" y="570" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">CSE346.14  Information…</text>
+  <text x="108" y="589" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Join Code: ISD346  •  1 students</text>
+  <text x="108" y="605" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">7 approved</text>
+  <rect x="285.6" y="555" width="68.4" height="38" rx="19" fill="#4F46E5" />
+  <text x="319.8" y="579" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">Upload</text>
+  </g>
+</svg>

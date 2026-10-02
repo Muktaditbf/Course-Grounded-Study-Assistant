@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cards arrive one after another, 6% of the item duration apart. -->
+<layoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+    android:animation="@anim/item_rise"
+    android:delay="14%"
+    android:animationOrder="normal" />

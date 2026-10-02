@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <include layout="@layout/view_header" />
+
+    <ScrollView
+        android:id="@+id/scroller"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/space_lg">
+
+            <!-- Composer -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/space_md">
+
+                <EditText
+                    android:id="@+id/etQuestion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:gravity="top"
+                    android:hint="@string/ask_hint"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:minLines="2"
+                    android:maxLines="6"
+                    android:padding="@dimen/space_sm"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_body" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAsk"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/space_sm"
+                    android:text="@string/ask_button"
+                    style="@style/PrimaryButton" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvCap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:gravity="center"
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/text_micro"
+                android:visibility="gone" />
+
+            <!-- Suggestion chips, shown until the first question is asked -->
+            <LinearLayout
+                android:id="@+id/suggestBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/space_xl">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/try_asking"
+                    style="@style/TextLabel" />
+
+                <LinearLayout
+                    android:id="@+id/suggestContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
+            <!-- ANSWERED (UC5 main success scenario) -->
+            <LinearLayout
+                android:id="@+id/answerBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/space_lg"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_answer"
+                    android:padding="@dimen/space_lg">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_lock"
+                            android:contentDescription="@string/grounded_badge"
+                            app:tint="@color/locked_green" />
+
+                        <TextView
+                            android:id="@+id/tvGrounded"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/space_sm"
+                            android:text="@string/grounded_badge"
+                            android:textColor="@color/locked_green_text"
+                            android:textSize="@dimen/text_micro"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvCoverage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_chip_green"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:textColor="@color/locked_green_text"
+                            android:textSize="@dimen/text_micro"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvAnswer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_md"
+                        android:lineSpacingExtra="6dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_body" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xl"
+                    android:text="@string/sources_label"
+                    style="@style/TextLabel" />
+
+                <LinearLayout
+                    android:id="@+id/sourcesContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:orientation="vertical" />
+
+                <!-- Lecture Connection Finder (PDD 6.2 / UC9) -->
+                <TextView
+                    android:id="@+id/tvRelatedTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_xl"
+                    android:text="@string/related_resources"
+                    style="@style/TextTitle" />
+
+                <TextView
+                    android:id="@+id/tvRelatedHint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/related_hint"
+                    style="@style/TextCaption" />
+
+                <LinearLayout
+                    android:id="@+id/relatedContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
+            <!-- THINKING: the request is in flight, so the screen is never blank -->
+            <LinearLayout
+                android:id="@+id/loadingBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/space_lg"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/space_lg"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:indeterminate="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_md"
+                    android:text="@string/ai_thinking"
+                    style="@style/TextCaption" />
+            </LinearLayout>
+
+            <!-- ERROR: no key, offline, 401, 429 or a server fault - never silence -->
+            <LinearLayout
+                android:id="@+id/errorBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/space_lg"
+                android:background="@drawable/bg_declined"
+                android:padding="@dimen/space_lg"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvAiError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="4dp"
+                    android:textColor="@color/declined_amber_text"
+                    android:textSize="@dimen/text_body"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAiRetry"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:text="@string/ai_retry"
+                    style="@style/SmallButton" />
+            </LinearLayout>
+
+            <!-- DECLINED (SRS NFR 14.1 / UC5 alternative course 3.a) -->
+            <LinearLayout
+                android:id="@+id/declinedBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/space_lg"
+                android:background="@drawable/bg_declined"
+                android:padding="@dimen/space_lg"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_lock"
+                    android:contentDescription="@string/declined_title"
+                    app:tint="@color/declined_amber" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:text="@string/declined_title"
+                    android:textColor="@color/declined_amber_text"
+                    android:textSize="@dimen/text_title"
+                    android:textStyle="bold"
+                    android:letterSpacing="-0.01" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_sm"
+                    android:lineSpacingExtra="5dp"
+                    android:text="@string/declined_body"
+                    android:textColor="@color/declined_amber_text"
+                    android:textSize="@dimen/text_body" />
+
+                <TextView
+                    android:id="@+id/tvDeclinedCoverage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:background="@drawable/bg_chip_amber_solid"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:textColor="@color/declined_amber_text"
+                    android:textSize="@dimen/text_micro"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:text="@string/declined_hint"
+                    android:textColor="#B45309"
+                    android:textSize="@dimen/text_caption" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

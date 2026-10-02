@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <defs><linearGradient id="hero" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3730A3"/><stop offset="0.5" stop-color="#4F46E5"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+  <rect id="Background" width="390" height="844" fill="#FAFAFB"/>
+  <g id="App_bar_1" data-name="App bar">
+  <rect x="0" y="0" width="390" height="92" rx="0" fill="#FFFFFF" />
+  <path d="M32,64 L20,56 L32,48 M20,56 H40" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="52" y="62" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start" letter-spacing="-0.2">CSE346.14</text>
+  </g>
+  <g id="Status_bar_2" data-name="Status bar">
+  <text x="18" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#111827" text-anchor="start">9:41</text>
+  <text x="372" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#111827" text-anchor="end">5G  100%</text>
+  </g>
+  <g id="Course_hero_3" data-name="Course hero">
+  <rect x="16" y="104" width="358" height="168" rx="24" fill="url(#hero)" />
+  <text x="36" y="146" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF" text-anchor="start" letter-spacing="-0.3">Information System Design &amp;</text>
+  <text x="36" y="170" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF" text-anchor="start" letter-spacing="-0.3">Software Engineering Lab</text>
+  <text x="36" y="196" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#C7D2FE" text-anchor="start">Radiathun Tasnia [RADT]</text>
+  <text x="36" y="213" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#C7D2FE" text-anchor="start">THU 13:30-15:30, Room SEU609</text>
+  <rect x="36" y="228" width="318" height="42" rx="21" fill="#FFFFFF" />
+  <text x="195" y="254" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="15" font-weight="700" fill="#4F46E5" text-anchor="middle">Ask about this course</text>
+  </g>
+  <text x="24" y="306" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">Materials</text>
+  <g id="Lecture_1__Software_Process_Models_4" data-name="Lecture 1: Software Process Models">
+  <rect x="16" y="324" width="358" height="109" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="34" y="358.5" width="4" height="40" rx="2" fill="#4F46E5" />
+  <text x="50" y="356.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">Lecture 1: Software Process Models</text>
+  <text x="50" y="375.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Lecture Slide</text>
+  <rect x="50" y="395.5" width="68.4" height="22" rx="11" fill="#ECFDF5" />
+  <text x="84.2" y="410.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">Approved</text>
+  </g>
+  <g id="Lecture_2__Software_Requirements_Spec_5" data-name="Lecture 2: Software Requirements Spec">
+  <rect x="16" y="445" width="358" height="109" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="34" y="479.5" width="4" height="40" rx="2" fill="#0891B2" />
+  <text x="50" y="477.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">Lecture 2: Software Requirements Spec</text>
+  <text x="50" y="496.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Lecture Slide</text>
+  <rect x="50" y="516.5" width="68.4" height="22" rx="11" fill="#ECFDF5" />
+  <text x="84.2" y="531.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">Approved</text>
+  </g>
+  <g id="Lab_1__Cost_Estimation_and_Feasibility_6" data-name="Lab 1: Cost Estimation and Feasibility">
+  <rect x="16" y="566" width="358" height="109" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="34" y="600.5" width="4" height="40" rx="2" fill="#059669" />
+  <text x="50" y="598.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">Lab 1: Cost Estimation and Feasibility</text>
+  <text x="50" y="617.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Lab Exercise</text>
+  <rect x="50" y="637.5" width="68.4" height="22" rx="11" fill="#ECFDF5" />
+  <text x="84.2" y="652.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">Approved</text>
+  </g>
+</svg>

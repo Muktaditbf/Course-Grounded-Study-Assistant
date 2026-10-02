@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One reusable card used by every list in the app.
+
+  It shows EITHER a course illustration tile or the thin colour stripe, never both: course
+  lists set Row.iconRes and get the illustration, every other list leaves it at 0 and keeps
+  the original stripe. The foreground ripple is on the root so the whole card responds.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/card_min_height"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_card"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:paddingStart="@dimen/card_padding"
+    android:paddingEnd="@dimen/card_padding"
+    android:paddingTop="@dimen/card_padding"
+    android:paddingBottom="@dimen/card_padding"
+    android:layout_marginBottom="@dimen/space_md"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- Colour stripe, tinted per row so lists read as distinct items -->
+    <View
+        android:id="@+id/rowStripe"
+        android:layout_width="4dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="@dimen/space_md"
+        android:background="@drawable/bg_stripe" />
+
+    <!-- Course illustration, shown instead of the stripe on course lists -->
+    <FrameLayout
+        android:id="@+id/rowIconTile"
+        android:layout_width="@dimen/card_illustration"
+        android:layout_height="@dimen/card_illustration"
+        android:layout_marginEnd="@dimen/space_lg"
+        android:background="@drawable/bg_illustration_tile"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/rowIcon"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:importantForAccessibility="no" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/rowTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_body"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/rowSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:lineSpacingExtra="2dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_caption" />
+
+        <TextView
+            android:id="@+id/rowBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_sm"
+            android:paddingStart="11dp"
+            android:paddingEnd="11dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:textSize="@dimen/text_micro"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/rowAction"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="@dimen/space_md"
+        style="@style/SmallButton" />
+</LinearLayout>

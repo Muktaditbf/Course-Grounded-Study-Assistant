@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One list card arriving: rises a little and fades in. -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:interpolator/decelerate_quint">
+    <translate android:fromYDelta="9%" android:toYDelta="0" android:duration="220" />
+    <alpha android:fromAlpha="0.0" android:toAlpha="1.0" android:duration="220" />
+</set>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <include layout="@layout/view_header" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/space_lg">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/join_code" style="@style/TextLabel" />
+
+        <EditText android:id="@+id/etJoinCode" android:layout_marginTop="@dimen/space_sm"
+            android:inputType="textCapCharacters" android:maxLines="1"
+            android:hint="@string/join_code_hint" android:letterSpacing="0.15"
+            android:textStyle="bold" style="@style/FieldInput" />
+
+        <TextView android:id="@+id/tvError" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md"
+            android:textColor="@color/danger" android:textSize="@dimen/text_caption"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnJoin" android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/space_xl"
+            android:text="@string/join_course" style="@style/PrimaryButton" />
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg" android:background="@drawable/bg_input"
+            android:padding="@dimen/space_lg" android:lineSpacingExtra="3dp"
+            android:text="@string/join_hint" style="@style/TextCaption" />
+    </LinearLayout>
+</LinearLayout>

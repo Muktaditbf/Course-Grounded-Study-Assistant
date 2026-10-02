@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <include layout="@layout/view_header" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/space_lg">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="0dp" android:text="@string/full_name" style="@style/TextLabel" />
+            <EditText android:id="@+id/etName" android:layout_marginTop="@dimen/space_sm"
+                android:inputType="textPersonName" android:maxLines="1" style="@style/FieldInput" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg" android:text="@string/email" style="@style/TextLabel" />
+            <EditText android:id="@+id/etEmail" android:layout_marginTop="@dimen/space_sm"
+                android:inputType="textEmailAddress" android:maxLines="1" style="@style/FieldInput" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg" android:text="@string/contact_number" style="@style/TextLabel" />
+            <EditText android:id="@+id/etContact" android:layout_marginTop="@dimen/space_sm"
+                android:inputType="phone" android:maxLines="1" style="@style/FieldInput" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg" android:text="@string/password" style="@style/TextLabel" />
+            <EditText android:id="@+id/etPassword" android:layout_marginTop="@dimen/space_sm"
+                android:inputType="textPassword" android:maxLines="1" style="@style/FieldInput" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg" android:text="@string/role" style="@style/TextLabel" />
+
+            <RadioGroup
+                android:id="@+id/rgRole"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:orientation="horizontal">
+                <RadioButton android:id="@+id/rbStudent" android:layout_width="0dp"
+                    android:layout_weight="1" android:layout_height="wrap_content"
+                    android:checked="true" android:padding="@dimen/space_sm"
+                    android:text="@string/student" android:textSize="@dimen/text_body" />
+                <RadioButton android:id="@+id/rbTeacher" android:layout_width="0dp"
+                    android:layout_weight="1" android:layout_height="wrap_content"
+                    android:padding="@dimen/space_sm"
+                    android:text="@string/teacher" android:textSize="@dimen/text_body" />
+            </RadioGroup>
+
+            <TextView android:id="@+id/tvError" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md"
+                android:textColor="@color/danger" android:textSize="@dimen/text_caption"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSignUp" android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/space_xl"
+                android:text="@string/sign_up" style="@style/PrimaryButton" />
+
+            <TextView android:id="@+id/tvGoLogin" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md"
+                android:gravity="center" android:padding="@dimen/space_md"
+                android:text="@string/have_account" android:textColor="@color/primary"
+                android:textStyle="bold" android:textSize="@dimen/text_body"
+                android:clickable="true" android:focusable="true" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

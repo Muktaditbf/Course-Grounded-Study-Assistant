@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Study Assistant</string>
+    <string name="app_tagline">Answers only from what your teacher approved</string>
+
+    <!-- UC1 / UC2 Authentication -->
+    <string name="login">Log in</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="logout">Log out</string>
+    <string name="full_name">Full Name</string>
+    <string name="email">Email</string>
+    <string name="contact_number">Contact Number</string>
+    <string name="password">Password</string>
+    <string name="role">Role</string>
+    <string name="student">Student</string>
+    <string name="teacher">Teacher</string>
+    <string name="no_account">No account? Sign up</string>
+    <string name="have_account">Have an account? Log in</string>
+    <string name="err_fill_all">Fill in every field to continue.</string>
+    <string name="err_bad_credentials">Incorrect email or password.</string>
+    <string name="err_email_taken">An account with this email already exists.</string>
+
+    <!-- Dashboards -->
+    <string name="my_courses">My Courses</string>
+    <string name="join_course">Join Course</string>
+    <string name="create_course">Create Course</string>
+    <string name="course_code">Course Code</string>
+    <string name="course_title">Course Title</string>
+    <string name="no_courses_student">No courses yet. Tap Join Course and enter the code your teacher gave you.</string>
+    <string name="no_courses_teacher">No courses yet. Tap Create Course to set up your first one.</string>
+
+    <!-- UC3 / UC4 Material management -->
+    <string name="materials">Materials</string>
+    <string name="upload_material">Upload Material</string>
+    <string name="approve_lock">Approve and Lock</string>
+    <string name="material_title">Material Title</string>
+    <string name="material_type">Type</string>
+    <string name="material_content">Content</string>
+    <string name="approved">Approved</string>
+    <string name="locked">Locked</string>
+    <string name="pending_approval">Pending approval</string>
+    <string name="approve">Approve</string>
+    <string name="revoke">Revoke</string>
+    <string name="lock_hint">The AI answers only from material you approve.</string>
+
+    <!-- UC5 Ask a question -->
+    <string name="ask_question">Ask a Question</string>
+    <string name="ask_hint">Type your question in natural language</string>
+    <string name="ask_button">Ask</string>
+    <string name="answer">Answer</string>
+    <string name="sources">Sources</string>
+    <string name="grounded_badge">Grounded in approved material</string>
+
+    <!-- NFR 14.1 decline state -->
+    <string name="declined_title">No approved material covers this</string>
+    <string name="declined_body">Your approved materials do not cover this topic, so the assistant will not guess.</string>
+    <string name="declined_hint">Rephrase the question, or ask your teacher to approve material on this topic.</string>
+
+    <!-- UC9 Lecture Connection Finder -->
+    <string name="related_resources">Related Resources</string>
+    <string name="related_hint">From the same course</string>
+
+    <!-- UC6 search / UC7 bookmarks -->
+    <string name="search">Search</string>
+    <string name="search_hint">Search your course materials</string>
+    <string name="no_results">No materials matched your search.</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="bookmarked">Bookmarked</string>
+
+    <!-- UC8 progress -->
+    <string name="progress">Progress</string>
+    <string name="progress_dashboard">Progress Dashboard</string>
+    <string name="questions_asked">Questions Asked</string>
+    <string name="answers_grounded">Answered</string>
+    <string name="answers_declined">Declined</string>
+    <string name="analytics">Analytics</string>
+
+    <!-- FR9 notifications -->
+    <string name="notifications">Notifications</string>
+    <string name="no_notifications">Nothing new. You will hear here when your teacher adds or approves material.</string>
+
+    <!-- UC10 billing -->
+    <string name="billing">Plans and billing</string>
+    <string name="upgrade">Upgrade</string>
+    <string name="tier_free">Free</string>
+    <string name="tier_premium">Student Premium</string>
+    <string name="tier_institutional">Institutional License</string>
+    <string name="price_premium">300 Tk. / semester</string>
+    <string name="price_institutional">150,000 Tk. / year / department</string>
+    <string name="pay_with">Pay with</string>
+    <string name="bkash">bKash</string>
+    <string name="nagad">Nagad</string>
+    <string name="card">Card</string>
+    <string name="confirm_payment">Confirm Payment</string>
+    <string name="payment_success">Payment complete. Your plan is upgraded.</string>
+    <string name="payment_failed">Payment did not go through. Try again.</string>
+    <string name="retry_payment">Retry Payment</string>
+    <string name="simulated_payment">Demo payment. No real money moves.</string>
+
+    <!-- Common -->
+
+    <!-- Added for the Android build -->
+    <string name="demo_accounts">Demo logins\nTeacher: teacher@seu.edu.bd / teacher123\nStudent: student@seu.edu.bd / student123</string>
+    <string name="join_code_hint">e.g. ISD346</string>
+    <string name="join_hint">Ask your teacher for the join code. Demo course codes are on the teacher dashboard.</string>
+    <string name="no_materials">No materials yet. Approved slides and notes will appear here.</string>
+    <string name="faculty">Faculty</string>
+    <string name="schedule">Schedule</string>
+    <string name="join_code">Join Code</string>
+    <string name="material_body_hint">Paste or type the lecture content the AI is allowed to use.</string>
+    <string name="approve_now">Approve and lock immediately</string>
+    <string name="grounding_rate">Grounding Rate</string>
+    <string name="approved_materials">Approved Materials</string>
+    <string name="per_course_breakdown">Per Course Breakdown</string>
+    <string name="institutional_note">Institutional License unlocks multi department analytics, LMS sync and branding (Cost Report Section 4).</string>
+    <string name="free_features">Unlimited material search, basic bookmarking, and up to %1$d AI questions per day.</string>
+    <string name="premium_features">Unlimited AI questions, priority speed, revision sheets and offline PDF export.</string>
+    <string name="institutional_features">Unlimited seats, branding, LMS sync and an analytics dashboard.</string>
+    <string name="account_number">Account Number</string>
+    <string name="account_hint">01XXXXXXXXX</string>
+    <string name="declined_coverage_format">Coverage %1$d%%, below the %2$d%% minimum required to answer.</string>
+    <string name="current_tier_format">Current plan: %1$s</string>
+    <string name="students_format">%1$d students</string>
+    <string name="materials_format">%1$d approved, %2$d pending</string>
+    <string name="questions_format">%1$d questions asked</string>
+    <string name="cap_reached">Free tier daily limit reached (%1$d questions). Upgrade to Student Premium for unlimited questions.</string>
+    <string name="cap_remaining">Free tier: %1$d of %2$d daily questions remaining.</string>
+    <string name="upgrade_done">Upgraded to %1$s.</string>
+    <string name="material_approved_toast">Material approved and locked. The AI can now use it.</string>
+    <string name="material_revoked_toast">Approval revoked. The AI can no longer use this material.</string>
+    <string name="joined_toast">Joined %1$s.</string>
+    <string name="invalid_code">No course found with that join code.</string>
+    <string name="course_created">Course created.</string>
+    <string name="material_uploaded">Material uploaded.</string>
+    <string name="enter_question">Type a question first.</string>
+    <string name="new_material_notice">New material in %1$s</string>
+    <string name="approved_notice">Material approved in %1$s</string>
+    <string name="payment_invalid_account">Enter a valid 11 digit account number.</string>
+    <string name="type_lecture">Lecture Slide</string>
+    <string name="type_lab">Lab Exercise</string>
+    <string name="type_assignment">Assignment</string>
+    <string name="type_quiz">Quiz</string>
+    <string name="type_notes">Notes</string>
+    <string name="nav_home">Home</string>
+    <string name="greeting">Welcome back</string>
+    <string name="ask_cta">Ask about this course</string>
+    <string name="approved_short">approved</string>
+    <string name="your_courses">Your courses</string>
+    <string name="teacher_tools">Teacher tools</string>
+    <string name="sources_label">Answered from</string>
+    <string name="try_asking">Try asking</string>
+    <string name="plan_label">Your plan</string>
+    <string name="most_popular">Most popular</string>
+    <string name="search_prompt">Search every approved material across your courses.</string>
+    <string name="upload_short">Upload</string>
+    <string name="choose_file">Choose a file</string>
+    <string name="file_or_paste">Pick a PDF, PowerPoint, Word, TXT or Markdown file, or paste the content below.</string>
+    <string name="reading_file">Reading file...</string>
+    <string name="file_loaded">Loaded %1$s</string>
+    <string name="chars_extracted">%1$d characters extracted</string>
+    <string name="err_unsupported_file">Use a PDF, PowerPoint, Word, TXT or Markdown file.</string>
+    <string name="err_pdf_no_text">No text found. This PDF is scanned images, so paste the text instead.</string>
+    <string name="err_file_unreadable">That file could not be opened. Pick another file, or paste the text.</string>
+    <string name="replace_file">Replace file</string>
+    <string name="err_material_locked">Your teacher has not approved this material yet.</string>
+    <string name="approved_count">%1$d approved</string>
+    <string name="pending_badge_format">%1$d pending review</string>
+    <string name="review">Review</string>
+    <string name="revoke_confirm_title">Revoke approval?</string>
+    <string name="revoke_confirm_body">The AI stops using this material now, and every enrolled student loses access.</string>
+    <string name="material_revoked_notice">Material withdrawn in %1$s</string>
+    <string name="err_join_code_taken">The join code %1$s is already used by another course. Pick a different one.</string>
+    <string name="settings">Settings</string>
+    <string name="account">Account</string>
+    <string name="preferences">Preferences</string>
+    <string name="support">Support</string>
+    <string name="session">Session</string>
+    <string name="profile">Profile</string>
+    <string name="change_password">Change password</string>
+    <string name="theme">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">Match system</string>
+    <string name="notifications_toggle">Notifications</string>
+    <string name="notifications_summary">Alerts for new and approved material</string>
+    <string name="language">Language</string>
+    <string name="language_summary">English and Bangla</string>
+    <string name="help">Help</string>
+    <string name="about">About</string>
+    <string name="privacy">Privacy policy</string>
+    <string name="logout_confirm_title">Log out of this device?</string>
+    <string name="logout_confirm_body">You will need your email and password to sign back in on this device.</string>
+    <string name="about_body">Course-Grounded Study Assistant
+CSE 346, Southeast University
+Answers only from teacher-approved material.</string>
+    <string name="help_body">Open a course, tap Ask a Question, and type in plain English. If your teacher has not approved material on that topic, the assistant will say so instead of guessing.</string>
+    <string name="privacy_body">Everything stays on this device. Your courses, questions and bookmarks are stored locally and are never uploaded.</string>
+    <string name="close">Close</string>
+    <string name="password_change_hint">Ask your course administrator to reset your password.</string>
+    <string name="recent_searches">Recent searches</string>
+    <string name="clear_recents">Clear</string>
+    <string name="filter_all">All</string>
+    <string name="no_results_for">No results for "%1$s" — try another subject or topic.</string>
+    <string name="sort_by_recent">Recent</string>
+    <string name="sort_by_subject">Subject</string>
+    <string name="bookmark_removed">Removed from bookmarks</string>
+    <string name="undo">Undo</string>
+    <string name="no_bookmarks_hint">Nothing saved yet. Tap Bookmark on any material to keep it here.</string>
+    <string name="nav_settings">Settings</string>
+    <string name="language_system">Match phone</string>
+    <string name="language_english">English</string>
+    <string name="language_bangla">Bangla</string>
+    <string name="language_choose">Choose the language the app is shown in.</string>
+    <string name="ai_err_no_key">AI key not set up. Add OPENAI_API_KEY to local.properties and rebuild.</string>
+    <string name="ai_err_no_network">No internet connection. Check your network and ask again.</string>
+    <string name="ai_err_unauthorised">That API key was rejected. Check the key in local.properties.</string>
+    <string name="ai_err_rate_limited">Too many questions just now. Wait a moment and ask again.</string>
+    <string name="ai_err_server">The AI service is having trouble right now. Try again shortly.</string>
+    <string name="ai_err_unknown">That did not work. Try asking again.</string>
+    <string name="ai_thinking">Thinking…</string>
+    <string name="ai_retry">Try again</string>
+    <string name="answered_generally">Answered from general knowledge</string>
+    <string name="answered_from_course">Answered from your approved course material</string>
+    <string name="ai_err_no_credit">This AI account has no credits left. Add credits, then ask again.</string>
+    <string name="err_legacy_office">Old .ppt and .doc files are not supported. Save as .pptx or .docx, then try again.</string>
+    <string name="read_pdf">Read the PDF</string>
+    <string name="read_original">Open the original file</string>
+    <string name="pdf_page_of">Page %1$d of %2$d</string>
+    <string name="pdf_page_count">%1$d pages</string>
+    <string name="pdf_missing">That file is no longer on this device. Ask your teacher to upload it again.</string>
+    <string name="pdf_unreadable">This PDF could not be opened. It may be damaged.</string>
+    <string name="reading_text">Text version</string>
+    <string name="ai_chat">Ask AI</string>
+    <string name="ai_chat_title">Study Assistant</string>
+    <string name="ai_chat_hint">Ask anything about your courses</string>
+    <string name="ai_chat_welcome">Hi! I can see every material your teachers have approved across all your courses. Ask me anything.</string>
+    <string name="ai_chat_send">Send</string>
+    <string name="ai_sources_prefix">From: %1$s</string>
+    <string name="ai_general_badge">General knowledge</string>
+    <string name="clear_chat">Clear</string>
+</resources>

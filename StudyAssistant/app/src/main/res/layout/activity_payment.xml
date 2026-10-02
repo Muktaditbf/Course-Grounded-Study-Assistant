@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <include layout="@layout/view_header" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/space_lg">
+
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:background="@drawable/bg_hero"
+                android:padding="@dimen/space_lg">
+
+                <TextView android:id="@+id/tvPlan" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:textColor="@color/text_on_primary_soft"
+                    android:textSize="@dimen/text_caption" />
+
+                <TextView android:id="@+id/tvAmount" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:layout_marginTop="2dp"
+                    android:textColor="@color/white" android:textSize="@dimen/text_display"
+                    android:textStyle="bold" android:letterSpacing="-0.02" />
+            </LinearLayout>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xl" android:text="@string/pay_with"
+                style="@style/TextLabel" />
+
+            <RadioGroup android:id="@+id/rgMethod" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_sm"
+                android:orientation="vertical">
+
+                <RadioButton android:id="@+id/rbBkash" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:checked="true"
+                    android:background="@drawable/bg_card" android:padding="@dimen/space_lg"
+                    android:layout_marginBottom="@dimen/space_sm"
+                    android:text="@string/bkash" android:textSize="@dimen/text_body"
+                    android:textStyle="bold" />
+
+                <RadioButton android:id="@+id/rbNagad" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card" android:padding="@dimen/space_lg"
+                    android:layout_marginBottom="@dimen/space_sm"
+                    android:text="@string/nagad" android:textSize="@dimen/text_body"
+                    android:textStyle="bold" />
+
+                <RadioButton android:id="@+id/rbCard" android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card" android:padding="@dimen/space_lg"
+                    android:text="@string/card" android:textSize="@dimen/text_body"
+                    android:textStyle="bold" />
+            </RadioGroup>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg" android:text="@string/account_number"
+                style="@style/TextLabel" />
+
+            <EditText android:id="@+id/etAccount" android:layout_marginTop="@dimen/space_sm"
+                android:inputType="number" android:maxLines="1"
+                android:hint="@string/account_hint" style="@style/FieldInput" />
+
+            <LinearLayout android:id="@+id/failBlock" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_lg"
+                android:orientation="vertical" android:background="@drawable/bg_declined"
+                android:padding="@dimen/space_lg" android:visibility="gone">
+
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="@string/payment_failed" android:textColor="@color/declined_amber_text"
+                    android:textSize="@dimen/text_heading" android:textStyle="bold" />
+
+                <TextView android:id="@+id/tvFailReason" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_xs"
+                    android:textColor="#B45309" android:textSize="@dimen/text_caption" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPay" android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/space_xl"
+                android:text="@string/confirm_payment" style="@style/PrimaryButton" />
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg" android:gravity="center"
+                android:text="@string/simulated_payment" android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/text_micro" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

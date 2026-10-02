@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Dark palette. Same token names as values/colors.xml so every layout, drawable and style
+  picks it up with no other change. Surfaces lift as they come forward rather than going
+  pure black, and the semantic colours keep their meaning: green still means approved,
+  amber still means declined.
+-->
+<resources>
+    <!-- Brand: lifted so indigo stays legible on a dark ground -->
+    <color name="primary">#818CF8</color>
+    <color name="primary_dark">#6366F1</color>
+    <color name="primary_deep">#4338CA</color>
+    <color name="violet">#A78BFA</color>
+    <color name="primary_soft">#1E1B4B</color>
+    <color name="primary_tint">#4338CA</color>
+
+    <!-- Semantic -->
+    <color name="locked_green">#34D399</color>
+    <color name="locked_green_bg">#064E3B</color>
+    <color name="locked_green_text">#6EE7B7</color>
+    <color name="declined_amber">#FBBF24</color>
+    <color name="declined_amber_bg">#422006</color>
+    <color name="declined_amber_text">#FCD34D</color>
+    <color name="pending_bg">#27272A</color>
+    <color name="danger">#FB7185</color>
+
+    <!-- Surfaces -->
+    <color name="background">#0F1117</color>
+    <color name="surface">#181B23</color>
+    <color name="surface_sunken">#12151C</color>
+    <color name="border">#272B36</color>
+
+    <!-- Text -->
+    <color name="text_primary">#F3F4F6</color>
+    <color name="text_secondary">#9CA3AF</color>
+    <color name="text_tertiary">#6B7280</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_primary_soft">#C7D2FE</color>
+
+    <!-- Course accent stripes, brightened for dark surfaces -->
+    <color name="accent_1">#818CF8</color>
+    <color name="accent_2">#22D3EE</color>
+    <color name="accent_3">#34D399</color>
+    <color name="accent_4">#FBBF24</color>
+    <color name="accent_5">#F472B6</color>
+    <color name="accent_6">#A78BFA</color>
+    <color name="accent_7">#F87171</color>
+
+    <color name="white">#FFFFFF</color>
+</resources>

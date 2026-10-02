@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <defs><linearGradient id="hero" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3730A3"/><stop offset="0.5" stop-color="#4F46E5"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+  <rect id="Background" width="390" height="844" fill="#FAFAFB"/>
+  <g id="App_bar_1" data-name="App bar">
+  <rect x="0" y="0" width="390" height="92" rx="0" fill="#FFFFFF" />
+  <path d="M32,64 L20,56 L32,48 M20,56 H40" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="52" y="62" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start" letter-spacing="-0.2">CSE346.14 Approve and Lock</text>
+  </g>
+  <g id="Status_bar_2" data-name="Status bar">
+  <text x="18" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#111827" text-anchor="start">9:41</text>
+  <text x="372" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#111827" text-anchor="end">5G  100%</text>
+  </g>
+  <g id="Lock_hint_3" data-name="Lock hint">
+  <rect x="16" y="108" width="358" height="52" rx="16" fill="#EEF2FF" />
+  <path d="M34,128 v-5 a6,6 0 0 1 12,0 v5" fill="none" stroke="#4F46E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="32" y="128" width="16" height="13" rx="3" fill="#4F46E5" />
+  <text x="64" y="139" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#4F46E5" text-anchor="start">The AI answers only from material you approve.</text>
+  </g>
+  <g id="Notes__Data_Flow_Diagrams_4" data-name="Notes: Data Flow Diagrams">
+  <rect x="16" y="176" width="358" height="109" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="34" y="210.5" width="4" height="40" rx="2" fill="#4F46E5" />
+  <text x="50" y="208.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">Notes: Data Flow Diagrams</text>
+  <text x="50" y="227.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Notes</text>
+  <rect x="50" y="247.5" width="114.8" height="22" rx="11" fill="#FFFBEB" />
+  <text x="107.4" y="262.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#92400E" text-anchor="middle">Pending approval</text>
+  <rect x="279.2" y="211.5" width="74.8" height="38" rx="19" fill="#4F46E5" />
+  <text x="316.6" y="235.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">Approve</text>
+  </g>
+  <g id="Lecture_4__Software_Testing_5" data-name="Lecture 4: Software Testing">
+  <rect x="16" y="297" width="358" height="109" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="34" y="331.5" width="4" height="40" rx="2" fill="#0891B2" />
+  <text x="50" y="329.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">Lecture 4: Software Testing</text>
+  <text x="50" y="348.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Lecture Slide</text>
+  <rect x="50" y="368.5" width="114.8" height="22" rx="11" fill="#FFFBEB" />
+  <text x="107.4" y="383.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#92400E" text-anchor="middle">Pending approval</text>
+  <rect x="279.2" y="332.5" width="74.8" height="38" rx="19" fill="#4F46E5" />
+  <text x="316.6" y="356.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">Approve</text>
+  </g>
+  <g id="Lecture_1__Software_Process_Models_6" data-name="Lecture 1: Software Process Models">
+  <rect x="16" y="418" width="358" height="109" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="34" y="452.5" width="4" height="40" rx="2" fill="#059669" />
+  <text x="50" y="450.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">Lecture 1: Software Process Mod…</text>
+  <text x="50" y="469.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Lecture Slide</text>
+  <rect x="50" y="489.5" width="56.8" height="22" rx="11" fill="#ECFDF5" />
+  <text x="78.4" y="504.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">Locked</text>
+  <rect x="285.6" y="453.5" width="68.4" height="38" rx="19" fill="#4F46E5" />
+  <text x="319.8" y="477.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">Revoke</text>
+  </g>
+  <g id="Lecture_2__Software_Requirements_7" data-name="Lecture 2: Software Requirements">
+  <rect x="16" y="539" width="358" height="109" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="34" y="573.5" width="4" height="40" rx="2" fill="#D97706" />
+  <text x="50" y="571.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">Lecture 2: Software Requirements</text>
+  <text x="50" y="590.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Lecture Slide</text>
+  <rect x="50" y="610.5" width="56.8" height="22" rx="11" fill="#ECFDF5" />
+  <text x="78.4" y="625.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">Locked</text>
+  <rect x="285.6" y="574.5" width="68.4" height="38" rx="19" fill="#4F46E5" />
+  <text x="319.8" y="598.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">Revoke</text>
+  </g>
+</svg>

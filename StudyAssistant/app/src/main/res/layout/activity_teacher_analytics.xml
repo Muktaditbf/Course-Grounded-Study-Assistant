@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <include layout="@layout/view_header" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/space_lg">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:layout_marginEnd="@dimen/space_sm"
+                    android:orientation="vertical" android:background="@drawable/bg_card"
+                    android:padding="@dimen/space_lg">
+                    <TextView android:id="@+id/tvCourses" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" style="@style/TextDisplay" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp" android:text="@string/my_courses" style="@style/TextCaption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:background="@drawable/bg_card" android:padding="@dimen/space_lg">
+                    <TextView android:id="@+id/tvApproved" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:textColor="@color/locked_green"
+                        style="@style/TextDisplay" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp" android:text="@string/approved_materials" style="@style/TextCaption" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:layout_marginEnd="@dimen/space_sm"
+                    android:orientation="vertical" android:background="@drawable/bg_card"
+                    android:padding="@dimen/space_lg">
+                    <TextView android:id="@+id/tvPending" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:textColor="@color/declined_amber"
+                        style="@style/TextDisplay" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp" android:text="@string/pending_approval" style="@style/TextCaption" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:orientation="vertical"
+                    android:background="@drawable/bg_card" android:padding="@dimen/space_lg">
+                    <TextView android:id="@+id/tvQuestions" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" style="@style/TextDisplay" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp" android:text="@string/questions_asked" style="@style/TextCaption" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xl"
+                android:text="@string/per_course_breakdown" style="@style/TextTitle" />
+
+            <LinearLayout
+                android:id="@+id/coursesContainer"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md" android:orientation="vertical" />
+
+            <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:background="@drawable/bg_input" android:padding="@dimen/space_lg"
+                android:lineSpacingExtra="3dp"
+                android:text="@string/institutional_note" style="@style/TextCaption" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

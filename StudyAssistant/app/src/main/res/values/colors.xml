@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand: indigo, with a violet partner for gradients -->
+    <color name="primary">#4F46E5</color>
+    <color name="primary_dark">#4338CA</color>
+    <color name="primary_deep">#3730A3</color>
+    <color name="violet">#7C3AED</color>
+    <color name="primary_soft">#EEF2FF</color>
+    <color name="primary_tint">#C7D2FE</color>
+
+    <!-- Semantic: these carry meaning from the SRS -->
+    <color name="locked_green">#059669</color>       <!-- teacher-approved / locked -->
+    <color name="locked_green_bg">#ECFDF5</color>
+    <color name="locked_green_text">#047857</color>
+    <color name="declined_amber">#D97706</color>     <!-- NFR 14.1 decline state -->
+    <color name="declined_amber_bg">#FFFBEB</color>
+    <color name="declined_amber_text">#92400E</color>
+    <color name="pending_bg">#F3F4F6</color>
+    <color name="danger">#E11D48</color>
+
+    <!-- Surfaces -->
+    <color name="background">#FAFAFB</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_sunken">#F4F5F8</color>
+    <color name="border">#EDEEF2</color>
+
+    <!-- Text -->
+    <color name="text_primary">#111827</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_tertiary">#9CA3AF</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_primary_soft">#C7D2FE</color>
+
+    <!-- Course accent stripes, cycled by index -->
+    <color name="accent_1">#4F46E5</color>
+    <color name="accent_2">#0891B2</color>
+    <color name="accent_3">#059669</color>
+    <color name="accent_4">#D97706</color>
+    <color name="accent_5">#DB2777</color>
+    <color name="accent_6">#7C3AED</color>
+    <color name="accent_7">#DC2626</color>
+
+    <color name="white">#FFFFFF</color>
+</resources>

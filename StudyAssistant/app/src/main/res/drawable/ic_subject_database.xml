@@ -1,0 +1,10 @@
+<!-- Database Design: a stacked-disc cylinder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp" android:height="28dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFF" android:pathData="M12,2.5c4.4,0 7.5,1.2 7.5,2.8S16.4,8.1 12,8.1S4.5,6.9 4.5,5.3S7.6,2.5 12,2.5z" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="1.7" android:fillColor="#00000000"
+        android:pathData="M4.5,5.3v5.2c0,1.6 3.1,2.8 7.5,2.8s7.5,-1.2 7.5,-2.8V5.3" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="1.7" android:fillColor="#00000000"
+        android:pathData="M4.5,10.5v5.2c0,1.6 3.1,2.8 7.5,2.8s7.5,-1.2 7.5,-2.8v-5.2" />
+</vector>

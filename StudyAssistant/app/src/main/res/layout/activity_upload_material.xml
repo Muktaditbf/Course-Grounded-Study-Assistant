@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <include layout="@layout/view_header" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/space_lg">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/material_title" style="@style/TextLabel" />
+            <EditText android:id="@+id/etTitle" android:layout_marginTop="@dimen/space_sm"
+                android:inputType="text" android:maxLines="1" style="@style/FieldInput" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg" android:text="@string/material_type" style="@style/TextLabel" />
+            <Spinner android:id="@+id/spType" android:layout_width="match_parent"
+                android:layout_height="@dimen/input_height" android:layout_marginTop="@dimen/space_sm"
+                android:background="@drawable/bg_input" android:paddingStart="14dp" android:paddingEnd="14dp" />
+
+            <!-- UC3: pick a real slide deck, PDF, note or lab manual from the device -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/space_lg">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPickFile"
+                    android:layout_width="match_parent"
+                    android:text="@string/choose_file"
+                    app:icon="@drawable/ic_upload"
+                    app:iconGravity="textStart"
+                    app:iconPadding="10dp"
+                    style="@style/SecondaryButton" />
+
+                <TextView
+                    android:id="@+id/tvFileStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:lineSpacingExtra="3dp"
+                    android:text="@string/file_or_paste"
+                    style="@style/TextCaption" />
+
+                <ProgressBar
+                    android:id="@+id/fileProgress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/primary"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg" android:text="@string/material_content" style="@style/TextLabel" />
+            <EditText android:id="@+id/etBody" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_sm"
+                android:background="@drawable/bg_input" android:gravity="top"
+                android:hint="@string/material_body_hint" android:inputType="textMultiLine"
+                android:minLines="7" android:padding="@dimen/space_lg"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@color/text_primary" android:textSize="@dimen/text_body" />
+
+            <LinearLayout
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg" android:orientation="vertical"
+                android:background="@drawable/bg_card" android:padding="@dimen/space_lg">
+
+                <CheckBox android:id="@+id/cbApprove" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:text="@string/approve_now"
+                    android:textSize="@dimen/text_body" android:textStyle="bold" />
+
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_sm" android:lineSpacingExtra="3dp"
+                    android:text="@string/lock_hint" style="@style/TextCaption" />
+            </LinearLayout>
+
+            <TextView android:id="@+id/tvError" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_md"
+                android:textColor="@color/danger" android:textSize="@dimen/text_caption"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave" android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/space_lg"
+                android:text="@string/upload_material" style="@style/PrimaryButton" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

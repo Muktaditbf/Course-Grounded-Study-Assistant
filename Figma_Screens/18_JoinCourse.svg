@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <defs><linearGradient id="hero" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3730A3"/><stop offset="0.5" stop-color="#4F46E5"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+  <rect id="Background" width="390" height="844" fill="#FAFAFB"/>
+  <g id="App_bar_1" data-name="App bar">
+  <rect x="0" y="0" width="390" height="92" rx="0" fill="#FFFFFF" />
+  <path d="M32,64 L20,56 L32,48 M20,56 H40" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="52" y="62" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start" letter-spacing="-0.2">Join Course</text>
+  </g>
+  <g id="Status_bar_2" data-name="Status bar">
+  <text x="18" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#111827" text-anchor="start">9:41</text>
+  <text x="372" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#111827" text-anchor="end">5G  100%</text>
+  </g>
+  <text x="24" y="128" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="start" letter-spacing="0.4">JOIN CODE</text>
+  <rect x="24" y="138" width="342" height="52" rx="16" fill="#F4F5F8" stroke="#EDEEF2" stroke-width="1" />
+  <text x="42" y="170" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="400" fill="#111827" text-anchor="start">ISD346</text>
+  <text x="24" y="218" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="start">Ask your teacher for the join code. Demo</text>
+  <text x="24" y="236" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="start">course codes are on the teacher dashboard.</text>
+  <rect x="24" y="278" width="342" height="52" rx="26" fill="#4F46E5" />
+  <text x="195" y="309" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">Join Course</text>
+</svg>

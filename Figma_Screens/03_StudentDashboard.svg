@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <defs><linearGradient id="hero" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3730A3"/><stop offset="0.5" stop-color="#4F46E5"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+  <rect id="Background" width="390" height="844" fill="#FAFAFB"/>
+  <g id="Hero_gradient_1" data-name="Hero gradient">
+  <path d="M0,0 H390 V128 Q390,158 360,158 H30 Q0,158 0,128 Z" fill="url(#hero)" />
+  </g>
+  <g id="Status_bar_2" data-name="Status bar">
+  <text x="18" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="start">9:41</text>
+  <text x="372" y="26" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF" text-anchor="end">5G  100%</text>
+  </g>
+  <g id="Greeting_3" data-name="Greeting">
+  <text x="24" y="74" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#C7D2FE" text-anchor="start">Welcome back</text>
+  <text x="24" y="100" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="26" font-weight="700" fill="#FFFFFF" text-anchor="start" letter-spacing="-0.5">Jihad Mahamud</text>
+  </g>
+  <rect x="246" y="74" width="50.8" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.22" />
+  <text x="271.4" y="94" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle">Free</text>
+  <g id="Notification_bell_4" data-name="Notification bell">
+  <rect x="330" y="74" width="36" height="36" rx="18" fill="#FFFFFF" fill-opacity="0.22" />
+  <path d="M341,91 a7,7 0 0 1 14,0 v6 l3,4 h-20 l3,-4 z" fill="#FFFFFF" />
+  <circle cx="348" cy="103" r="2.5" fill="#FFFFFF" />
+  <circle cx="360" cy="80" r="9" fill="#E11D48" />
+  <text x="360" y="83.5" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="700" fill="#FFFFFF" text-anchor="middle">1</text>
+  </g>
+  <g id="Section_header_5" data-name="Section header">
+  <text x="24" y="196" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="21" font-weight="700" fill="#111827" text-anchor="start" letter-spacing="-0.2">Your courses</text>
+  <rect x="264" y="176" width="104.4" height="38" rx="19" fill="#4F46E5" />
+  <text x="316.2" y="200" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">Join Course</text>
+  </g>
+  <g id="CSE341.8__Computer_Networking_6" data-name="CSE341.8  Computer Networking">
+  <rect x="16" y="216" width="358" height="126" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="36" y="251" width="56" height="56" rx="16" fill="#4F46E5" />
+  <path d="M64,274 L56,285 M64,274 L72,285 M56,285 L72,285" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="64" cy="272" r="3" fill="#FFFFFF" />
+  <circle cx="55" cy="286" r="2.6" fill="#FFFFFF" />
+  <circle cx="73" cy="286" r="2.6" fill="#FFFFFF" />
+  <text x="108" y="257" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">CSE341.8  Computer Networking</text>
+  <text x="108" y="276" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Mst. Jesiara Khatun [JAR]</text>
+  <text x="108" y="292" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">MON &amp; WED 11:30-12:50, Room SEU406</text>
+  <rect x="108" y="312" width="80" height="22" rx="11" fill="#ECFDF5" />
+  <text x="148" y="327" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">1 approved</text>
+  </g>
+  <g id="CSE342.14__Computer_Networking_Lab_7" data-name="CSE342.14  Computer Networking Lab">
+  <rect x="16" y="354" width="358" height="126" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="36" y="389" width="56" height="56" rx="16" fill="#0891B2" />
+  <path d="M64,412 L56,423 M64,412 L72,423 M56,423 L72,423" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="64" cy="410" r="3" fill="#FFFFFF" />
+  <circle cx="55" cy="424" r="2.6" fill="#FFFFFF" />
+  <circle cx="73" cy="424" r="2.6" fill="#FFFFFF" />
+  <text x="108" y="395" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">CSE342.14  Computer Networking Lab</text>
+  <text x="108" y="414" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Md. Safwan Zaher Asif [MSZA]</text>
+  <text x="108" y="430" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">WED 16:30-18:30, Room SEU804</text>
+  <rect x="108" y="450" width="80" height="22" rx="11" fill="#ECFDF5" />
+  <text x="148" y="465" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">1 approved</text>
+  </g>
+  <g id="CSE346.14__Information_System_Design_8" data-name="CSE346.14  Information System Design">
+  <rect x="16" y="492" width="358" height="126" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="36" y="527" width="56" height="56" rx="16" fill="#059669" />
+  <rect x="55" y="547.5" width="18" height="15" rx="2" fill="none" stroke="#FFFFFF" stroke-width="1.7" />
+  <path d="M55,552 h18" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M62.5,555.5 l-2.5,2.5 l2.5,2.5 M65.5,555.5 l2.5,2.5 l-2.5,2.5" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="108" y="533" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">CSE346.14  Information System Design</text>
+  <text x="108" y="552" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Radiathun Tasnia [RADT]</text>
+  <text x="108" y="568" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">THU 13:30-15:30, Room SEU609</text>
+  <rect x="108" y="588" width="80" height="22" rx="11" fill="#ECFDF5" />
+  <text x="148" y="603" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">7 approved</text>
+  </g>
+  <g id="Bottom_navigation_9" data-name="Bottom navigation">
+  <rect x="0" y="776" width="390" height="68" rx="0" fill="#FFFFFF" />
+  <line x1="0" y1="776" x2="390" y2="776" stroke="#EDEEF2" stroke-width="1"/>
+  <path d="M29,802 l10,-8 l10,8 v10 h-6 v-7 h-8 v7 h-6 z" fill="#4F46E5" />
+  <text x="39" y="828" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#4F46E5" text-anchor="middle">Home</text>
+  <circle cx="116" cy="797" r="6.5" fill="none" stroke="#8E93A3" stroke-width="2" />
+  <path d="M120.5,801.5 L125,806" fill="none" stroke="#8E93A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="117" y="828" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="400" fill="#8E93A3" text-anchor="middle">Search</text>
+  <path d="M189,790 h12 v18 l-6,-4 l-6,4 z" fill="#8E93A3" />
+  <text x="195" y="828" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="400" fill="#8E93A3" text-anchor="middle">Bookmarks</text>
+  <rect x="265" y="800" width="4" height="8" rx="1" fill="#8E93A3" />
+  <rect x="271" y="793" width="4" height="15" rx="1" fill="#8E93A3" />
+  <rect x="277" y="797" width="4" height="11" rx="1" fill="#8E93A3" />
+  <text x="273" y="828" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="400" fill="#8E93A3" text-anchor="middle">Progress</text>
+  <circle cx="351" cy="799" r="4.2" fill="none" stroke="#8E93A3" stroke-width="2" />
+  <path d="M357,799 L360,799" fill="none" stroke="#8E93A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M355.243,803.243 L357.364,805.364" fill="none" stroke="#8E93A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M351,805 L351,808" fill="none" stroke="#8E93A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M346.757,803.243 L344.636,805.364" fill="none" stroke="#8E93A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M345,799 L342,799" fill="none" stroke="#8E93A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M346.757,794.757 L344.636,792.636" fill="none" stroke="#8E93A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M351,793 L351,790" fill="none" stroke="#8E93A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M355.243,794.757 L357.364,792.636" fill="none" stroke="#8E93A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="351" y="828" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="400" fill="#8E93A3" text-anchor="middle">Settings</text>
+  </g>
+</svg>

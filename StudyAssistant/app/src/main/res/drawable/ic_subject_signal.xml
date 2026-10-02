@@ -1,0 +1,11 @@
+<!-- Communication / Electronics: a modulated waveform inside a broadcast arc. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp" android:height="28dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="1.7" android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M2.5,12c1.6,0 1.6,-5 3.2,-5s1.6,10 3.2,10s1.6,-10 3.2,-10s1.6,10 3.2,10s1.6,-5 3.2,-5" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="1.6" android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M19.6,6.4a7.9,7.9 0 0,1 0,11.2" />
+</vector>

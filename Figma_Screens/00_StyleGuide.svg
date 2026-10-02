@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="1180" viewBox="0 0 390 1180">
+  <defs><linearGradient id="hero" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#3730A3"/><stop offset="0.5" stop-color="#4F46E5"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+  <rect id="Background" width="390" height="1180" fill="#FFFFFF"/>
+  <g id="Title_1" data-name="Title">
+  <text x="24" y="56" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="24" font-weight="700" fill="#111827" text-anchor="start" letter-spacing="-0.4">Study Assistant — Design System</text>
+  <text x="24" y="80" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="start">CSE 346, Southeast University</text>
+  </g>
+  <g id="Colour___Light_2" data-name="Colour — Light">
+  <text x="24" y="128" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="start" letter-spacing="0.5">COLOUR — LIGHT</text>
+  <rect x="24" y="142" width="54" height="54" rx="12" fill="#4F46E5" />
+  <text x="24" y="210" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">primary</text>
+  <text x="24" y="222" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#4F46E5</text>
+  <rect x="84" y="142" width="54" height="54" rx="12" fill="#3730A3" />
+  <text x="84" y="210" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">deep</text>
+  <text x="84" y="222" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#3730A3</text>
+  <rect x="144" y="142" width="54" height="54" rx="12" fill="#7C3AED" />
+  <text x="144" y="210" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">violet</text>
+  <text x="144" y="222" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#7C3AED</text>
+  <rect x="204" y="142" width="54" height="54" rx="12" fill="#059669" />
+  <text x="204" y="210" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">green</text>
+  <text x="204" y="222" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#059669</text>
+  <rect x="264" y="142" width="54" height="54" rx="12" fill="#D97706" />
+  <text x="264" y="210" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">amber</text>
+  <text x="264" y="222" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#D97706</text>
+  <rect x="324" y="142" width="54" height="54" rx="12" fill="#E11D48" />
+  <text x="324" y="210" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">danger</text>
+  <text x="324" y="222" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#E11D48</text>
+  </g>
+  <g id="Colour___Dark_3" data-name="Colour — Dark">
+  <text x="24" y="258" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="start" letter-spacing="0.5">COLOUR — DARK</text>
+  <rect x="24" y="272" width="54" height="54" rx="12" fill="#818CF8" stroke="#EDEEF2" stroke-width="1" />
+  <text x="24" y="340" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">primary</text>
+  <text x="24" y="352" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#818CF8</text>
+  <rect x="84" y="272" width="54" height="54" rx="12" fill="#0F1117" stroke="#EDEEF2" stroke-width="1" />
+  <text x="84" y="340" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">bg</text>
+  <text x="84" y="352" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#0F1117</text>
+  <rect x="144" y="272" width="54" height="54" rx="12" fill="#181B23" stroke="#EDEEF2" stroke-width="1" />
+  <text x="144" y="340" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">surface</text>
+  <text x="144" y="352" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#181B23</text>
+  <rect x="204" y="272" width="54" height="54" rx="12" fill="#34D399" stroke="#EDEEF2" stroke-width="1" />
+  <text x="204" y="340" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">green</text>
+  <text x="204" y="352" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#34D399</text>
+  <rect x="264" y="272" width="54" height="54" rx="12" fill="#FBBF24" stroke="#EDEEF2" stroke-width="1" />
+  <text x="264" y="340" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">amber</text>
+  <text x="264" y="352" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#FBBF24</text>
+  <rect x="324" y="272" width="54" height="54" rx="12" fill="#FB7185" stroke="#EDEEF2" stroke-width="1" />
+  <text x="324" y="340" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="start">danger</text>
+  <text x="324" y="352" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="8" font-weight="400" fill="#9CA3AF" text-anchor="start">#FB7185</text>
+  </g>
+  <g id="Type_scale_4" data-name="Type scale">
+  <text x="24" y="388" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="start" letter-spacing="0.5">TYPE SCALE — Inter</text>
+  <text x="24" y="420" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="30" font-weight="700" fill="#111827" text-anchor="start">Hero / 30</text>
+  <text x="24" y="466" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="26" font-weight="700" fill="#111827" text-anchor="start">Display / 26</text>
+  <text x="24" y="508" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="21" font-weight="700" fill="#111827" text-anchor="start">Title / 21</text>
+  <text x="24" y="545" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="17" font-weight="700" fill="#111827" text-anchor="start">Heading / 17</text>
+  <text x="24" y="578" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="15" font-weight="400" fill="#111827" text-anchor="start">Body / 15</text>
+  <text x="24" y="609" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="400" fill="#111827" text-anchor="start">Caption / 13</text>
+  <text x="24" y="638" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#111827" text-anchor="start">Micro / 11</text>
+  </g>
+  <g id="Components_5" data-name="Components">
+  <text x="210" y="388" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="start" letter-spacing="0.5">COMPONENTS</text>
+  <rect x="210" y="404" width="160" height="48" rx="24" fill="#4F46E5" />
+  <text x="290" y="433" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="middle">Primary</text>
+  <rect x="210" y="462" width="160" height="48" rx="24" fill="#FFFFFF" stroke="#C7D2FE" stroke-width="1.5" />
+  <text x="290" y="491" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="15" font-weight="700" fill="#4F46E5" text-anchor="middle">Secondary</text>
+  <rect x="210" y="520" width="110.8" height="38" rx="19" fill="#4F46E5" />
+  <text x="265.4" y="544" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#FFFFFF" text-anchor="middle">Small button</text>
+  <rect x="210" y="572" width="68.4" height="22" rx="11" fill="#ECFDF5" />
+  <text x="244.2" y="587" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">Approved</text>
+  <rect x="286.4" y="572" width="62.6" height="22" rx="11" fill="#F3F4F6" />
+  <text x="317.7" y="587" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#6B7280" text-anchor="middle">Pending</text>
+  <rect x="210" y="602" width="56.8" height="22" rx="11" fill="#ECFDF5" />
+  <text x="238.4" y="617" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">Locked</text>
+  <rect x="274.8" y="602" width="68.4" height="22" rx="11" fill="#FFFBEB" />
+  <text x="309" y="617" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#92400E" text-anchor="middle">Declined</text>
+  <rect x="210" y="636" width="160" height="52" rx="16" fill="#F4F5F8" stroke="#EDEEF2" stroke-width="1" />
+  <text x="228" y="668" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="13" font-weight="400" fill="#9CA3AF" text-anchor="start">Input field</text>
+  </g>
+  <g id="Course_illustrations_6" data-name="Course illustrations">
+  <text x="24" y="730" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="start" letter-spacing="0.5">COURSE ILLUSTRATIONS — mapped by subject</text>
+  <rect x="24" y="746" width="56" height="56" rx="16" fill="#4F46E5" />
+  <path d="M52,769 L44,780 M52,769 L60,780 M44,780 L60,780" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="52" cy="767" r="3" fill="#FFFFFF" />
+  <circle cx="43" cy="781" r="2.6" fill="#FFFFFF" />
+  <circle cx="61" cy="781" r="2.6" fill="#FFFFFF" />
+  <text x="52" y="818" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="middle">Networking</text>
+  <rect x="86" y="746" width="56" height="56" rx="16" fill="#0891B2" />
+  <path d="M105.5,766 c0,-2.2 4,-3.6 8.5,-3.6 s8.5,1.4 8.5,3.6 -4,3.6 -8.5,3.6 -8.5,-1.4 -8.5,-3.6 z" fill="#FFFFFF" />
+  <path d="M105.5,766 v6 c0,2.2 4,3.6 8.5,3.6 s8.5,-1.4 8.5,-3.6 v-6" fill="none" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M105.5,773 v6 c0,2.2 4,3.6 8.5,3.6 s8.5,-1.4 8.5,-3.6 v-6" fill="none" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="114" y="818" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="middle">Database</text>
+  <rect x="148" y="746" width="56" height="56" rx="16" fill="#059669" />
+  <rect x="169.5" y="767.5" width="13" height="13" rx="1.5" fill="none" stroke="#FFFFFF" stroke-width="1.7" />
+  <rect x="173.5" y="771.5" width="5" height="5" rx="1" fill="#FFFFFF" />
+  <path d="M172.5,767.5 v-4 M172.5,780.5 v4" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M169.5,770.5 h-4 M182.5,770.5 h4" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M179.5,767.5 v-4 M179.5,780.5 v4" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M169.5,777.5 h-4 M182.5,777.5 h4" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="176" y="818" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="middle">AI / ML</text>
+  <rect x="210" y="746" width="56" height="56" rx="16" fill="#D97706" />
+  <rect x="229" y="766.5" width="18" height="15" rx="2" fill="none" stroke="#FFFFFF" stroke-width="1.7" />
+  <path d="M229,771 h18" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M236.5,774.5 l-2.5,2.5 l2.5,2.5 M239.5,774.5 l2.5,2.5 l-2.5,2.5" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="238" y="818" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="middle">Software</text>
+  <rect x="272" y="746" width="56" height="56" rx="16" fill="#DB2777" />
+  <path d="M291,774 c1.8,0 1.8,-6 3.6,-6 s1.8,12 3.6,12 s1.8,-12 3.6,-12 s1.8,6 3.6,6" fill="none" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="300" y="818" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="middle">Comms</text>
+  <rect x="334" y="746" width="56" height="56" rx="16" fill="#7C3AED" />
+  <path d="M353,766 h6.5 a2.6,2.6 0 0 1 2.6,2.6 v11 a2,2 0 0 0 -2,-2 h-7.1 z" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M371,766 h-6.5 a2.6,2.6 0 0 0 -2.6,2.6 v11 a2,2 0 0 1 2,-2 h7.1 z" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="362" y="818" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="400" fill="#6B7280" text-anchor="middle">Default</text>
+  </g>
+  <g id="Card_anatomy_7" data-name="Card anatomy">
+  <text x="24" y="862" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="start" letter-spacing="0.5">CARD — 24dp padding, 104dp min height, 56dp illustration</text>
+  <g id="CSE346.14__Information_System_Design_8" data-name="CSE346.14  Information System Design">
+  <rect x="24" y="878" width="342" height="126" rx="22" fill="#FFFFFF" stroke="#EDEEF2" stroke-width="1" />
+  <rect x="44" y="913" width="56" height="56" rx="16" fill="#D97706" />
+  <rect x="63" y="933.5" width="18" height="15" rx="2" fill="none" stroke="#FFFFFF" stroke-width="1.7" />
+  <path d="M63,938 h18" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M70.5,941.5 l-2.5,2.5 l2.5,2.5 M73.5,941.5 l2.5,2.5 l-2.5,2.5" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="116" y="919" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" text-anchor="start">CSE346.14  Information System Des…</text>
+  <text x="116" y="938" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">Radiathun Tasnia [RADT]</text>
+  <text x="116" y="954" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="400" fill="#6B7280" text-anchor="start">THU 13:30-15:30, Room SEU609</text>
+  <rect x="116" y="974" width="80" height="22" rx="11" fill="#ECFDF5" />
+  <text x="156" y="989" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="10" font-weight="700" fill="#047857" text-anchor="middle">7 approved</text>
+  </g>
+  </g>
+  <g id="Semantics_9" data-name="Semantics">
+  <text x="24" y="1030" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="11" font-weight="700" fill="#6B7280" text-anchor="start" letter-spacing="0.5">SEMANTIC COLOUR</text>
+  <rect x="24" y="1046" width="14" height="14" rx="4" fill="#059669" />
+  <text x="48" y="1058" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="start">green = teacher-approved and locked</text>
+  <rect x="24" y="1076" width="14" height="14" rx="4" fill="#D97706" />
+  <text x="48" y="1088" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="start">amber = pending review or declined</text>
+  <rect x="24" y="1106" width="14" height="14" rx="4" fill="#E11D48" />
+  <text x="48" y="1118" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="400" fill="#6B7280" text-anchor="start">red = destructive (revoke, remove)</text>
+  </g>
+</svg>

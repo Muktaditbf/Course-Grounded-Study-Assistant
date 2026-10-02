@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background">
+
+    <include layout="@layout/view_header" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/space_lg">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/plan_label"
+                style="@style/TextLabel" />
+
+            <TextView
+                android:id="@+id/tvCurrentTier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:background="@drawable/bg_hero"
+                android:padding="@dimen/space_lg"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold" />
+
+            <!-- Free -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/space_lg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tier_free"
+                    style="@style/TextHeading" />
+
+                <!-- Text is set in code: it carries the daily cap as a format argument. -->
+                <TextView
+                    android:id="@+id/tvFreeFeatures"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_sm"
+                    android:lineSpacingExtra="3dp"
+                    style="@style/TextCaption" />
+            </LinearLayout>
+
+            <!-- Student Premium: the highlighted plan -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:orientation="vertical"
+                android:background="@drawable/bg_answer"
+                android:padding="@dimen/space_lg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_chip_soft"
+                    android:paddingStart="11dp"
+                    android:paddingEnd="11dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="@string/most_popular"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_micro"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:text="@string/tier_premium"
+                    style="@style/TextTitle" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/price_premium"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_heading"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_sm"
+                    android:lineSpacingExtra="3dp"
+                    android:text="@string/premium_features"
+                    style="@style/TextCaption" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPremium"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/space_lg"
+                    android:text="@string/upgrade"
+                    style="@style/PrimaryButton" />
+            </LinearLayout>
+
+            <!-- Institutional -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_md"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/space_lg">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tier_institutional"
+                    style="@style/TextTitle" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/price_institutional"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_heading"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_sm"
+                    android:lineSpacingExtra="3dp"
+                    android:text="@string/institutional_features"
+                    style="@style/TextCaption" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnInstitutional"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/space_lg"
+                    android:text="@string/upgrade"
+                    style="@style/SecondaryButton" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:gravity="center"
+                android:text="@string/simulated_payment"
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/text_micro" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

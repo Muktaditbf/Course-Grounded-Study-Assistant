@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Needed by the OpenAI-backed Ask feature. Everything else still runs offline. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.StudyAssistant">
+
+        <!-- Entry point -->
+        <activity
+            android:name=".ui.SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- UC1, UC2 authentication -->
+        <activity android:name=".ui.LoginActivity" android:exported="false" />
+        <activity android:name=".ui.SignUpActivity" android:exported="false" />
+
+        <!-- Student flow -->
+        <activity android:name=".ui.StudentDashboardActivity" android:exported="false" />
+        <activity android:name=".ui.JoinCourseActivity" android:exported="false" />
+        <activity android:name=".ui.CourseHomeActivity" android:exported="false" />
+        <activity android:name=".ui.AskQuestionActivity" android:exported="false" />
+        <activity android:name=".ui.MaterialViewActivity" android:exported="false" />
+        <activity android:name=".ui.SearchActivity" android:exported="false" />
+        <activity android:name=".ui.BookmarksActivity" android:exported="false" />
+        <activity android:name=".ui.ProgressActivity" android:exported="false" />
+        <activity android:name=".ui.NotificationsActivity" android:exported="false" />
+        <activity android:name=".ui.SettingsActivity" android:exported="false" />
+
+        <!-- Teacher flow -->
+        <activity android:name=".ui.TeacherDashboardActivity" android:exported="false" />
+        <activity android:name=".ui.CreateCourseActivity" android:exported="false" />
+        <activity android:name=".ui.UploadMaterialActivity" android:exported="false" />
+        <activity android:name=".ui.ApproveMaterialsActivity" android:exported="false" />
+        <activity android:name=".ui.TeacherAnalyticsActivity" android:exported="false" />
+
+        <!-- UC10 billing -->
+        <activity android:name=".ui.BillingActivity" android:exported="false" />
+        <activity android:name=".ui.PaymentActivity" android:exported="false" />
+
+        <activity android:name=".ui.PdfViewActivity" android:exported="false" />
+        <activity android:name=".ui.ChatActivity" android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+    </application>
+</manifest>

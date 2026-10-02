@@ -1,0 +1,11 @@
+# local.properties holds the SDK path and OPENAI_API_KEY. Never commit it.
+local.properties
+
+*.iml
+.gradle/
+.idea/
+build/
+app/build/
+.cxx/
+captures/
+.externalNativeBuild/
