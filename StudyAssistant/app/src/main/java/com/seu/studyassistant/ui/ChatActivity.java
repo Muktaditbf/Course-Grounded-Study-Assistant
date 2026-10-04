@@ -197,11 +197,11 @@ public class ChatActivity extends BaseActivity {
                     excerpts = r.passages;
                     for (Material m : r.passageSources) titles.add(m.title);
                 }
-                List<String> courses = new ArrayList<>();
-                for (Course c : db.coursesForStudent(userId)) courses.add(c.code + " - " + c.title);
+                // Who the student is, their courses, teachers, schedules and material lists.
+                String context = com.seu.studyassistant.engine.StudyContext.forStudent(db, userId);
 
                 final OpenAiClient.Result res = ai.askHybrid(getApplicationContext(), question,
-                        excerpts, titles, courses, history);
+                        excerpts, titles, context, history);
 
                 main.post(new Runnable() {
                     @Override public void run() {
@@ -351,7 +351,7 @@ public class ChatActivity extends BaseActivity {
             if (m.kind == Msg.TYPING) return;
 
             Holder h = (Holder) holder;
-            h.text.setText(m.text);
+            h.text.setText(m.kind == Msg.AI ? MarkdownLite.render(m.text) : m.text);
             if (h.sources == null) return;
 
             if (m.label == Msg.LABEL_COURSE && !m.sources.isEmpty()) {

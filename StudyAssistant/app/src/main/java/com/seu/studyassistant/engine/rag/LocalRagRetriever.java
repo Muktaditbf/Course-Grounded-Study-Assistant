@@ -6,7 +6,8 @@ import com.seu.studyassistant.engine.RetrievalEngine;
 
 /**
  * The built-in retriever: BM25 over teacher-approved material synced to the device. Needs no
- * key or network, and only ever sees approved material (the Content Lock).
+ * key or network, and only ever sees approved material (the Content Lock). Uses the lenient
+ * mode, so the model sees every plausible passage and judges relevance itself.
  */
 public final class LocalRagRetriever implements RagRetriever {
 
@@ -15,10 +16,10 @@ public final class LocalRagRetriever implements RagRetriever {
     public LocalRagRetriever(DatabaseHelper db) { engine = new RetrievalEngine(db); }
 
     @Override public AnswerResult retrieveCourse(long courseId, String query) {
-        return engine.ask(courseId, query);
+        return engine.askLenient(courseId, query);
     }
 
     @Override public AnswerResult retrieveAll(long userId, String query) {
-        return engine.askEverything(userId, query);
+        return engine.askEverythingLenient(userId, query);
     }
 }

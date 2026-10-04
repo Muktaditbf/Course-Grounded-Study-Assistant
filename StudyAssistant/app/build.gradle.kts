@@ -49,8 +49,8 @@ android {
         applicationId = "com.seu.studyassistant"
         minSdk = 24
         targetSdk = 37
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.4"
 
         buildConfigField("String", "LLM_PROVIDER", quoted(llmProvider))
         buildConfigField("String", "LLM_BASE_URL", quoted(llmBaseUrl))

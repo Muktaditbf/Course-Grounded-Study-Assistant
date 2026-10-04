@@ -179,24 +179,24 @@ public class AskQuestionActivity extends BaseActivity {
         io.execute(new Runnable() {
             @Override public void run() {
                 final AnswerResult r = rag.retrieveCourse(courseId, question);
-                if (r.declined) {
-                    post(() -> {
-                        db.logQuestion(u.id, courseId, question, false);
-                        renderDeclined(r);
-                    });
-                    return;
-                }
-
+                // The model always sees the course facts (teacher, schedule, materials) and every
+                // plausible passage, and decides itself whether the course covers the question -
+                // a topic mentioned once in one lecture still gets answered.
+                String courseInfo = com.seu.studyassistant.engine.StudyContext.forCourse(db, courseId);
                 List<String> titles = new ArrayList<>();
                 for (Material m : r.passageSources) titles.add(m.title);
-                final OpenAiClient.Result result =
-                        ai.askGrounded(getApplicationContext(), question, r.passages, titles, null);
+                final OpenAiClient.Result result = ai.askGrounded(getApplicationContext(),
+                        question, r.passages, titles, courseInfo, null);
 
                 post(() -> {
                     if (!result.isOk()) {
-                        // No AI: the teacher's own passages are still a grounded answer.
-                        db.logQuestion(u.id, courseId, question, true);
-                        renderAnswer(r.answer, r, r.sources, getString(R.string.answered_from_excerpts));
+                        if (!r.declined) {
+                            // No AI: the teacher's own passages are still a grounded answer.
+                            db.logQuestion(u.id, courseId, question, true);
+                            renderAnswer(r.answer, r, r.sources, getString(R.string.answered_from_excerpts));
+                        } else {
+                            renderError(result);
+                        }
                         return;
                     }
                     String text = result.text.trim();
@@ -206,7 +206,10 @@ public class AskQuestionActivity extends BaseActivity {
                         return;
                     }
                     db.logQuestion(u.id, courseId, question, true);
-                    renderAnswer(text, r, citedSources(text, r), getString(R.string.answered_from_course));
+                    // Only materials the answer actually cites are listed; an answer from the
+                    // course facts alone ("who teaches this?") lists none.
+                    renderAnswer(text, r, ChatActivity.explicitCitations(text, r),
+                            getString(R.string.answered_from_course));
                 });
             }
         });
@@ -225,30 +228,19 @@ public class AskQuestionActivity extends BaseActivity {
         });
     }
 
-    /** The materials the answer actually cites ([1], [2]...), in first-cited order. */
-    static List<Material> citedSources(String answer, AnswerResult r) {
-        java.util.LinkedHashSet<Material> out = new java.util.LinkedHashSet<>();
-        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\[(\\d{1,3})]").matcher(answer);
-        java.util.Set<Long> seen = new java.util.HashSet<>();
-        while (m.find()) {
-            int n = Integer.parseInt(m.group(1)) - 1;
-            if (n >= 0 && n < r.passageSources.size()) {
-                Material mat = r.passageSources.get(n);
-                if (seen.add(mat.id)) out.add(mat);
-            }
-        }
-        // A model that forgot to cite still answered from these passages.
-        if (out.isEmpty()) {
-            for (Material mat : r.passageSources) if (seen.add(mat.id)) out.add(mat);
-        }
-        return new ArrayList<>(out);
-    }
-
     private void showLoading() {
         answerBlock.setVisibility(View.GONE);
         declinedBlock.setVisibility(View.GONE);
         errorBlock.setVisibility(View.GONE);
         loadingBlock.setVisibility(View.VISIBLE);
+    }
+
+    /** The AI could not be reached and no passage matched: say why, with Try again. */
+    private void renderError(OpenAiClient.Result result) {
+        answerBlock.setVisibility(View.GONE);
+        declinedBlock.setVisibility(View.GONE);
+        errorBlock.setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.tvAiError)).setText(getString(result.messageRes()));
     }
 
     /** NFR 14.1 / UC5 3.a: the approved material does not cover this, so nothing is guessed. */
@@ -266,15 +258,16 @@ public class AskQuestionActivity extends BaseActivity {
         errorBlock.setVisibility(View.GONE);
         answerBlock.setVisibility(View.VISIBLE);
 
-        ((TextView) findViewById(R.id.tvAnswer)).setText(answer);
+        ((TextView) findViewById(R.id.tvAnswer)).setText(MarkdownLite.render(answer));
         ((TextView) findViewById(R.id.tvGrounded)).setText(badge);
+        // The coverage chip describes the cited passages; it means nothing without them.
         TextView coverage = findViewById(R.id.tvCoverage);
-        coverage.setVisibility(View.VISIBLE);
+        coverage.setVisibility(sources.isEmpty() ? View.GONE : View.VISIBLE);
         coverage.setText(r.coveragePercent() + "%");
 
         // Each source opens the material itself, so every claim can be checked at its origin.
         sourcesContainer.removeAllViews();
-        sourcesContainer.setVisibility(View.VISIBLE);
+        sourcesContainer.setVisibility(sources.isEmpty() ? View.GONE : View.VISIBLE);
         for (int i = 0; i < sources.size(); i++) {
             Material m = sources.get(i);
             int n = r.passageSources.indexOf(m) + 1;

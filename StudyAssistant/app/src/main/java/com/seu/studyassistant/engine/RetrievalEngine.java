@@ -52,6 +52,13 @@ public class RetrievalEngine {
     /** How many ranked passages the AI receives as its only allowed source. */
     private static final int MAX_CONTEXT_PASSAGES = 5;
 
+    /** Lenient mode: more passages, and weaker ones, so brief mentions are not lost. */
+    private static final int LENIENT_PASSAGES = 8;
+    private static final double LENIENT_MIN_RELATIVE = 0.15;
+
+    /** Opening passages added when a question names a material ("summarise Lecture 4"). */
+    private static final int TITLE_MATCH_PASSAGES = 3;
+
     /** BM25 parameters: k1 controls term-frequency saturation, b length normalisation. */
     private static final double K1 = 1.2, B = 0.75;
     private static final int MAX_RELATED = 6;
@@ -116,14 +123,29 @@ public class RetrievalEngine {
      * still joins approved = 1, and still only reaches courses this user is enrolled in.
      */
     public AnswerResult askEverything(long userId, String question) {
-        return ask(-1, userId, question);
+        return ask(-1, userId, question, false);
     }
 
     public AnswerResult ask(long courseId, String question) {
-        return ask(courseId, -1, question);
+        return ask(courseId, -1, question, false);
     }
 
-    private AnswerResult ask(long courseId, long userId, String question) {
+    /**
+     * Lenient retrieval for the AI screens. Instead of declining below the coverage threshold,
+     * it returns whatever matches - up to {@link #LENIENT_PASSAGES} passages, including weak
+     * matches - and lets the model judge relevance. A topic mentioned once in one lecture, or
+     * asked about in different words, still reaches the model. Declines only when no passage
+     * shares a single meaningful word with the question.
+     */
+    public AnswerResult askLenient(long courseId, String question) {
+        return ask(courseId, -1, question, true);
+    }
+
+    public AnswerResult askEverythingLenient(long userId, String question) {
+        return ask(-1, userId, question, true);
+    }
+
+    private AnswerResult ask(long courseId, long userId, String question, boolean lenient) {
         AnswerResult result = new AnswerResult();
 
         List<String> queryTerms = tokenize(question);
@@ -211,16 +233,32 @@ public class RetrievalEngine {
         }
         result.coverage = (double) covered.size() / distinctQuery.size();
 
-        // ---- SRS NFR 14.1: decline rather than guess.
-        if (result.coverage < COVERAGE_THRESHOLD || best.score <= 0) {
+        // ---- SRS NFR 14.1: decline rather than guess. In lenient mode only a question that
+        // shares no meaningful word with any approved passage is declined; the model decides
+        // whether weaker matches are relevant.
+        if (best.score <= 0 || (!lenient && result.coverage < COVERAGE_THRESHOLD)) {
             result.declined = true;
             return result;
         }
 
         // ---- The AI's context: the best passages, ranked, each with its source material.
+        int maxPassages = lenient ? LENIENT_PASSAGES : MAX_CONTEXT_PASSAGES;
+        double minRelative = lenient ? LENIENT_MIN_RELATIVE : 0.35;
+        Set<Passage> chosen = new LinkedHashSet<>();
         for (Passage p : passages) {
-            if (result.passages.size() >= MAX_CONTEXT_PASSAGES || p.score <= 0) break;
-            if (p.score < best.score * 0.35) break;   // far weaker matches only add noise
+            if (chosen.size() >= maxPassages || p.score <= 0) break;
+            if (p.score < best.score * minRelative) break;   // far weaker matches only add noise
+            chosen.add(p);
+        }
+        // A question that names a material ("what does Lecture 4 cover?") gets that material's
+        // opening passages too, even when its wording overlaps the question only in the title.
+        if (lenient) {
+            for (Passage p : titleMatches(passages, distinctQuery)) {
+                if (chosen.size() >= maxPassages + TITLE_MATCH_PASSAGES) break;
+                chosen.add(p);
+            }
+        }
+        for (Passage p : chosen) {
             Material m = db.materialById(p.materialId);
             if (m == null) continue;
             result.passages.add(p.text);
@@ -237,7 +275,7 @@ public class RetrievalEngine {
         int taken = 0;
         for (Passage p : passages) {
             if (taken >= MAX_ANSWER_PASSAGES) break;
-            if (p.coverage < COVERAGE_THRESHOLD * 0.5) continue;
+            if (!lenient && p.coverage < COVERAGE_THRESHOLD * 0.5) continue;
 
             // Relevance drop-off: once a passage scores well below the best match it is only
             // loosely on topic (e.g. a quiz that merely mentions the term) and would dilute
@@ -270,6 +308,32 @@ public class RetrievalEngine {
                 ? findRelated(courseId, distinctQuery, usedMaterials)
                 : new ArrayList<Material>();
         return result;
+    }
+
+    /**
+     * Passages of every material whose title the question names: at least two of the title's
+     * words, and at least half of them, appear in the question. Returned in reading order,
+     * first {@link #TITLE_MATCH_PASSAGES} per material.
+     */
+    private static List<Passage> titleMatches(List<Passage> passages, Set<String> query) {
+        Map<Long, List<Passage>> byMaterial = new java.util.LinkedHashMap<>();
+        for (Passage p : passages) {
+            if (p.titleTerms.isEmpty()) continue;
+            int hit = 0;
+            for (String t : p.titleTerms) if (query.contains(t)) hit++;
+            if (hit < 2 || hit * 2 < p.titleTerms.size()) continue;
+            List<Passage> l = byMaterial.get(p.materialId);
+            if (l == null) byMaterial.put(p.materialId, l = new ArrayList<>());
+            l.add(p);
+        }
+        List<Passage> out = new ArrayList<>();
+        for (List<Passage> l : byMaterial.values()) {
+            Collections.sort(l, new Comparator<Passage>() {
+                @Override public int compare(Passage a, Passage b) { return Long.compare(a.seq, b.seq); }
+            });
+            out.addAll(l.subList(0, Math.min(TITLE_MATCH_PASSAGES, l.size())));
+        }
+        return out;
     }
 
     /**
@@ -316,10 +380,10 @@ public class RetrievalEngine {
     private List<Passage> loadApprovedPassagesForUser(long userId) {
         List<Passage> list = new ArrayList<>();
         Cursor c = db.getReadableDatabase().rawQuery(
-                "SELECT ch.material_id, ch.text, m.type, m.title FROM chunks ch " +
+                "SELECT ch.material_id, ch.text, m.type, m.title, ch.id FROM chunks ch " +
                 "JOIN materials m ON m.id = ch.material_id " +
                 "JOIN enrollments e ON e.course_id = ch.course_id " +
-                "WHERE e.user_uid = ? AND m.approved = 1",
+                "WHERE e.user_uid = ? AND m.approved = 1 ORDER BY ch.id",
                 // Enrolments are keyed by Firebase uid since the cloud-sync schema; querying
                 // the old local user_id column crashed every ViVi question.
                 new String[]{String.valueOf(db.uidOf(userId))});
@@ -331,6 +395,8 @@ public class RetrievalEngine {
             // The title is part of every passage's terms: "Lecture 4: Software Testing" tells
             // retrieval what a passage is about even when the passage never repeats it.
             p.terms = tokenize(c.getString(3) + " " + p.text);
+            p.titleTerms = new HashSet<>(tokenize(c.getString(3)));
+            p.seq = c.getLong(4);
             list.add(p);
         }
         c.close();
@@ -341,9 +407,9 @@ public class RetrievalEngine {
         List<Passage> list = new ArrayList<>();
         SQLiteDatabase sdb = db.getReadableDatabase();
         Cursor c = sdb.rawQuery(
-                "SELECT ch.material_id, ch.text, m.type, m.title FROM chunks ch " +
+                "SELECT ch.material_id, ch.text, m.type, m.title, ch.id FROM chunks ch " +
                 "JOIN materials m ON m.id = ch.material_id " +
-                "WHERE ch.course_id = ? AND m.approved = 1",
+                "WHERE ch.course_id = ? AND m.approved = 1 ORDER BY ch.id",
                 new String[]{String.valueOf(courseId)});
         while (c.moveToNext()) {
             Passage p = new Passage();
@@ -353,6 +419,8 @@ public class RetrievalEngine {
             // The title is part of every passage's terms: "Lecture 4: Software Testing" tells
             // retrieval what a passage is about even when the passage never repeats it.
             p.terms = tokenize(c.getString(3) + " " + p.text);
+            p.titleTerms = new HashSet<>(tokenize(c.getString(3)));
+            p.seq = c.getLong(4);
             list.add(p);
         }
         c.close();
@@ -447,12 +515,15 @@ public class RetrievalEngine {
         String text;
         String type;
         List<String> terms;
+        Set<String> titleTerms = new HashSet<>();
+        long seq;
         double score;
         double coverage;
 
         Passage copy() {
             Passage p = new Passage();
             p.materialId = materialId; p.text = text; p.type = type; p.terms = terms;
+            p.titleTerms = titleTerms; p.seq = seq;
             return p;
         }
     }
