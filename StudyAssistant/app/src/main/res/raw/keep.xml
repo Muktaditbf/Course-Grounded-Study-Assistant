@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- GoogleAuth reads default_web_client_id by name at runtime, which the resource shrinker
+     cannot see, so it must be kept explicitly or Google sign-in breaks in release builds. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@string/default_web_client_id" />
