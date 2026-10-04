@@ -1,180 +1,63 @@
-# Course-Grounded Study Assistant — How to Open and Run
+# How to Run — Course-Grounded Study Assistant
 
-Android app (Java + XML layouts) implementing the PDD, SRS and Cost Finding Report for CSE 346.
+An Android app (Java, XML layouts) backed by Firebase Authentication and Cloud Firestore.
 
-## Design
+## 1. Firebase (once)
 
-Modern Material-style interface built on one design system:
+1. Create a project at [console.firebase.google.com](https://console.firebase.google.com) (free Spark plan).
+2. Add an **Android app** with package name `com.seu.studyassistant`.
+3. Download `google-services.json` into `StudyAssistant/app/` (git-ignored).
+4. **Authentication → Sign-in method:** enable **Email/Password**.
+5. **Firestore Database:** create the `(default)` database, Standard edition, production mode, region `asia-south1` (Mumbai) for Bangladesh.
+6. **Firestore → Rules:** paste the whole of `StudyAssistant/firestore.rules` and click **Publish**. Re-publish whenever that file changes.
 
-- **Indigo → violet gradient headers** with rounded bottoms
-- **22dp cards** with a colour accent stripe per course, on a near-white ground
-- **Pill buttons**, chips for status (Locked / Pending / coverage %)
-- **Bottom navigation** — Home · Search · Bookmarks · Progress · Settings (notifications open from the bell in the dashboard header)
-- Semantic colour: **green = teacher-approved**, **amber = declined**
+### Google sign-in (optional)
 
-Every token lives in `res/values/colors.xml`, `dimens.xml` and `themes.xml`, and the
-Figma screens in `Figma_Screens\` use exactly the same values.
+1. **Authentication → Sign-in method → Add new provider → Google:** enable it and pick a support email.
+2. **Project settings → Your apps → Add fingerprint:** add the SHA-1 and SHA-256 of the signing key. Get them with:
+   ```bash
+   keytool -list -v -keystore ~/.android/debug.keystore -storepass android
+   ```
+3. Download `google-services.json` again and replace the old one, then rebuild.
 
-## Verified working
+## 2. Build
 
-This app was installed and driven on a real Android 14 device (emulated Pixel 6) before
-being handed over. Confirmed working end to end, with **zero crashes** across every flow:
-
-- Login as student → 7 real courses load with faculty, schedule and approved counts
-- Login as teacher → role-based routing to the teacher dashboard, join codes, pending badges
-- Ask a question with no approved coverage → **declines at 0%**, states the 34% threshold
-- Teacher taps **Approve** → material flips Pending → Locked
-- Student asks the same question → **now answers at 100%**, citing the approved material
-- Sources and Related Resources render; free-tier counter decrements 5 → 4 → 3 …
-
----
-
-## 1. Open the project in Android Studio
-
-1. Open **Android Studio**
-2. **File → Open**
-3. Select this folder:
-   `C:\Users\MKTD\OneDrive\Desktop\ISD\StudyAssistant`
-4. Click **OK**, then wait for *"Gradle sync finished"* at the bottom
-
-> Open the **`StudyAssistant`** folder, not the `ISD` folder. Opening `ISD` will not be recognised as a project.
-
-Everything the build needs is already installed and verified — Gradle 9.6, AGP 9.4, SDK 37, JDK 21.
-
----
-
-## 2. Prepare your phone (once)
-
-1. **Settings → About phone**
-2. Tap **Build number** 7 times → *"You are now a developer"*
-3. Go back → **System → Developer options**
-4. Turn on **USB debugging**
-5. Xiaomi / Oppo / Vivo / Realme users: also turn on **Install via USB**
-
----
-
-## 3. Connect and run
-
-1. Plug the phone into the PC with a **data cable** (a charge-only cable will not work)
-2. On the phone, a dialog appears: **Allow USB debugging?**
-   → tick **Always allow from this computer** → **OK**
-3. In Android Studio, your phone appears in the device dropdown at the top
-4. Press the green **Run ▶** button (or `Shift + F10`)
-
-The app builds, installs and launches on your phone.
-
-### If the phone does not appear
-
-Open a terminal and run:
+Open the **`StudyAssistant`** folder (not the repository root) in Android Studio and press **Run**. From a terminal:
 
 ```bash
-"C:\Users\MKTD\AppData\Local\Android\Sdk\platform-tools\adb.exe" devices
+cd StudyAssistant
+./gradlew assembleRelease   # optimised APK: app/build/outputs/apk/release/app-release.apk
+./gradlew assembleDebug     # debug APK, slower on the phone
 ```
 
-| Output | Meaning | Fix |
-|---|---|---|
-| `<serial>  device` | Working | Press Run |
-| `<serial>  unauthorized` | You missed the Allow dialog | Unplug, replug, tap Allow |
-| Empty list | Cable or driver | Try another cable / USB port; enable *Install via USB* |
+Use the **release** build on real phones: it is shrunk and optimised, and noticeably faster. Without a release keystore in `local.properties` it is signed with the debug key, which is fine for testing.
 
----
+### Optional settings in `StudyAssistant/local.properties`
 
-## 4. Login accounts
-
-| Role | Email | Password |
-|---|---|---|
-| Teacher | `teacher@seu.edu.bd` | `teacher123` |
-| Student | `student@seu.edu.bd` | `student123` |
-
-The student is already enrolled in all 7 of your real registered courses.
-
----
-
-## 5. Demo script for your teacher
-
-### A. The Content Lock (the main feature — PDD §6.1, NFR 14.1)
-
-**This sequence is verified to work — 15/15 automated checks passed.**
-
-1. Login as **student** → open **CSE346.14**
-2. Tap **Ask a Question**
-3. Type: **`What is equivalence partitioning?`**
-4. → App shows **"No approved material covers this"** with *Coverage 0%, below the 34% minimum*
-
-   *Say: "The AI refuses to guess. The material on testing exists, but the teacher has not approved it."*
-
-5. **Logout** → login as **teacher**
-6. Tap **CSE346.14** → find **"Lecture 4: Software Testing Fundamentals"** (Pending)
-7. Tap **Approve**
-8. **Logout** → login as **student** → same course → ask the **same question** again
-9. → Now it **answers**, at **100% coverage**, citing *Lecture 4: Software Testing Fundamentals*
-
-Other verified decline→answer pairs:
-
-| Course | Question | Locked material to approve |
-|---|---|---|
-| CSE346.14 | `What is the level zero DFD and what is balancing?` | Notes: Data Flow Diagrams |
-| CSE346.14 | `Difference between unit testing and integration testing` | Lecture 4: Software Testing |
-| CSE365.11 | `What is overfitting and underfitting?` | Notes: Machine Learning Basics |
-
-### B. The Lecture Connection Finder (PDD §6.2, UC9)
-
-Ask in CSE346.14: **`What is an actor in use case modelling?`**
-
-→ Answers from *Lecture 3*, then automatically lists **Related Resources** from the same
-course spanning lecture, assignment and quiz — without the student searching.
-
-### C. Questions that answer immediately (safe to demo)
-
-| Course | Question | Coverage |
-|---|---|---|
-| CSE346.14 | What are the phases of the waterfall model? | 100% |
-| CSE346.14 | What is the difference between functional and non functional requirements? | 100% |
-| CSE346.14 | How do you calculate present value and payback period? | 80% |
-| CSE383.2 | Explain third normal form and transitive dependency | 100% |
-| CSE384.6 | What is the difference between a left outer join and an inner join? | 100% |
-| CSE341.8 | What does the transport layer do in the OSI model? | 50% |
-| CSE342.14 | How many usable hosts are in a slash 26 subnet? | 75% |
-| CSE365.11 | What makes A star search optimal? | 50% |
-| ETE282.15 | What is the modulation index in amplitude modulation? | 100% |
-
-### D. Other features to show
-
-- **Search** (UC6) — search `normalization`, results come from Database Design
-- **Bookmark** (UC7) — open any material → Bookmark → see it in Bookmarks
-- **Progress** (UC8) — counters and grounding rate update as you ask
-- **Join Course** — student joins with code `ISD346`
-- **Upload** (UC3) — teacher adds material, chunked instantly for retrieval
-- **Billing** (UC10) — Upgrade → enter a short account number → **payment fails** →
-  enter 11 digits → succeeds and the tier changes
-- **Bangla** — switch the phone language to বাংলা; every label translates (NFR 16.1)
-
----
-
-## 6. Showing the XML layouts
-
-In Android Studio, expand `app → res → layout`. 17 layout files:
-
-```
-activity_splash.xml            activity_login.xml           activity_sign_up.xml
-activity_student_dashboard.xml activity_join_course.xml     activity_course_home.xml
-activity_ask_question.xml      activity_material_view.xml   activity_search.xml
-activity_list.xml              activity_progress.xml        activity_teacher_dashboard.xml
-activity_create_course.xml     activity_upload_material.xml activity_teacher_analytics.xml
-activity_billing.xml           activity_payment.xml
-view_header.xml                item_row.xml
+```properties
+OPENAI_API_KEY=your_key             # AI answers; without it the app shows matching passages instead
+AI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
+AI_MODEL=gemini-flash-lite-latest
+RELEASE_STORE_FILE=release.jks      # only for a Play Store release
+RELEASE_STORE_PASSWORD=...
+RELEASE_KEY_ALIAS=...
+RELEASE_KEY_PASSWORD=...
 ```
 
-Click any file, then use the **Design / Split / Code** tabs at the top right to show
-the visual preview beside the XML.
+A key in `local.properties` is compiled into the APK, so never share or upload an APK built with your personal key.
 
----
+## 3. Use
 
-## 7. Figma designs
+1. **Teacher:** sign up, open the link in the verification email, tap **I've verified my email**. Create a course; its **join code** is shown on the dashboard. Open the course → **Manage → Upload material**, tick **Approve now** to share it.
+2. **Student:** sign up and verify, then **Join course** with the teacher's code. Approved materials appear within seconds; tapping one opens the original PDF, slides or document.
+3. **Ask a Question** (in a course) or the **Ask AI** chat: answers come only from approved material, with numbered sources. A question the material does not cover is declined.
 
-`ISD\Figma_Screens\` holds 16 SVG files.
+## 4. Troubleshooting
 
-**To import:** open Figma → **File → Import** (or drag the files onto the canvas).
-Each screen arrives as editable layers — real text, real vectors, real colours.
-
-Open `preview.html` in a browser to see them all at once.
+| Symptom | Cause | Fix |
+|---|---|---|
+| "Firebase is not set up" | No `google-services.json` at build time | Add it to `StudyAssistant/app/` and rebuild |
+| "Could not sync with the cloud: permission denied" | Rules not published, or old rules | Paste and publish `firestore.rules` again |
+| A course does not appear for a student | Not joined, or material not approved | Join with the code; approve the material |
+| "Google sign-in is not enabled for this app yet" | Google provider or fingerprints missing | Do the Google sign-in steps above |
+| Verification email missing | Spam filter | Check spam, or tap **Resend email** |

@@ -23,8 +23,11 @@ public final class FileStore {
 
     private static final String DIR = "materials";
 
-    /** Refuses anything larger than this, to keep one upload from filling the device. */
-    public static final long MAX_BYTES = 25L * 1024 * 1024;
+    /**
+     * Refuses anything larger than this. Originals are shared through Firestore's free tier
+     * (1 GiB in total), so one upload is kept to a size a whole course of decks can afford.
+     */
+    public static final long MAX_BYTES = 15L * 1024 * 1024;
 
     private FileStore() {}
 
@@ -74,6 +77,13 @@ public final class FileStore {
             close(in);
             close(os);
         }
+    }
+
+    /** Deletes a stored upload. Quietly does nothing for a null or missing path. */
+    public static void delete(String path) {
+        if (path == null) return;
+        File f = new File(path);
+        if (f.exists() && !f.delete()) f.deleteOnExit();
     }
 
     /** Strips path separators so a crafted file name cannot escape the materials directory. */

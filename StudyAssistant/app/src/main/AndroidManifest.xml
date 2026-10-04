@@ -26,6 +26,7 @@
         <!-- UC1, UC2 authentication -->
         <activity android:name=".ui.LoginActivity" android:exported="false" />
         <activity android:name=".ui.SignUpActivity" android:exported="false" />
+        <activity android:name=".ui.VerifyEmailActivity" android:exported="false" />
 
         <!-- Student flow -->
         <activity android:name=".ui.StudentDashboardActivity" android:exported="false" />
@@ -50,7 +51,19 @@
         <activity android:name=".ui.BillingActivity" android:exported="false" />
         <activity android:name=".ui.PaymentActivity" android:exported="false" />
 
-        <activity android:name=".ui.PdfViewActivity" android:exported="false" />
+        <activity android:name=".ui.DocumentViewActivity" android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout" />
+
+        <!-- Hands a downloaded course file to another app only when the user taps Open in. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <activity android:name=".ui.ChatActivity" android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>

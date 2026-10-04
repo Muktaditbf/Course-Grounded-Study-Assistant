@@ -4,6 +4,14 @@ plugins {
     id("com.android.application")
 }
 
+// Firebase reads its project settings from google-services.json (download it from the Firebase
+// console and place it in this folder). The plugin is only applied when the file exists, so the
+// project still opens and compiles without it; the app then reports "Firebase not configured"
+// at login instead of crashing.
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}
+
 // The OpenAI key lives in local.properties, which is gitignored. It is read at build time
 // and surfaced as BuildConfig.OPENAI_API_KEY so no key ever appears in source or resources.
 // An absent key is not a build failure: the app ships with an empty string and shows a
@@ -30,8 +38,8 @@ android {
         applicationId = "com.seu.studyassistant"
         minSdk = 24
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         buildConfigField("String", "OPENAI_API_KEY", "\"$openAiKey\"")
         buildConfigField("String", "AI_BASE_URL", "\"$aiBaseUrl\"")
@@ -42,13 +50,34 @@ android {
         buildConfig = true
     }
 
+    // A release keystore is used when local.properties names one (RELEASE_STORE_FILE,
+    // RELEASE_STORE_PASSWORD, RELEASE_KEY_ALIAS, RELEASE_KEY_PASSWORD). Without it the release
+    // build is signed with the debug key: fine for testing on your own phones, and Google
+    // sign-in keeps working with the SHA-1 already registered. Use a real key for the Play Store.
+    signingConfigs {
+        create("release") {
+            val store = localProps.getProperty("RELEASE_STORE_FILE")
+            if (store != null) {
+                storeFile = rootProject.file(store)
+                storePassword = localProps.getProperty("RELEASE_STORE_PASSWORD")
+                keyAlias = localProps.getProperty("RELEASE_KEY_ALIAS")
+                keyPassword = localProps.getProperty("RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // Shrinking and optimising is the single biggest speed-up for the installed app:
+            // a debug build runs with the optimiser off and debugging hooks on.
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = if (localProps.getProperty("RELEASE_STORE_FILE") != null)
+                signingConfigs.getByName("release") else signingConfigs.getByName("debug")
         }
     }
 
@@ -74,4 +103,14 @@ dependencies {
     // with a small JSON body, so Retrofit plus a converter would be more moving parts than
     // the job needs, and org.json is already on the platform.
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Firebase: Authentication (email and password) and Cloud Firestore (shared course data).
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+
+    // "Continue with Google" through Android's Credential Manager.
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 }

@@ -1,0 +1,174 @@
+rules_version = '2';
+
+// Security rules for the Course-Grounded Study Assistant.
+//
+// These are what actually enforce the Teacher-Enforced Content Lock (SRS FR 3.2, NFR 12.2):
+// the app cannot be trusted, so the server decides who may read which document.
+//
+//   * A student can read a material only if it is approved AND they are enrolled in its course.
+//   * Only the teacher who owns a course can create, edit or approve its materials.
+//   * A course can only be reached by someone who knows its id, and the id is only handed out
+//     by joinCodes/{code}, so enrolment needs the join code.
+//
+// Deploy with:  firebase deploy --only firestore:rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ------------------------------------------------------------------ helpers
+    function signedIn() { return request.auth != null; }
+    // Course data needs a CONFIRMED email: an account cannot read or write anything until its
+    // owner has opened the verification link (Google accounts are always verified).
+    function verified() { return signedIn() && request.auth.token.email_verified == true; }
+    function uid() { return request.auth.uid; }
+
+    function userDoc(u) { return get(/databases/$(database)/documents/users/$(u)); }
+    function isTeacher() { return verified() && userDoc(uid()).data.role == 'teacher'; }
+
+    // Ownership is read from the course document, never from a field the client supplies.
+    function courseOwner(courseId) {
+      return get(/databases/$(database)/documents/courses/$(courseId)).data.teacherUid;
+    }
+    // getAfter() sees a course created earlier in the same batch.
+    function courseOwnerAfter(courseId) {
+      return getAfter(/databases/$(database)/documents/courses/$(courseId)).data.teacherUid;
+    }
+
+    function enrolled(courseId) {
+      return exists(/databases/$(database)/documents/enrollments/$(uid() + '_' + courseId));
+    }
+
+    // -------------------------------------------------------------------- users
+    // Each user reads and edits only their own profile. The role is fixed at sign-up and can
+    // never change afterwards. The tier may be raised (the payment flow is simulated, so the
+    // client does the upgrade); it can never be set to anything but a known tier.
+    match /users/{userId} {
+      allow read: if signedIn() && uid() == userId;
+
+      allow create: if signedIn() && uid() == userId
+        && request.resource.data.role in ['student', 'teacher']
+        && request.resource.data.tier == 'free';
+
+      allow update: if signedIn() && uid() == userId
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.tier in ['free', 'premium', 'institutional'];
+    }
+
+    // ------------------------------------------------------------------ courses
+    // Not listable by students: reading needs ownership or an enrolment, so a course id found
+    // anywhere else is useless without the join code.
+    match /courses/{courseId} {
+      allow read: if verified()
+        && (resource.data.teacherUid == uid() || enrolled(courseId));
+
+      allow create: if isTeacher() && request.resource.data.teacherUid == uid();
+
+      allow update: if verified() && resource.data.teacherUid == uid()
+        && request.resource.data.teacherUid == uid();
+
+      // Deleting a course is the owner's call. The client removes its materials, enrolments,
+      // questions and join code in the same operation.
+      allow delete: if verified() && resource.data.teacherUid == uid();
+    }
+
+    // Looked up one code at a time (get), never listed. A code can be claimed once: the create
+    // is refused while the document exists, which is how duplicate join codes are rejected.
+    match /joinCodes/{code} {
+      allow get: if verified();
+      allow create: if isTeacher()
+        && request.resource.data.teacherUid == uid()
+        && courseOwnerAfter(request.resource.data.courseId) == uid();
+
+      // Freed when its course is deleted, so the code can be reused.
+      allow delete: if verified() && resource.data.teacherUid == uid();
+    }
+
+    // -------------------------------------------------------------- enrollments
+    match /enrollments/{enrollmentId} {
+      allow read: if verified()
+        && (resource.data.userUid == uid() || resource.data.teacherUid == uid());
+
+      // The document id pins one enrolment per student per course, and the teacher on it must
+      // be the real owner of that course.
+      allow create, update: if verified()
+        && request.resource.data.userUid == uid()
+        && enrollmentId == uid() + '_' + request.resource.data.courseId
+        && request.resource.data.teacherUid == courseOwner(request.resource.data.courseId);
+
+      // A student may leave; the course's teacher may remove an enrolment (course deletion).
+      allow delete: if verified()
+        && (resource.data.userUid == uid() || resource.data.teacherUid == uid());
+    }
+
+    // ---------------------------------------------------------------- materials
+    // THE CONTENT LOCK. Students see approved material from their own courses only.
+    match /materials/{materialId} {
+      allow read: if verified()
+        && (resource.data.teacherUid == uid()
+            || (resource.data.approved == true && enrolled(resource.data.courseId)));
+
+      allow create: if isTeacher()
+        && request.resource.data.teacherUid == uid()
+        && courseOwnerAfter(request.resource.data.courseId) == uid();
+
+      allow update: if verified()
+        && resource.data.teacherUid == uid()
+        && request.resource.data.teacherUid == uid()
+        && request.resource.data.courseId == resource.data.courseId;
+
+      allow delete: if verified() && resource.data.teacherUid == uid();
+
+      // The original uploaded file, stored in pieces. Exactly the same lock as the material:
+      // a student can download it only while it is approved and they are enrolled.
+      match /file/{piece} {
+        function material() {
+          return get(/databases/$(database)/documents/materials/$(materialId)).data;
+        }
+        allow read: if verified()
+          && (material().teacherUid == uid()
+              || (material().approved == true && enrolled(material().courseId)));
+
+        allow create, update: if verified()
+          && getAfter(/databases/$(database)/documents/materials/$(materialId)).data.teacherUid == uid()
+          && request.resource.data.data is bytes
+          && request.resource.data.data.size() <= 950000;
+
+        allow delete: if verified() && material().teacherUid == uid();
+      }
+    }
+
+    // ---------------------------------------------------------------- questions
+    // A student's own questions, which the course's teacher may also read for analytics.
+    match /questions/{questionId} {
+      allow read: if verified()
+        && (resource.data.userUid == uid() || resource.data.teacherUid == uid());
+
+      allow create: if verified()
+        && request.resource.data.userUid == uid()
+        && enrolled(request.resource.data.courseId)
+        && request.resource.data.teacherUid == courseOwner(request.resource.data.courseId);
+
+      // The course's teacher clears these when the course is deleted.
+      allow delete: if verified() && resource.data.teacherUid == uid();
+    }
+
+    // --------------------------------------------------------------- bookmarks
+    match /bookmarks/{bookmarkId} {
+      allow read, delete: if verified() && resource.data.userUid == uid();
+      allow create, update: if verified()
+        && request.resource.data.userUid == uid()
+        && bookmarkId == uid() + '_' + request.resource.data.materialId;
+    }
+
+    // ----------------------------------------------------------- notifications
+    // Read your own. Create one for yourself, or - as the owner of a course - for a student
+    // about that course. A student cannot send anything to another user.
+    match /notifications/{notificationId} {
+      allow read: if verified() && resource.data.userUid == uid();
+
+      allow create: if verified()
+        && (request.resource.data.userUid == uid()
+            || (request.resource.data.courseId is string
+                && courseOwner(request.resource.data.courseId) == uid()));
+    }
+  }
+}

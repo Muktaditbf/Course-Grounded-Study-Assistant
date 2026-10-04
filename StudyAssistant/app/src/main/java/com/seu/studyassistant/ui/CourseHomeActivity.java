@@ -66,6 +66,15 @@ public class CourseHomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        refresh();
+    }
+
+    @Override
+    protected void onDataChanged() {
+        refresh();
+    }
+
+    private void refresh() {
         Course c = db.courseById(courseId);
         if (c == null) { finish(); return; }
 

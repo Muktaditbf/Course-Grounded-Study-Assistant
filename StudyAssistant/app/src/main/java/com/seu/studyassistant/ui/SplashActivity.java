@@ -21,7 +21,8 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+        // No artificial delay: route as soon as the first frame is up.
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 User u = currentUser();
@@ -34,6 +35,6 @@ public class SplashActivity extends BaseActivity {
                 }
                 finish();
             }
-        }, 1200);
+        });
     }
 }

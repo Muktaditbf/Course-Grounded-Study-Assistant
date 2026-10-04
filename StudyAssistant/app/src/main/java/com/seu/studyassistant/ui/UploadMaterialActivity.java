@@ -22,6 +22,7 @@ import com.seu.studyassistant.R;
 import com.seu.studyassistant.data.DocumentImporter;
 import com.seu.studyassistant.data.FileStore;
 import com.seu.studyassistant.model.Course;
+import com.seu.studyassistant.model.Material;
 import com.seu.studyassistant.model.User;
 
 import java.util.concurrent.ExecutorService;
@@ -45,6 +46,9 @@ public class UploadMaterialActivity extends BaseActivity {
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"};
 
     private long courseId;
+
+    /** Set when editing an existing material rather than uploading a new one. */
+    private Material editing;
     private EditText etTitle, etBody;
     private Spinner spType;
     private CheckBox cbApprove;
@@ -85,8 +89,15 @@ public class UploadMaterialActivity extends BaseActivity {
         io = Executors.newSingleThreadExecutor();
         main = new Handler(Looper.getMainLooper());
 
+        long editId = getIntent().getLongExtra(EXTRA_MATERIAL_ID, -1);
+        if (editId > 0) {
+            editing = db.materialById(editId);
+            if (editing != null) courseId = editing.courseId;
+        }
+
         Course c = db.courseById(courseId);
-        setupHeader((c == null ? "" : c.code + " ") + getString(R.string.upload_material), true);
+        setupHeader((c == null ? "" : c.code + " ")
+                + getString(editing != null ? R.string.edit_material : R.string.upload_material), true);
 
         String[] labels = {
                 getString(R.string.type_lecture), getString(R.string.type_lab),
@@ -94,6 +105,24 @@ public class UploadMaterialActivity extends BaseActivity {
                 getString(R.string.type_notes)};
         spType.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, labels));
+
+        if (editing != null) {
+            // Only the course's owner may edit; anyone else reaching this screen is sent away.
+            User me = currentUser();
+            if (me == null || c == null || c.teacherId != me.id) { finish(); return; }
+
+            etTitle.setText(editing.title);
+            etBody.setText(editing.body);
+            for (int i = 0; i < TYPE_KEYS.length; i++) {
+                if (TYPE_KEYS[i].equals(editing.type)) spType.setSelection(i);
+            }
+            cbApprove.setChecked(editing.approved);
+            if (editing.fileName != null) {
+                tvFileStatus.setText(getString(R.string.file_loaded, editing.fileName));
+                btnPickFile.setText(getString(R.string.replace_file));
+            }
+            ((android.widget.Button) findViewById(R.id.btnSave)).setText(R.string.save_changes);
+        }
 
         filePicker = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -166,9 +195,12 @@ public class UploadMaterialActivity extends BaseActivity {
                             return;
                         }
                         pickedFilePath = storedPath;
-                        pickedFileName = fileName;
-                        pickedFileMime = mime;
+                        pickedFileName = storedPath == null ? null : fileName;
+                        pickedFileMime = storedPath == null ? null : mime;
                         applyImport(fileName, r);
+                        // Over the size cap the text still imports, but the original is not
+                        // kept, so students would only get the text. Say so now, not later.
+                        if (storedPath == null) showError(R.id.tvError, getString(R.string.err_file_too_big));
                     }
                 });
             }
@@ -215,6 +247,21 @@ public class UploadMaterialActivity extends BaseActivity {
 
         String type = TYPE_KEYS[spType.getSelectedItemPosition()];
         boolean approve = cbApprove.isChecked();
+
+        if (editing != null) {
+            db.updateMaterial(editing.id, title, type, body, pickedFilePath != null,
+                    pickedFileName, pickedFilePath, pickedFileMime);
+            if (approve != editing.approved) {
+                db.setApproved(editing.id, approve);
+                db.notifyCourseStudents(courseId, getString(approve
+                        ? R.string.approved_notice : R.string.material_revoked_notice, c.code), title);
+            }
+            showError(R.id.tvError, null);
+            toast(getString(R.string.material_updated));
+            finish();
+            return;
+        }
+
         db.addMaterial(courseId, title, type, body, approve,
                 pickedFileName, pickedFilePath, pickedFileMime);
 
@@ -223,7 +270,9 @@ public class UploadMaterialActivity extends BaseActivity {
         }
 
         showError(R.id.tvError, null);
-        toast(getString(R.string.material_uploaded));
+        // Say what students will actually see. An unapproved upload is invisible to them by
+        // design, which otherwise looks like "my upload did not reach the other devices".
+        toast(getString(approve ? R.string.material_uploaded : R.string.material_uploaded_pending));
         finish();
     }
 }

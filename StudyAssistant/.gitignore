@@ -9,3 +9,6 @@ app/build/
 .cxx/
 captures/
 .externalNativeBuild/
+
+# Firebase project config (contains project identifiers; keep out of the repo)
+app/google-services.json

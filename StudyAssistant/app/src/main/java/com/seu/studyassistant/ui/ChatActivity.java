@@ -131,18 +131,33 @@ public class ChatActivity extends BaseActivity {
         add(new Msg(Msg.TYPING, "", null));
         busy = true;
 
-        // Retrieval is local and quick, so it stays on the main thread; only the call moves.
-        final AnswerResult r = engine.askEverything(u.id, question);
-        final boolean grounded = !r.declined;
-        final String context = grounded ? r.answer : null;
-        final String sources = grounded ? sourceNames(r.sources) : null;
-        final String history = recentHistory();
+        // The free tier's daily cap covers the chat as well as the per-course Ask screen.
+        if ("free".equals(u.tier) && db.questionsToday(u.id) >= FREE_DAILY_LIMIT) {
+            removeTyping();
+            busy = false;
+            add(new Msg(Msg.AI, getString(R.string.cap_reached, FREE_DAILY_LIMIT), null));
+            return;
+        }
 
+        final String history = recentHistory();
+        final long userId = u.id;
+        // A short follow-up ("explain that simpler") has nothing to search for on its own, so
+        // retrieval also uses the previous question.
+        final String retrievalQuery = RetrievalEngine.tokenize(question).size() < 3
+                ? question + " " + previousUserQuestion() : question;
+
+        // Retrieval runs with the network call, off the main thread, so typing never stalls.
         io.execute(new Runnable() {
             @Override public void run() {
-                final OpenAiClient.Result res = ai.ask(getApplicationContext(),
-                        history.isEmpty() ? question : history + "\n\nNow answer: " + question,
-                        context);
+                final AnswerResult r = engine.askEverything(userId, retrievalQuery);
+                final OpenAiClient.Result res;
+                if (r.declined) {
+                    res = null;
+                } else {
+                    java.util.List<String> titles = new java.util.ArrayList<>();
+                    for (Material m : r.passageSources) titles.add(m.title);
+                    res = ai.askGrounded(getApplicationContext(), question, r.passages, titles, history);
+                }
 
                 main.post(new Runnable() {
                     @Override public void run() {
@@ -150,16 +165,37 @@ public class ChatActivity extends BaseActivity {
                         busy = false;
                         removeTyping();
 
-                        if (!res.isOk()) {
-                            add(new Msg(Msg.AI, getString(res.messageRes()), null));
+                        // Strict grounding, as on the Ask screen: no guessing outside the course.
+                        if (r.declined || (res != null && res.isOk()
+                                && res.text.trim().startsWith(OpenAiClient.NOT_COVERED))) {
+                            db.logQuestion(u.id, -1, question, false);
+                            add(new Msg(Msg.AI, getString(R.string.chat_not_covered), null));
                             return;
                         }
                         db.logQuestion(u.id, -1, question, true);
-                        add(new Msg(Msg.AI, res.text, sources));
+                        if (res == null || !res.isOk()) {
+                            // No AI available: show the teacher's own passages with their sources.
+                            add(new Msg(Msg.AI, r.answer, sourceNames(r.sources)));
+                            return;
+                        }
+                        add(new Msg(Msg.AI, res.text,
+                                sourceNames(AskQuestionActivity.citedSources(res.text, r))));
                     }
                 });
             }
         });
+    }
+
+    private String previousUserQuestion() {
+        // The newest USER message is the one just added; look before it.
+        boolean skippedCurrent = false;
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            Msg m = messages.get(i);
+            if (m.kind != Msg.USER) continue;
+            if (!skippedCurrent) { skippedCurrent = true; continue; }
+            return m.text;
+        }
+        return "";
     }
 
     /**

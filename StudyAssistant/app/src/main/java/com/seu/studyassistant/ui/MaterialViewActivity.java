@@ -23,6 +23,8 @@ import com.seu.studyassistant.model.User;
 public class MaterialViewActivity extends BaseActivity {
 
     private long materialId;
+    /** Opens the original once, on first entry, so a student lands on the real document. */
+    private boolean autoOpen;
     private Button btnBookmark;
     private View btnOpenFile, tvTextLabel;
 
@@ -32,6 +34,7 @@ public class MaterialViewActivity extends BaseActivity {
         setContentView(R.layout.activity_material_view);
 
         materialId = getIntent().getLongExtra(EXTRA_MATERIAL_ID, -1);
+        autoOpen = savedInstanceState == null;
         btnBookmark = findViewById(R.id.btnBookmark);
         btnOpenFile = findViewById(R.id.btnOpenFile);
         tvTextLabel = findViewById(R.id.tvTextLabel);
@@ -69,6 +72,53 @@ public class MaterialViewActivity extends BaseActivity {
         }
 
         render(m);
+
+        if (owner) {
+            setHeaderAction(getString(R.string.manage), new View.OnClickListener() {
+                @Override public void onClick(View v) { showManageMenu(); }
+            });
+        }
+    }
+
+    @Override
+    protected void onDataChanged() {
+        // Re-run the access checks and re-render: a revoked or deleted material closes itself.
+        onResume();
+    }
+
+    private void showManageMenu() {
+        String[] items = {getString(R.string.edit_material), getString(R.string.delete_material)};
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setItems(items, new android.content.DialogInterface.OnClickListener() {
+                    @Override public void onClick(android.content.DialogInterface d, int which) {
+                        Material m = db.materialById(materialId);
+                        if (m == null) return;
+                        if (which == 0) {
+                            android.content.Intent i = new android.content.Intent(
+                                    MaterialViewActivity.this, UploadMaterialActivity.class);
+                            i.putExtra(EXTRA_MATERIAL_ID, materialId);
+                            startActivity(i);
+                        } else {
+                            confirmDelete(m);
+                        }
+                    }
+                })
+                .show();
+    }
+
+    private void confirmDelete(final Material m) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.delete_material_title)
+                .setMessage(getString(R.string.delete_material_body, m.title))
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.act_delete, new android.content.DialogInterface.OnClickListener() {
+                    @Override public void onClick(android.content.DialogInterface d, int which) {
+                        db.deleteMaterial(m.id);
+                        toast(getString(R.string.material_deleted));
+                        finish();
+                    }
+                })
+                .show();
     }
 
     private void render(Material m) {
@@ -89,19 +139,28 @@ public class MaterialViewActivity extends BaseActivity {
             approved.setTextColor(getResources().getColor(R.color.declined_amber_text));
         }
 
-        // A real upload gets read as itself; the extracted text stays below as a fallback
-        // and as the thing the AI actually searches.
-        if (m.isPdf()) {
+        // An uploaded document is read as itself - its real pages, slides or layout. The
+        // extracted text is only the AI's search index, so it is not shown in its place.
+        TextView body = findViewById(R.id.tvBody);
+        tvTextLabel.setVisibility(View.GONE);
+        if (m.hasViewableOriginal()) {
+            String kind = m.fileKind();
+            ((Button) btnOpenFile).setText(getString("pptx".equals(kind) ? R.string.open_slides
+                    : "docx".equals(kind) ? R.string.open_document : R.string.open_pdf));
             btnOpenFile.setVisibility(View.VISIBLE);
-            tvTextLabel.setVisibility(View.VISIBLE);
+            body.setVisibility(View.GONE);
             btnOpenFile.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    open(PdfViewActivity.class, EXTRA_MATERIAL_ID, materialId);
+                    open(DocumentViewActivity.class, EXTRA_MATERIAL_ID, materialId);
                 }
             });
+            if (autoOpen) {
+                autoOpen = false;
+                open(DocumentViewActivity.class, EXTRA_MATERIAL_ID, materialId);
+            }
         } else {
             btnOpenFile.setVisibility(View.GONE);
-            tvTextLabel.setVisibility(View.GONE);
+            body.setVisibility(View.VISIBLE);
         }
 
         refreshBookmark();

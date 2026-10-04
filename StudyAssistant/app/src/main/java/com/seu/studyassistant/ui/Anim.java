@@ -52,9 +52,14 @@ public final class Anim {
                 list.getContext(), R.anim.layout_stagger_up));
     }
 
-    /** Replays the stagger after the data set changes. */
+    /**
+     * Plays the stagger the first time a list fills. Returning to a screen, or a refresh, shows
+     * the new rows at once: replaying the entrance every time made the app feel slow.
+     */
     public static void replay(RecyclerView list) {
         if (list == null || list.getLayoutAnimation() == null) return;
+        if (Boolean.TRUE.equals(list.getTag(R.id.tag_animated))) return;
+        list.setTag(R.id.tag_animated, Boolean.TRUE);
         list.scheduleLayoutAnimation();
     }
 

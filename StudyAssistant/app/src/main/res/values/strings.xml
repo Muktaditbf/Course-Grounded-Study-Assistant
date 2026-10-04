@@ -18,6 +18,9 @@
     <string name="have_account">Have an account? Log in</string>
     <string name="err_fill_all">Fill in every field to continue.</string>
     <string name="err_bad_credentials">Incorrect email or password.</string>
+    <string name="err_network">No internet connection. Check your network and try again.</string>
+    <string name="err_generic">Something went wrong. Please try again.</string>
+    <string name="err_firebase_missing">Firebase is not set up. Add google-services.json to the app folder and rebuild.</string>
     <string name="err_email_taken">An account with this email already exists.</string>
 
     <!-- Dashboards -->
@@ -101,9 +104,8 @@
     <!-- Common -->
 
     <!-- Added for the Android build -->
-    <string name="demo_accounts">Demo logins\nTeacher: teacher@seu.edu.bd / teacher123\nStudent: student@seu.edu.bd / student123</string>
     <string name="join_code_hint">e.g. ISD346</string>
-    <string name="join_hint">Ask your teacher for the join code. Demo course codes are on the teacher dashboard.</string>
+    <string name="join_hint">Ask your teacher for the join code of the course.</string>
     <string name="no_materials">No materials yet. Approved slides and notes will appear here.</string>
     <string name="faculty">Faculty</string>
     <string name="schedule">Schedule</string>
@@ -197,7 +199,6 @@ Answers only from teacher-approved material.</string>
     <string name="help_body">Open a course, tap Ask a Question, and type in plain English. If your teacher has not approved material on that topic, the assistant will say so instead of guessing.</string>
     <string name="privacy_body">Everything stays on this device. Your courses, questions and bookmarks are stored locally and are never uploaded.</string>
     <string name="close">Close</string>
-    <string name="password_change_hint">Ask your course administrator to reset your password.</string>
     <string name="recent_searches">Recent searches</string>
     <string name="clear_recents">Clear</string>
     <string name="filter_all">All</string>
@@ -239,4 +240,67 @@ Answers only from teacher-approved material.</string>
     <string name="ai_sources_prefix">From: %1$s</string>
     <string name="ai_general_badge">General knowledge</string>
     <string name="clear_chat">Clear</string>
+    <string name="manage">Manage</string>
+    <string name="act_delete">Delete</string>
+    <string name="save_changes">Save changes</string>
+    <string name="edit_course">Edit Course</string>
+    <string name="edit_material">Edit Material</string>
+    <string name="delete_course">Delete Course</string>
+    <string name="delete_material">Delete Material</string>
+    <string name="delete_course_title">Delete this course?</string>
+    <string name="delete_course_body">%1$s and all of its materials, enrolments and questions will be removed for everyone. This cannot be undone.</string>
+    <string name="delete_material_title">Delete this material?</string>
+    <string name="delete_material_body">"%1$s" will be removed for every student. This cannot be undone.</string>
+    <string name="course_updated">Course updated.</string>
+    <string name="course_deleted">Course deleted.</string>
+    <string name="material_updated">Material updated.</string>
+    <string name="material_deleted">Material deleted.</string>
+    <string name="material_uploaded_pending">Uploaded as pending. Students cannot see it until you approve it.</string>
+    <string name="sync_error">Could not sync with the cloud: %1$s</string>
+    <string name="err_file_too_big">This file is over 15 MB, so only its text will be shared. Compress it or split it to share the original.</string>
+    <string name="open_slides">View slides</string>
+    <string name="open_document">View document</string>
+    <string name="open_pdf">View PDF</string>
+    <string name="open_with">Open in…</string>
+    <string name="downloading_file">Downloading… %1$d of %2$d</string>
+    <string name="preparing_file">Preparing…</string>
+    <string name="file_not_ready">The teacher\'s upload is still finishing. Try again in a moment.</string>
+    <string name="file_download_failed">Could not download the file. Check your connection and try again.</string>
+    <string name="file_render_failed">This file could not be displayed. Try Open in… to use another app.</string>
+    <string name="no_app_for_file">No app on this phone can open this file type.</string>
+    <string name="slide_of">Slide %1$d of %2$d</string>
+    <string name="retry">Try again</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="forgot_title">Reset your password</string>
+    <string name="forgot_body">Enter your account email. We will send you a link to set a new password.</string>
+    <string name="forgot_send">Send link</string>
+    <string name="forgot_sent">If an account exists for %1$s, a reset link is on its way. Check your inbox and spam folder.</string>
+    <string name="err_bad_email">Enter a valid email address.</string>
+    <string name="or">or</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_label">Continue</string>
+    <string name="choose_role">I am a…</string>
+    <string name="err_google_not_setup">Google sign-in is not enabled for this app yet.</string>
+    <string name="err_google_failed">Google sign-in did not complete. Try again.</string>
+    <string name="err_weak_password">That password is too weak. Use at least 8 characters.</string>
+    <string name="err_too_many_attempts">Too many attempts. Wait a few minutes and try again.</string>
+    <string name="verify_title">Confirm your email</string>
+    <string name="verify_body">We sent a verification link to %1$s. Open it on any device, then come back and tap below.</string>
+    <string name="verify_spam_hint">Not there? Check your spam or promotions folder.</string>
+    <string name="verify_done">I\'ve verified my email</string>
+    <string name="verify_resend">Resend email</string>
+    <string name="verify_resend_in">Resend in %1$ds</string>
+    <string name="verify_sent">Verification email sent.</string>
+    <string name="verify_still_pending">Your email is not verified yet. Open the link in the email first.</string>
+    <string name="verify_use_other">Use a different account</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password (8+ characters)</string>
+    <string name="confirm_password">Confirm new password</string>
+    <string name="err_password_short">Use at least 8 characters.</string>
+    <string name="err_password_mismatch">Passwords do not match.</string>
+    <string name="err_current_password">Current password is incorrect.</string>
+    <string name="password_changed">Password changed.</string>
+    <string name="password_google_only">You sign in with Google, so there is no password to change here. Use Forgot password on the login screen if you want to add one.</string>
+    <string name="answered_from_excerpts">From your approved course material (AI unavailable, showing the passages)</string>
+    <string name="chat_not_covered">Your approved course materials do not cover this, so I will not guess. Try rephrasing, or ask your teacher to approve material on this topic.</string>
 </resources>

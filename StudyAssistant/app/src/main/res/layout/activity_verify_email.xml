@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shown after sign-up, and at login for an account whose email is not confirmed yet. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/space_xl">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="56dp"
+            android:text="@string/verify_title"
+            style="@style/TextTitle" />
+
+        <TextView
+            android:id="@+id/tvVerifyBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md"
+            android:lineSpacingExtra="4dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_body" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md"
+            android:text="@string/verify_spam_hint"
+            style="@style/TextCaption" />
+
+        <TextView
+            android:id="@+id/tvError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg"
+            android:textColor="@color/danger"
+            android:textSize="@dimen/text_caption"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVerified"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/space_xl"
+            android:text="@string/verify_done"
+            style="@style/PrimaryButton" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnResend"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/space_md"
+            android:text="@string/verify_resend"
+            style="@style/SecondaryButton" />
+
+        <TextView
+            android:id="@+id/tvBackToLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_lg"
+            android:gravity="center"
+            android:padding="@dimen/space_md"
+            android:text="@string/verify_use_other"
+            android:textColor="@color/primary"
+            android:textStyle="bold"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+</ScrollView>

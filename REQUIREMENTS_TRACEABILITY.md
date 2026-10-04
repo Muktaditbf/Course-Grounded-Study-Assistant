@@ -1,165 +1,113 @@
 # Requirement Traceability & Design Decisions
 ### Course-Grounded Study Assistant — Android implementation, CSE 346
 
-This maps every requirement in your SRS to the code that satisfies it, and records
-every decision taken where the documents were silent or contradictory.
+Maps the SRS requirements to the code that satisfies them, and records the decisions taken where the documents were silent or contradictory.
 
 ---
 
-## 1. The scope question — read this first
+## 1. Scope
 
-Your **SRS NFR 15.1** states:
+SRS NFR 15.1 makes Version 1.0 web-first, with a native mobile app out of scope. SRS §8 (System Evolution) lists "a native mobile application" as evolution item 1. This app is presented as that evolution: the same requirement set (FR1–FR10, NFR11–NFR16, UC1–UC10) on a native Android client, backed by Firebase.
 
-> *"The application is web-first for Version 1.0; a native mobile app is out of scope for this release."*
+## 2. Architecture
 
-Cost Report §6.3 and SRS §9.1 repeat it, and the mandated stack is React + Node + PostgreSQL.
-So a native Android app **contradicts SRS Version 1.0 as written**.
+| Layer | Implementation |
+|---|---|
+| Identity | Firebase Authentication: email/password with verification, password reset, Google sign-in |
+| Shared data | Cloud Firestore (users, courses, join codes, enrolments, materials, file pieces, questions, bookmarks, notifications) |
+| Access control | `StudyAssistant/firestore.rules`, enforced by the server |
+| Local data | SQLite mirror of the user's slice of Firestore (`DatabaseHelper`), kept current by `SyncManager` |
+| Original files | Stored in Firestore in 900 KB pieces under each material (free plan, same rules) |
+| Retrieval | On-device BM25 over approved passages (`RetrievalEngine`) |
+| Answers | LLM restricted to the retrieved passages, with citations (`OpenAiClient.askGrounded`) |
+| Document viewer | PDF via `PdfRenderer`; PPTX via `PptxRenderer`; DOCX via `DocxHtml` |
 
-**How this build resolves it:** SRS **§8 System Evolution** lists, as evolution item 1:
+## 3. Functional requirements
 
-> *"A native mobile application (in addition to the current web-first release)."*
+| Req | Requirement | Code |
+|---|---|---|
+| FR1 / 1.1–1.3 | Role-based login | `LoginActivity`, `SignUpActivity`, `VerifyEmailActivity`, `CloudRepo` |
+| FR2 / 2.1 | Teacher creates, edits and deletes courses; uploads, edits and deletes material | `CreateCourseActivity`, `UploadMaterialActivity`, `ApproveMaterialsActivity`, `MaterialViewActivity` |
+| FR2 / 2.2 | Every upload chunked for retrieval | `DatabaseHelper.insertChunks()` |
+| FR3 / 3.1 | Teacher approves or revokes the AI's source set | `ApproveMaterialsActivity` |
+| FR3 / 3.2 | Unapproved sources excluded from answers | Firestore rules (students can read only approved material) and `RetrievalEngine` (`approved = 1`) |
+| FR4 / 4.1–4.2 | Natural-language question, grounded answer | `AskQuestionActivity`, `ChatActivity`, `RetrievalEngine`, `OpenAiClient.askGrounded()` |
+| FR4 / 4.3 | Decline when coverage is thin | `RetrievalEngine.COVERAGE_THRESHOLD`, plus the model's `NOT_IN_MATERIAL` reply |
+| FR5 / 5.1 | Related resources after each answer | `RetrievalEngine.findRelated()` |
+| FR6 / 6.1 | Keyword search without the AI | `SearchActivity`, `DatabaseHelper.searchMaterials()` |
+| FR7 / 7.1 | Bookmark and revisit | `MaterialViewActivity`, `BookmarksActivity` |
+| FR8 / 8.1 | Student progress and teacher analytics | `ProgressActivity`, `TeacherAnalyticsActivity` |
+| FR9 / 9.1 | Notifications | `NotificationsActivity`, `DatabaseHelper.notifyCourseStudents()` |
+| FR10 / 10.1–10.3 | Premium and Institutional upgrade | `BillingActivity`, `PaymentActivity` (simulated payment) |
 
-This app is therefore presented as the **Version 2.0 evolution deliverable** — the same
-requirement set (FR1–FR10, NFR11–NFR16, UC1–UC10) re-implemented on a native Android client.
-Nothing in the requirements is dropped; only the delivery platform advances, exactly as §8 anticipates.
-
-If your instructor asks *"your SRS says no mobile app"* — that is the answer, and it is
-supported by your own document.
-
----
-
-## 2. Functional requirement traceability
-
-| Req | Requirement | Screen | Java class |
-|---|---|---|---|
-| FR1 / 1.1–1.3 | Role-based login | Login, Sign Up | `LoginActivity`, `SignUpActivity`, `SessionManager` |
-| FR2 / 2.1 | Teacher creates course, uploads material | Create Course, Upload Material | `CreateCourseActivity`, `UploadMaterialActivity` |
-| FR2 / 2.2 | Every upload chunked for retrieval | (automatic) | `DatabaseHelper.insertChunks()` |
-| FR3 / 3.1 | Teacher approves/locks the AI's source set | Approve and Lock | `ApproveMaterialsActivity` |
-| FR3 / 3.2 | Unapproved sources excluded from answers | — | `RetrievalEngine.loadApprovedPassages()` |
-| FR4 / 4.1–4.2 | Natural-language question, grounded answer | Ask a Question | `AskQuestionActivity`, `RetrievalEngine.ask()` |
-| FR4 / 4.3 | Decline when coverage is thin | Ask (declined state) | `RetrievalEngine.COVERAGE_THRESHOLD` |
-| FR5 / 5.1 | Cross-link related resources after each answer | Ask (Related Resources) | `RetrievalEngine.findRelated()` |
-| FR6 / 6.1 | Keyword search without the AI | Search | `SearchActivity`, `DatabaseHelper.searchMaterials()` |
-| FR7 / 7.1 | Bookmark and revisit | Material, Bookmarks | `MaterialViewActivity`, `BookmarksActivity` |
-| FR8 / 8.1 | Student progress + teacher analytics | Progress, Analytics | `ProgressActivity`, `TeacherAnalyticsActivity` |
-| FR9 / 9.1 | Notifications | Notifications | `NotificationsActivity`, `DatabaseHelper.notifyCourseStudents()` |
-| FR10 / 10.1–10.3 | Premium & Institutional upgrade, bKash/Nagad/card | Billing, Payment | `BillingActivity`, `PaymentActivity` |
-
-## 3. Non-functional requirement traceability
+## 4. Non-functional requirements
 
 | Req | Requirement | How it is met |
 |---|---|---|
-| NFR11.1 | Encrypted transport | **N/A on device** — the app is fully offline; no data leaves the phone, so there is no channel to encrypt. Documented as a deliberate deviation. |
-| NFR11.2 | Database backup | Android auto-backup enabled (`android:allowBackup="true"`) |
-| NFR12.1 | Every operation requires a session | `BaseActivity.currentUser()` guards every screen |
-| NFR12.2 | Only the owning teacher may approve | Ownership check in `ApproveMaterialsActivity.onResume()` |
-| NFR13.1 | Fast response | On-device retrieval, no network — answers are instant |
-| NFR13.2 | Concurrent use | N/A for a single-device prototype |
-| NFR14.1 | Confidence threshold before answering | `COVERAGE_THRESHOLD = 0.34`, enforced in `RetrievalEngine.ask()` |
-| NFR15.1 | Web-first, no mobile | **Deliberately superseded** — see §1 above |
-| NFR16.1 | English and Bangla labels | `res/values/strings.xml` + `res/values-bn/strings.xml`, 100+ strings each |
+| NFR11.1 | Encrypted transport | All Firebase and AI traffic uses HTTPS/TLS |
+| NFR11.2 | Database backup | Firestore is replicated by Google; scheduled backups can be enabled on the Blaze plan |
+| NFR12.1 | Every operation requires a session | Firebase session checked in `BaseActivity.currentUser()`; rules require a verified sign-in |
+| NFR12.2 | Only the owning teacher may approve | Firestore rules check `teacherUid` on the course and material; the UI checks ownership too |
+| NFR13.1 | Fast response | Local mirror for reads, retrieval cached and off the main thread, optimised release build |
+| NFR13.2 | Concurrent use | Firestore serves many clients at once |
+| NFR14.1 | Confidence threshold before answering | Coverage threshold 0.34 over the top passages; the model must reply `NOT_IN_MATERIAL` when the passages do not answer |
+| NFR15.1 | Web-first | Superseded by SRS §8 (see section 1) |
+| NFR16.1 | English and Bangla | `res/values/strings.xml` and `res/values-bn/strings.xml`; retrieval tokenises Bangla text |
 
-## 4. Use case coverage
+## 5. Use cases
 
-| UC | Title | Implemented in |
+| UC | Title | Code |
 |---|---|---|
-| UC1 | Sign Up (incl. alt. course 5.a) | `SignUpActivity` |
-| UC2 | Login | `LoginActivity` |
+| UC1 | Sign Up (with email verification) | `SignUpActivity`, `VerifyEmailActivity` |
+| UC2 | Login (email, Google; forgot password) | `LoginActivity` |
 | UC3 | Upload Course Material | `UploadMaterialActivity` |
 | UC4 | Approve / Lock Material | `ApproveMaterialsActivity` |
-| UC5 | Ask a Question (incl. alt. course 3.a) | `AskQuestionActivity` |
+| UC5 | Ask a Question (incl. decline 3.a) | `AskQuestionActivity` |
 | UC6 | Search Course Materials | `SearchActivity` |
 | UC7 | Bookmark a Topic | `MaterialViewActivity`, `BookmarksActivity` |
 | UC8 | View Progress Dashboard | `ProgressActivity`, `TeacherAnalyticsActivity` |
 | UC9 | Receive Related Resources | `RetrievalEngine.findRelated()` |
-| UC10 | Upgrade (incl. alt. course 4.a payment failure) | `BillingActivity`, `PaymentActivity` |
+| UC10 | Upgrade (incl. payment failure 4.a) | `BillingActivity`, `PaymentActivity` |
 
----
+## 6. Decisions where the documents were silent
 
-## 5. Gaps found in the documents, and the decision taken
-
-The documents were audited before coding. These points were under-specified; each was
-resolved with a defensible choice rather than a silent guess.
-
-| # | Gap in the documents | Decision taken |
+| # | Gap | Decision |
 |---|---|---|
-| 1 | **No enrollment mechanism.** UC5's precondition requires the student be *"enrolled in a course"*, but no requirement or use case describes enrolling. | Added a **join-by-code** flow (`JoinCourseActivity`). Each course carries a unique join code; the teacher dashboard displays it. |
-| 2 | **NFR 14.1 mandates a coverage threshold but gives no number.** | Set at **0.34** — at least ~1/3 of the meaningful question terms must appear in a single approved passage. Verified against 15 test questions. |
-| 3 | **Free tier "capped daily AI questions" — the cap appears nowhere.** | Set to **10 questions/day** (`BaseActivity.FREE_DAILY_LIMIT`). Shown live on the Ask screen. |
-| 4 | **Progress dashboard never defined** — no metric, window or chart named. | Chose what the system genuinely measures: questions asked, answered, declined, bookmarks, and a **grounding rate** (answered ÷ asked). |
-| 5 | **Role is self-declared at signup** (UC1 step 3) — anyone can claim to be a teacher. | Kept as specified, but ownership is enforced downstream: only the teacher who owns a course can approve its materials (NFR 12.2). |
-| 6 | **The vector database is never named**, and no embedding model is specified. | Replaced with **TF-IDF over stored text chunks** — no network, no API key, runs instantly, and is explainable in a viva. The `chunks` table occupies the role SRS §5.1 assigns the vector store. |
-| 7 | **No backend exists, and a student build cannot run one during a demo.** | The app is **fully self-contained on-device** (SQLite). It cannot fail because of lab Wi-Fi. |
-| 8 | **Upload assumes a browser file picker**; SRS says PDFs and slides. | Material text is typed or pasted. This avoids storage permissions and PDF parsing, which the Cost Report itself prices as a separate add-on ("Document Parser (scanned PDF/OCR), 30,000 Tk", §8.3) — i.e. out of the base build by your own costing. |
-| 9 | **Real bKash/Nagad integration is impossible in a lab app.** | Payment is **clearly labelled simulated**. No payment credential is collected, transmitted or stored; only the account-number length is checked, which drives UC10's failure path. |
-| 10 | **Institution Admin is an actor with no use case.** | Represented by the `institutional` account tier plus the teacher analytics dashboard, rather than inventing a new actor flow. |
-| 11 | **Premium is priced per semester but Year-1 revenue counts it once per year** (150 × 300 = 45,000 Tk). | Not an app issue — flagged for your report. Either relabel the tier *"300 Tk/semester, billed once per academic year"* or restate the subscriber counts. |
-| 12 | **Cost Report PV Year 3** reported as 167,270; correct value is **167,268**. | 2 Tk rounding difference. All 26 other figures verified correct. |
-| 13 | Cost Report cover still reads **"Submitted by: [Your Name]"**, and §12 has a run-on: `...low-friction.5.  Timeline:` | Cosmetic fixes for your document, not the app. |
-| 14 | SRS §2 promises a **use-case diagram**; none is present in the file. | Not supplied. The UC1–UC10 table was used as the source of truth. |
+| 1 | No enrolment mechanism | Join by code (`JoinCourseActivity`); codes are unique and fixed once created |
+| 2 | Coverage threshold has no number | 0.34 of the meaningful question terms, measured over the top three passages |
+| 3 | Free-tier daily cap has no number | 10 questions per day (`BaseActivity.FREE_DAILY_LIMIT`), covering Ask and chat |
+| 4 | Progress dashboard undefined | Questions asked, answered, declined, bookmarks, and grounding rate |
+| 5 | Role is self-declared | Kept as specified; ownership is enforced by the rules |
+| 6 | No vector database named | BM25 lexical retrieval on the device; explainable and needs no extra service |
+| 7 | Payment integration | Simulated and labelled as such; no payment data is collected |
+| 8 | File storage | Original files stored in Firestore pieces, which keeps the project on the free plan |
 
----
+## 7. Retrieval and answering
 
-## 6. The retrieval algorithm (for your viva)
+Given a question in a course (or across all enrolled courses, in the chat):
 
-Given a question **q** in course **c**:
+1. Load the approved passages, each tagged with its material's title. Unapproved material never reaches the device.
+2. Tokenise: Unicode letters and digits, lower-case, stop words removed, light English stemming ("databases" and "database" meet). Bangla words are kept whole.
+3. Rank with BM25 (k1 = 1.2, b = 0.75), plus a bonus for adjacent query words found adjacent in the passage. Quizzes ×0.60, assignments ×0.80, labs ×0.95, lectures and notes ×1.00.
+4. Coverage = share of distinct query terms found in the top three passages. Below 0.34 → **decline**, with no AI call.
+5. Send up to five ranked passages to the model, numbered, with the instruction to answer only from them, cite them as [n], and reply `NOT_IN_MATERIAL` if they do not contain the answer.
+6. Show the answer with its cited sources; each source opens the original file. With no AI available, the matching passages themselves are shown.
 
-1. Load every passage whose parent material has `approved = 1` **for that course only**.
-   *Unapproved material is never loaded — this is the Content Lock.*
-2. Tokenize: lowercase → split on non-alphanumerics → drop tokens shorter than 3 →
-   drop stop-words → light suffix stemming (`-ing`, `-ies`, `-es`, `-s`).
-3. Score each passage against the query terms:
+## 8. Data model (Firestore)
 
-   ```
-   idf(t)   = ln(1 + N / df(t))          N = approved passages in the course
-   tf(t,p)  = 1 + ln(count of t in p)
-   score(p) = Σ tf(t,p) · idf(t) / √|p|  ×  typeWeight(p)
-   coverage = matched distinct query terms / total distinct query terms
-   ```
-
-4. **If `coverage < 0.34` → DECLINE** (NFR 14.1). Nothing is generated.
-5. Otherwise build the answer from the best passage plus up to two supporting passages,
-   each of which must clear three gates, and cite their source materials.
-6. Remaining approved materials are ranked by term overlap and interleaved by type
-   → **Lecture Connection Finder**.
-
-### Three refinements found by testing on a real device
-
-Each of these was a visible defect in the running app before it was fixed:
-
-| Problem observed on device | Fix |
-|---|---|
-| The answer **repeated itself** — overlapping chunks both scored high, so the same sentences appeared twice. | Passages are now consecutive and non-overlapping, plus a redundancy gate skips any passage sharing >40% of its wording with the answer so far. |
-| Answers **started mid-sentence** ("…open rectangle or two parallel lines"). | Chunking breaks on sentence boundaries (`.`/`!`/`?`), accumulating whole sentences to ~55 words. A passage is always complete prose. |
-| A **quiz outranked the lecture**. "Quiz 1: List the phases of the waterfall model" matches the query words perfectly but explains nothing. | `typeWeight()` — quiz ×0.60, assignment ×0.80, lab ×0.95, lecture/notes ×1.00. Assessment material still appears under Related Resources, where it belongs. |
-
-Plus a relevance gate: a supporting passage must score ≥80% of the best passage, so a
-loosely-related passage cannot dilute a good answer.
-
-**Verification:** 15 questions across all 7 courses, 15/15 produced the expected
-answer-or-decline outcome, re-run after every tuning change. The locked-material demo goes
-0% coverage (declined) → teacher approves → 100% coverage (answered).
-
----
-
-## 7. Database schema (SRS Appendix B, on-device)
-
-```sql
-users(id, name, email UNIQUE, contact, password, role, tier)
-courses(id, code, title, faculty, schedule, join_code UNIQUE, teacher_id)
-enrollments(id, user_id, course_id)
-materials(id, course_id, title, type, body, approved)
-chunks(id, material_id, course_id, text)        -- stands in for the vector store
-questions(id, user_id, course_id, text, answered, created_at)
-bookmarks(id, user_id, material_id)
-notifications(id, user_id, title, body, created_at)
+```
+users/{uid}                    name, email, contact, role, tier
+courses/{id}                   code, title, faculty, schedule, joinCode, teacherUid
+joinCodes/{CODE}               courseId, courseCode, teacherUid
+enrollments/{uid}_{courseId}   userUid, courseId, teacherUid
+materials/{id}                 courseId, teacherUid, title, type, body, approved,
+                               fileName, fileMime, fileSize, fileChunks, fileVersion
+materials/{id}/file/{n}        data (bytes)
+questions/{id}                 userUid, courseId, teacherUid, text, answered, createdAt
+bookmarks/{uid}_{materialId}   userUid, materialId
+notifications/{id}             userUid, courseId?, title, body, createdAt
 ```
 
----
+## 9. Privacy
 
-## 8. Privacy note
-
-Your course list contained faculty email addresses. **These are not stored in the app.**
-Faculty names and initials appear as course metadata; the only credentials in the build are
-the two demo logins created for this project.
+Faculty email addresses are not stored. User profiles hold only name, email, optional contact number, role and tier. Passwords are handled by Firebase Authentication and never reach the app's database.

@@ -84,10 +84,26 @@
                 style="@style/FieldInput" />
 
             <TextView
+                android:id="@+id/tvForgot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/space_sm"
+                android:paddingTop="@dimen/space_sm"
+                android:paddingBottom="@dimen/space_sm"
+                android:text="@string/forgot_password"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/text_caption"
+                android:textStyle="bold"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
                 android:id="@+id/tvError"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_md"
+                android:layout_marginTop="@dimen/space_sm"
                 android:textColor="@color/danger"
                 android:textSize="@dimen/text_caption"
                 android:visibility="gone" />
@@ -95,9 +111,41 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/space_xl"
+                android:layout_marginTop="@dimen/space_lg"
                 android:text="@string/login"
                 style="@style/PrimaryButton" />
+
+            <!-- or -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_lg"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <View android:layout_width="0dp" android:layout_height="1dp"
+                    android:layout_weight="1" android:background="@color/border" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_md"
+                    android:layout_marginEnd="@dimen/space_md"
+                    android:text="@string/or"
+                    style="@style/TextCaption" />
+                <View android:layout_width="0dp" android:layout_height="1dp"
+                    android:layout_weight="1" android:background="@color/border" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGoogle"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/space_lg"
+                android:text="@string/continue_with_google"
+                app:icon="@drawable/ic_google"
+                app:iconTint="@null"
+                app:iconGravity="textStart"
+                app:iconPadding="@dimen/space_md"
+                style="@style/SecondaryButton"
+                xmlns:app="http://schemas.android.com/apk/res-auto" />
 
             <TextView
                 android:id="@+id/tvGoSignUp"
@@ -113,24 +161,6 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_lg"
-                android:orientation="vertical"
-                android:background="@drawable/bg_input"
-                android:padding="@dimen/space_lg">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/demo_accounts"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="@dimen/text_caption"
-                    android:lineSpacingExtra="4dp"
-                    android:fontFamily="monospace" />
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

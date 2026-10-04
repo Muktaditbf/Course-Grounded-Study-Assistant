@@ -21,8 +21,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 import com.seu.studyassistant.R;
+import com.seu.studyassistant.data.CloudRepo;
 import com.seu.studyassistant.data.DatabaseHelper;
 import com.seu.studyassistant.data.SessionManager;
+import com.seu.studyassistant.data.SyncManager;
 import com.seu.studyassistant.model.User;
 
 /** Shared plumbing: session, database, the app bar, bottom navigation, and card building. */
@@ -60,7 +62,61 @@ public abstract class BaseActivity extends AppCompatActivity {
         androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(session.themeMode());
 
         applySavedLanguage();
+        ensureSync();
     }
+
+    // ----------------------------------------------------------------------- sync
+
+    /**
+     * Restarts the Firestore mirror after a process restart. Login starts it, but when Android
+     * kills the process and brings the user straight back into a deep screen no login runs, so
+     * every screen makes sure the listeners are up. Idempotent.
+     */
+    private void ensureSync() {
+        String uid = CloudRepo.currentUid(this);
+        if (uid == null || !session.isLoggedIn() || SyncManager.get().isRunningFor(uid)) return;
+        User u = db.userById(session.userId());
+        if (u != null) SyncManager.get().start(this, uid, u.role);
+    }
+
+    private final Runnable dataListener = new Runnable() {
+        @Override public void run() {
+            if (!isFinishing() && !isDestroyed()) onDataChanged();
+        }
+    };
+
+    private long lastSyncToast;
+
+    private final SyncManager.ErrorListener errorListener = new SyncManager.ErrorListener() {
+        @Override public void onSyncError(String message) {
+            // One toast every few seconds is enough; a failing listener can report repeatedly.
+            long now = System.currentTimeMillis();
+            if (now - lastSyncToast < 8000 || isFinishing() || isDestroyed()) return;
+            lastSyncToast = now;
+            Toast.makeText(BaseActivity.this, getString(R.string.sync_error, message),
+                    Toast.LENGTH_LONG).show();
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SyncManager.get().addChangeListener(dataListener);
+        SyncManager.get().addErrorListener(errorListener);
+    }
+
+    @Override
+    protected void onStop() {
+        SyncManager.get().removeChangeListener(dataListener);
+        SyncManager.get().removeErrorListener(errorListener);
+        super.onStop();
+    }
+
+    /**
+     * Called when Firestore delivered new data into the local mirror while this screen is
+     * visible. List screens override it to reload; screens that only read on demand ignore it.
+     */
+    protected void onDataChanged() {}
 
     /**
      * Re-applies the saved UI language on every cold start.
@@ -81,9 +137,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * The signed-in user, or null. A saved session only counts while Firebase still holds a
+     * signed-in account, so a revoked or expired login sends every screen back to Login.
+     */
     protected User currentUser() {
         long id = session.userId();
-        return id > 0 ? db.userById(id) : null;
+        if (id <= 0) return null;
+        if (CloudRepo.isConfigured(this) && CloudRepo.currentUid(this) == null) return null;
+        return db.userById(id);
     }
 
     // -------------------------------------------------------------- AI bubble
@@ -411,6 +473,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void logout() {
+        CloudRepo.signOut(this);   // stop listeners, sign out of Firebase, empty the local mirror
         session.logout();
         Intent i = new Intent(this, LoginActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

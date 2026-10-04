@@ -74,11 +74,63 @@ public class SettingsActivity extends BaseActivity {
 
         group.addView(card(getString(R.string.change_password), null,
                 new View.OnClickListener() {
-                    @Override public void onClick(View v) {
-                        info(getString(R.string.change_password),
-                                getString(R.string.password_change_hint));
-                    }
+                    @Override public void onClick(View v) { changePassword(); }
                 }));
+    }
+
+    /**
+     * Change password: current password first, because Firebase only allows it after a recent
+     * sign-in. A Google-only account has no password here, so it is told where to manage one.
+     */
+    private void changePassword() {
+        if (!com.seu.studyassistant.data.CloudRepo.hasPassword(this)) {
+            info(getString(R.string.change_password), getString(R.string.password_google_only));
+            return;
+        }
+        int pad = getResources().getDimensionPixelSize(R.dimen.space_xl);
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(pad, pad / 2, pad, 0);
+        final android.widget.EditText current = passwordField(R.string.current_password);
+        final android.widget.EditText next = passwordField(R.string.new_password);
+        final android.widget.EditText confirm = passwordField(R.string.confirm_password);
+        box.addView(current);
+        box.addView(next);
+        box.addView(confirm);
+
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.change_password)
+                .setView(box)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.save_changes, null)
+                .create();
+        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String n = next.getText().toString();
+            if (n.length() < 8) { next.setError(getString(R.string.err_password_short)); return; }
+            if (!n.equals(confirm.getText().toString())) { confirm.setError(getString(R.string.err_password_mismatch)); return; }
+            v.setEnabled(false);
+            com.seu.studyassistant.data.CloudRepo.changePassword(this, current.getText().toString(), n,
+                    new com.seu.studyassistant.data.Callback<Void>() {
+                        @Override public void onSuccess(Void x) {
+                            dialog.dismiss();
+                            toast(getString(R.string.password_changed));
+                        }
+                        @Override public void onError(Exception e) {
+                            v.setEnabled(true);
+                            int res = com.seu.studyassistant.data.CloudRepo.authErrorRes(e);
+                            if (res == R.string.err_bad_credentials) current.setError(getString(R.string.err_current_password));
+                            else next.setError(getString(res));
+                        }
+                    });
+        }));
+        dialog.show();
+    }
+
+    private android.widget.EditText passwordField(int hint) {
+        android.widget.EditText e = new android.widget.EditText(this);
+        e.setHint(hint);
+        e.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        return e;
     }
 
     /**

@@ -87,7 +87,59 @@ public class ApproveMaterialsActivity extends BaseActivity {
         }
 
         setupHeader(course.code + " " + getString(R.string.approve_lock), true);
+        setHeaderAction(getString(R.string.manage), new View.OnClickListener() {
+            @Override public void onClick(View v) { showManageMenu(); }
+        });
         load();
+    }
+
+    @Override
+    protected void onDataChanged() {
+        // Revoking and approving update rows in place, so only refresh when nothing is mid-toggle.
+        if (course != null && db.courseById(courseId) == null) { finish(); return; }
+        quiet = true;
+        load();
+        quiet = false;
+    }
+
+    /** True while refreshing for a background sync: no entry animation, no flicker. */
+    private boolean quiet;
+
+    /** Course-level actions: upload, edit details, delete. */
+    private void showManageMenu() {
+        String[] items = {getString(R.string.upload_material), getString(R.string.edit_course),
+                getString(R.string.delete_course)};
+        new AlertDialog.Builder(this)
+                .setTitle(course.code)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface d, int which) {
+                        if (which == 0) open(UploadMaterialActivity.class, EXTRA_COURSE_ID, courseId);
+                        else if (which == 1) open(CreateCourseActivity.class, EXTRA_COURSE_ID, courseId);
+                        else confirmDeleteCourse();
+                    }
+                })
+                .show();
+    }
+
+    private void confirmDeleteCourse() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.delete_course_title)
+                .setMessage(getString(R.string.delete_course_body, course.code))
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.act_delete, new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface d, int which) {
+                        db.deleteCourse(courseId, new com.seu.studyassistant.data.Callback<Void>() {
+                            @Override public void onSuccess(Void v) {
+                                toast(getString(R.string.course_deleted));
+                                finish();
+                            }
+                            @Override public void onError(Exception e) {
+                                toast(getString(R.string.err_generic));
+                            }
+                        });
+                    }
+                })
+                .show();
     }
 
     private void load() {
@@ -107,7 +159,7 @@ public class ApproveMaterialsActivity extends BaseActivity {
 
         tvEmpty.setVisibility(rows.isEmpty() ? View.VISIBLE : View.GONE);
         adapter.notifyDataSetChanged();
-        Anim.replay(recycler);
+        if (!quiet) Anim.replay(recycler);
     }
 
     private Row toRow(Material m) {

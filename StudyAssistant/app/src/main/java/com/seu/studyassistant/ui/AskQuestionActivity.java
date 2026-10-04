@@ -19,6 +19,7 @@ import com.seu.studyassistant.model.Course;
 import com.seu.studyassistant.model.Material;
 import com.seu.studyassistant.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -141,51 +142,89 @@ public class AskQuestionActivity extends BaseActivity {
     }
 
     /**
-     * Runs one question against OpenAI.
+     * UC5 / NFR 14.1: answers strictly from approved material.
      *
-     * Retrieval still runs first, but its job has changed: it no longer decides whether the
-     * student gets an answer, it only supplies approved course text as context when the course
-     * actually covers the question. The Content Lock still holds - loadApprovedPassages only
-     * ever returns approved material, so unapproved text is never sent anywhere - but a
-     * question the course does not cover is now answered from general knowledge instead of
-     * being refused.
+     * 1. Retrieval ranks the course's approved passages. If they do not cover the question
+     *    well enough, the app declines - no AI call, no guess.
+     * 2. Otherwise the AI gets only the top passages, numbered, and must answer from them and
+     *    cite them. If it finds the answer is not actually there, it says so, and the app
+     *    declines then too.
+     * 3. With no AI available (no key, offline, quota), the best matching passages are shown
+     *    as they are, so a student still gets the teacher's own words with their sources.
      */
     private void send(final String question) {
         final User u = currentUser();
         if (u == null) { logout(); return; }
 
         lastQuestion = question;
-
-        // Retrieval is cheap and local, so it stays on the main thread; only the network moves.
-        final AnswerResult r = engine.ask(courseId, question);
-        final boolean grounded = !r.declined;
-        final String context = grounded ? r.answer : null;
-
         suggestBlock.setVisibility(View.GONE);
         showLoading();
 
         io.execute(new Runnable() {
             @Override public void run() {
+                final AnswerResult r = engine.ask(courseId, question);
+                if (r.declined) {
+                    post(() -> {
+                        db.logQuestion(u.id, courseId, question, false);
+                        renderDeclined(r);
+                    });
+                    return;
+                }
+
+                List<String> titles = new ArrayList<>();
+                for (Material m : r.passageSources) titles.add(m.title);
                 final OpenAiClient.Result result =
-                        ai.ask(getApplicationContext(), question, context);
+                        ai.askGrounded(getApplicationContext(), question, r.passages, titles, null);
 
-                main.post(new Runnable() {
-                    @Override public void run() {
-                        if (isFinishing() || isDestroyed()) return;
-                        loadingBlock.setVisibility(View.GONE);
-
-                        if (!result.isOk()) {
-                            renderError(result);
-                            return;
-                        }
-
+                post(() -> {
+                    if (!result.isOk()) {
+                        // No AI: the teacher's own passages are still a grounded answer.
                         db.logQuestion(u.id, courseId, question, true);
-                        renderAnswer(result.text, grounded, r);
-                        showRemainingCap();
+                        renderAnswer(r.answer, r, r.sources, getString(R.string.answered_from_excerpts));
+                        return;
                     }
+                    String text = result.text.trim();
+                    if (text.startsWith(OpenAiClient.NOT_COVERED)) {
+                        db.logQuestion(u.id, courseId, question, false);
+                        renderDeclined(r);
+                        return;
+                    }
+                    db.logQuestion(u.id, courseId, question, true);
+                    renderAnswer(text, r, citedSources(text, r), getString(R.string.answered_from_course));
                 });
             }
         });
+    }
+
+    /** Runs on the main thread unless the screen has gone. */
+    private void post(final Runnable r) {
+        main.post(new Runnable() {
+            @Override public void run() {
+                if (isFinishing() || isDestroyed()) return;
+                loadingBlock.setVisibility(View.GONE);
+                r.run();
+                showRemainingCap();
+            }
+        });
+    }
+
+    /** The materials the answer actually cites ([1], [2]...), in first-cited order. */
+    static List<Material> citedSources(String answer, AnswerResult r) {
+        java.util.LinkedHashSet<Material> out = new java.util.LinkedHashSet<>();
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\[(\\d+)]").matcher(answer);
+        java.util.Set<Long> seen = new java.util.HashSet<>();
+        while (m.find()) {
+            int n = Integer.parseInt(m.group(1)) - 1;
+            if (n >= 0 && n < r.passageSources.size()) {
+                Material mat = r.passageSources.get(n);
+                if (seen.add(mat.id)) out.add(mat);
+            }
+        }
+        // A model that forgot to cite still answered from these passages.
+        if (out.isEmpty()) {
+            for (Material mat : r.passageSources) if (seen.add(mat.id)) out.add(mat);
+        }
+        return new ArrayList<>(out);
     }
 
     private void showLoading() {
@@ -195,51 +234,44 @@ public class AskQuestionActivity extends BaseActivity {
         loadingBlock.setVisibility(View.VISIBLE);
     }
 
-    /** Every failure reaches the screen. Nothing is allowed to fail silently. */
-    private void renderError(OpenAiClient.Result result) {
+    /** NFR 14.1 / UC5 3.a: the approved material does not cover this, so nothing is guessed. */
+    private void renderDeclined(AnswerResult r) {
         answerBlock.setVisibility(View.GONE);
-        declinedBlock.setVisibility(View.GONE);
-        errorBlock.setVisibility(View.VISIBLE);
-        ((TextView) findViewById(R.id.tvAiError)).setText(getString(result.messageRes()));
+        errorBlock.setVisibility(View.GONE);
+        declinedBlock.setVisibility(View.VISIBLE);
+        ((TextView) findViewById(R.id.tvDeclinedCoverage)).setText(getString(
+                R.string.declined_coverage_format, r.coveragePercent(),
+                (int) Math.round(RetrievalEngine.COVERAGE_THRESHOLD * 100)));
     }
 
-    /**
-     * @param grounded whether approved course material actually covered the question; it
-     *                 decides the badge and whether sources are worth listing.
-     */
-    private void renderAnswer(String answer, boolean grounded, AnswerResult r) {
+    private void renderAnswer(String answer, AnswerResult r, List<Material> sources, String badge) {
         declinedBlock.setVisibility(View.GONE);
         errorBlock.setVisibility(View.GONE);
         answerBlock.setVisibility(View.VISIBLE);
 
         ((TextView) findViewById(R.id.tvAnswer)).setText(answer);
-        ((TextView) findViewById(R.id.tvGrounded)).setText(getString(grounded
-                ? R.string.answered_from_course : R.string.answered_generally));
-
+        ((TextView) findViewById(R.id.tvGrounded)).setText(badge);
         TextView coverage = findViewById(R.id.tvCoverage);
-        coverage.setVisibility(grounded ? View.VISIBLE : View.GONE);
-        if (grounded) coverage.setText(r.coveragePercent() + "%");
+        coverage.setVisibility(View.VISIBLE);
+        coverage.setText(r.coveragePercent() + "%");
 
-        // Sources and the Lecture Connection Finder only make sense for a grounded answer;
-        // a general-knowledge answer has no approved material behind it to cite.
+        // Each source opens the material itself, so every claim can be checked at its origin.
         sourcesContainer.removeAllViews();
-        sourcesContainer.setVisibility(grounded ? View.VISIBLE : View.GONE);
-        if (grounded) {
-            for (final Material m : r.sources) {
-                sourcesContainer.addView(card(m.title,
-                        getString(m.typeLabelRes()) + "  •  " + getString(R.string.approved),
-                        openMaterial(m)));
-            }
+        sourcesContainer.setVisibility(View.VISIBLE);
+        for (int i = 0; i < sources.size(); i++) {
+            Material m = sources.get(i);
+            int n = r.passageSources.indexOf(m) + 1;
+            sourcesContainer.addView(card((n > 0 ? "[" + n + "]  " : "") + m.title,
+                    getString(m.typeLabelRes()) + "  •  " + getString(R.string.approved),
+                    openMaterial(m)));
         }
 
         relatedContainer.removeAllViews();
-        boolean any = grounded && !r.related.isEmpty();
+        boolean any = !r.related.isEmpty();
         findViewById(R.id.tvRelatedTitle).setVisibility(any ? View.VISIBLE : View.GONE);
         findViewById(R.id.tvRelatedHint).setVisibility(any ? View.VISIBLE : View.GONE);
-        if (any) {
-            for (final Material m : r.related) {
-                relatedContainer.addView(card(m.title, getString(m.typeLabelRes()), openMaterial(m)));
-            }
+        for (final Material m : r.related) {
+            relatedContainer.addView(card(m.title, getString(m.typeLabelRes()), openMaterial(m)));
         }
     }
 

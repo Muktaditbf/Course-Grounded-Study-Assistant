@@ -7,7 +7,8 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 
 import com.seu.studyassistant.R;
-import com.seu.studyassistant.model.Course;
+import com.seu.studyassistant.data.Callback;
+import com.seu.studyassistant.data.CloudRepo;
 import com.seu.studyassistant.model.User;
 
 /**
@@ -45,14 +46,19 @@ public class JoinCourseActivity extends BaseActivity {
             return;
         }
 
-        Course c = db.joinByCode(u.id, code);
-        if (c == null) {
-            showError(R.id.tvError, getString(R.string.invalid_code));
-            return;
-        }
-
+        final View btn = findViewById(R.id.btnJoin);
+        btn.setEnabled(false);
         showError(R.id.tvError, null);
-        toast(getString(R.string.joined_toast, c.code));
-        finish();
+        CloudRepo.joinByCode(this, db.uidOf(u.id), code, new Callback<String>() {
+            @Override public void onSuccess(String courseCode) {
+                toast(getString(R.string.joined_toast, courseCode));
+                finish();
+            }
+            @Override public void onError(Exception e) {
+                btn.setEnabled(true);
+                showError(R.id.tvError, getString(e instanceof CloudRepo.CodeNotFound
+                        ? R.string.invalid_code : R.string.err_generic));
+            }
+        });
     }
 }

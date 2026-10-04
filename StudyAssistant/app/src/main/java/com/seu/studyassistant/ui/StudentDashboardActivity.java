@@ -50,6 +50,20 @@ public class StudentDashboardActivity extends BaseActivity {
         Anim.heroIn(findViewById(R.id.heroStudent));
     }
 
+    /** True while refreshing for a background sync: no entry animation, no flicker. */
+    private boolean quiet;
+
+    @Override
+    protected void onDataChanged() {
+        User u = currentUser();
+        if (u == null) return;
+        tvName.setText(u.name);
+        refreshBell(u);
+        quiet = true;
+        loadCourses(u);
+        quiet = false;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -107,7 +121,7 @@ public class StudentDashboardActivity extends BaseActivity {
             }
         });
         recycler.setAdapter(adapter);
-        Anim.replay(recycler);
+        if (!quiet) Anim.replay(recycler);
     }
 
     /** Faculty and schedule, skipping whichever the teacher left blank. */

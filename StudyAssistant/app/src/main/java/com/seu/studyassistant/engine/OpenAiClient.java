@@ -50,6 +50,27 @@ public final class OpenAiClient {
           + "a phone screen - usually under 120 words - and use a short list when steps or items "
           + "genuinely help. Do not invent citations.";
 
+    /** What the model replies when the excerpts do not answer the question. */
+    public static final String NOT_COVERED = "NOT_IN_MATERIAL";
+
+    /**
+     * The grounded mode, used for every student question. The model is a reader, not a source:
+     * it may only restate what the numbered excerpts say, must cite them, and must answer with
+     * the exact sentinel when they do not contain the answer, which the app turns into the
+     * "not covered by approved material" state instead of showing a guess.
+     */
+    private static final String GROUNDED_PROMPT =
+            "You are a study assistant inside a university course app. Answer the student's question "
+          + "using ONLY the numbered course excerpts provided. Rules:\n"
+          + "1. Every fact in your answer must come from the excerpts. Do not add outside knowledge, "
+          + "examples, formulas or definitions that are not in them.\n"
+          + "2. After each sentence or bullet, cite the excerpt it came from, like [1] or [2][3].\n"
+          + "3. If the excerpts do not contain enough to answer, reply with exactly " + NOT_COVERED
+          + " and nothing else. Partial answers are fine when you say which part is not covered.\n"
+          + "4. Be clear and concise for a phone screen: usually under 150 words, short lists when "
+          + "listing steps or items.\n"
+          + "5. Reply in the same language as the question (English or Bangla).";
+
     /** Why a request failed, so the UI can show the right message. */
     public enum Failure { NONE, NO_KEY, NO_NETWORK, UNAUTHORISED, RATE_LIMITED, NO_CREDIT, SERVER, UNKNOWN }
 
@@ -144,6 +165,64 @@ public final class OpenAiClient {
 
         } catch (IOException e) {
             // Timeouts and DNS failures land here even when the network looked available.
+            return Result.fail(Failure.NO_NETWORK);
+        } catch (Exception e) {
+            return Result.fail(Failure.UNKNOWN);
+        }
+    }
+
+    /**
+     * Grounded answer: blocking, run it off the main thread. Excerpts are numbered in order and
+     * labelled with their material title so the model can cite them.
+     */
+    public Result askGrounded(Context ctx, String question, java.util.List<String> excerpts,
+                              java.util.List<String> titles, @Nullable String history) {
+        if (!hasKey()) return Result.fail(Failure.NO_KEY);
+        if (!isOnline(ctx)) return Result.fail(Failure.NO_NETWORK);
+        String body;
+        try {
+            StringBuilder ctxText = new StringBuilder("Course excerpts:\n");
+            for (int i = 0; i < excerpts.size(); i++) {
+                ctxText.append('[').append(i + 1).append("] (").append(titles.get(i)).append(")\n")
+                        .append(excerpts.get(i)).append("\n\n");
+            }
+            JSONArray messages = new JSONArray();
+            messages.put(new JSONObject().put("role", "system").put("content", GROUNDED_PROMPT));
+            messages.put(new JSONObject().put("role", "system").put("content", ctxText.toString()));
+            String q = history == null || history.isEmpty() ? question
+                    : history + "\n\nCurrent question: " + question;
+            messages.put(new JSONObject().put("role", "user").put("content", q));
+            body = new JSONObject()
+                    .put("model", BuildConfig.OPENAI_MODEL)
+                    .put("messages", messages)
+                    .put("temperature", 0.1)   // faithful restatement, not creativity
+                    .put("max_tokens", 600)
+                    .toString();
+        } catch (Exception e) {
+            return Result.fail(Failure.UNKNOWN);
+        }
+        return post(body);
+    }
+
+    private Result post(String body) {
+        Request request = new Request.Builder()
+                .url(ENDPOINT)
+                .addHeader("Authorization", "Bearer " + BuildConfig.OPENAI_API_KEY)
+                .post(RequestBody.create(body, JSON))
+                .build();
+        try (Response response = http.newCall(request).execute()) {
+            int code = response.code();
+            if (code == 401 || code == 403) return Result.fail(Failure.UNAUTHORISED);
+            if (code >= 500) return Result.fail(Failure.SERVER);
+            ResponseBody rb = response.body();
+            String payload = rb == null ? "" : rb.string();
+            if (code == 429) {
+                return Result.fail(isOutOfCredit(payload) ? Failure.NO_CREDIT : Failure.RATE_LIMITED);
+            }
+            if (!response.isSuccessful()) return Result.fail(Failure.UNKNOWN);
+            String answer = parseAnswer(payload);
+            return answer == null ? Result.fail(Failure.UNKNOWN) : Result.ok(answer);
+        } catch (IOException e) {
             return Result.fail(Failure.NO_NETWORK);
         } catch (Exception e) {
             return Result.fail(Failure.UNKNOWN);
