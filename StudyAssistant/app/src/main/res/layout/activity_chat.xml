@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- ViVi chat: app bar, messages from the top, and a floating composer above the keyboard. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,48 +15,71 @@
         android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingTop="@dimen/space_md"
-        android:paddingBottom="@dimen/space_sm" />
+        android:paddingBottom="@dimen/space_sm"
+        android:scrollbars="vertical" />
 
-    <!-- Composer pinned to the bottom, lifted on its own surface so it reads as the input -->
+    <!-- Floating composer -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_md"
+        android:layout_marginEnd="@dimen/space_md"
+        android:layout_marginTop="@dimen/space_xs"
+        android:layout_marginBottom="@dimen/space_md"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="@color/surface"
-        android:padding="@dimen/space_md"
-        android:elevation="8dp">
+        android:background="@drawable/bg_composer"
+        android:elevation="6dp"
+        android:paddingStart="18dp"
+        android:paddingEnd="6dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
 
         <EditText
             android:id="@+id/etMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:minHeight="48dp"
-            android:maxLines="4"
-            android:background="@drawable/bg_input"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
+            android:minHeight="44dp"
+            android:maxLines="5"
+            android:maxLength="2000"
+            android:background="@android:color/transparent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:hint="@string/ai_chat_hint"
             android:imeOptions="actionSend"
             android:inputType="textCapSentences|textMultiLine"
             android:textColor="@color/text_primary"
-            android:textColorHint="@color/text_tertiary"
+            android:textColorHint="@color/text_secondary"
             android:textSize="@dimen/text_body"
             android:importantForAutofill="no" />
 
-        <ImageView
-            android:id="@+id/btnSend"
+        <FrameLayout
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginStart="@dimen/space_sm"
-            android:background="@drawable/bg_send"
-            android:padding="13dp"
-            android:src="@drawable/ic_send"
-            android:contentDescription="@string/ai_chat_send"
-            android:clickable="true"
-            android:focusable="true" />
+            android:layout_marginStart="@dimen/space_sm">
+
+            <ImageView
+                android:id="@+id/btnSend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_send"
+                android:padding="13dp"
+                android:src="@drawable/ic_send"
+                android:contentDescription="@string/ai_chat_send"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="@color/white"
+                xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+            <!-- Shown on the button while ViVi is answering -->
+            <ProgressBar
+                android:id="@+id/sendProgress"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/white"
+                android:visibility="gone" />
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

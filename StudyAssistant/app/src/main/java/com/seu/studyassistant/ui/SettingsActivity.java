@@ -112,10 +112,12 @@ public class SettingsActivity extends BaseActivity {
             com.seu.studyassistant.data.CloudRepo.changePassword(this, current.getText().toString(), n,
                     new com.seu.studyassistant.data.Callback<Void>() {
                         @Override public void onSuccess(Void x) {
+                            if (!isAlive()) return;
                             dialog.dismiss();
                             toast(getString(R.string.password_changed));
                         }
                         @Override public void onError(Exception e) {
+                            if (!isAlive()) return;
                             v.setEnabled(true);
                             int res = com.seu.studyassistant.data.CloudRepo.authErrorRes(e);
                             if (res == R.string.err_bad_credentials) current.setError(getString(R.string.err_current_password));

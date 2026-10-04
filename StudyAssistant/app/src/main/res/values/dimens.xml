@@ -26,9 +26,9 @@
     <dimen name="text_micro">11sp</dimen>
 
     <!-- Cards: roomier than the old 20dp box so a course reads as a destination, not a row -->
-    <dimen name="card_padding">24dp</dimen>
-    <dimen name="card_min_height">104dp</dimen>
-    <dimen name="card_illustration">56dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_min_height">76dp</dimen>
+    <dimen name="card_illustration">46dp</dimen>
     <dimen name="card_press_elevation">8dp</dimen>
 
     <dimen name="button_height">56dp</dimen>

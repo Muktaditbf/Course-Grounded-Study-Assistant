@@ -84,6 +84,7 @@ public class VerifyEmailActivity extends BaseActivity {
         btnResend.setEnabled(false);
         CloudRepo.resendVerification(this, new Callback<Void>() {
             @Override public void onSuccess(Void v) {
+                if (!isAlive()) return;
                 toast(getString(R.string.verify_sent));
                 startCooldown();
             }

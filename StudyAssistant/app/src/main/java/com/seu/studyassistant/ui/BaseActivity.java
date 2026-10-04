@@ -138,6 +138,12 @@ public abstract class BaseActivity extends AppCompatActivity {
      * The signed-in user, or null. A saved session only counts while Firebase still holds a
      * signed-in account, so a revoked or expired login sends every screen back to Login.
      */
+    /**
+     * False once the screen is finishing or destroyed. Cloud callbacks arrive later than the
+     * tap that started them; showing a dialog on a dead screen crashes the app, so they check this.
+     */
+    protected boolean isAlive() { return !isFinishing() && !isDestroyed(); }
+
     protected User currentUser() {
         long id = session.userId();
         if (id <= 0) return null;

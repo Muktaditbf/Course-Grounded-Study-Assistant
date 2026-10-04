@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
-    <solid android:color="@color/primary" />
-</shape>
+<!-- Send button: brand gradient when enabled, muted while ViVi is answering. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <shape android:shape="oval"><solid android:color="@color/primary_tint" /></shape>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <gradient android:startColor="@color/primary" android:endColor="@color/violet" android:angle="315" />
+        </shape>
+    </item>
+</selector>

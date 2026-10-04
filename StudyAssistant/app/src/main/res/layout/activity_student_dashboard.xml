@@ -12,11 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_hero"
+        android:background="@drawable/bg_hero_card"
+        android:layout_marginStart="@dimen/space_md"
+        android:layout_marginEnd="@dimen/space_md"
+        android:layout_marginTop="@dimen/space_sm"
+        android:elevation="6dp"
         android:paddingStart="@dimen/space_lg"
-        android:paddingEnd="@dimen/space_lg"
-        android:paddingTop="52dp"
-        android:paddingBottom="@dimen/space_lg">
+        android:paddingEnd="@dimen/space_md"
+        android:paddingTop="@dimen/space_md"
+        android:paddingBottom="@dimen/space_md">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,7 +49,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/text_display"
+                    android:textSize="@dimen/text_title"
                     android:textStyle="bold"
                     android:letterSpacing="-0.02" />
             </LinearLayout>
@@ -54,6 +58,10 @@
                 android:id="@+id/tvPlan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_sm"
+                android:maxLines="1"
+                android:minHeight="32dp"
+                android:gravity="center"
                 android:background="@drawable/bg_glass"
                 android:paddingStart="13dp"
                 android:paddingEnd="13dp"
@@ -73,9 +81,9 @@
 
                 <ImageView
                     android:id="@+id/btnBell"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:padding="8dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:padding="11dp"
                     android:background="@drawable/bg_glass"
                     android:src="@drawable/ic_bell"
                     android:contentDescription="@string/notifications"
@@ -111,7 +119,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/space_lg">
+            android:paddingStart="@dimen/space_md"
+            android:paddingEnd="@dimen/space_md"
+            android:paddingTop="@dimen/space_lg"
+            android:paddingBottom="@dimen/space_lg">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -130,7 +141,11 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnJoin"
                     android:layout_width="wrap_content"
+                    android:layout_height="48dp"
                     android:text="@string/join_course"
+                    app:icon="@drawable/ic_add"
+                    app:iconSize="18dp"
+                    app:iconPadding="6dp"
                     style="@style/SmallButton" />
             </LinearLayout>
 

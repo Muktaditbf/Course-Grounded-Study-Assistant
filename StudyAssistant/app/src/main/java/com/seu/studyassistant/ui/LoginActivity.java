@@ -126,6 +126,7 @@ public class LoginActivity extends BaseActivity {
             v.setEnabled(false);
             CloudRepo.sendPasswordReset(this, email, new Callback<Void>() {
                 @Override public void onSuccess(Void x) {
+                    if (!isAlive()) return;
                     dialog.dismiss();
                     new AlertDialog.Builder(LoginActivity.this)
                             .setTitle(R.string.forgot_title)
@@ -134,6 +135,7 @@ public class LoginActivity extends BaseActivity {
                             .show();
                 }
                 @Override public void onError(Exception e) {
+                    if (!isAlive()) return;
                     v.setEnabled(true);
                     input.setError(getString(CloudRepo.authErrorRes(e)));
                 }
@@ -158,7 +160,7 @@ public class LoginActivity extends BaseActivity {
                         if (u != null) {
                             openDashboard(u);
                             finish();
-                        } else {
+                        } else if (isAlive()) {
                             chooseRole();   // first time with this Google account
                         }
                     }

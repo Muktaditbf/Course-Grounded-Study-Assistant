@@ -199,17 +199,17 @@ CSE 346, সাউথইস্ট ইউনিভার্সিটি
     <string name="language_english">English</string>
     <string name="language_bangla">বাংলা</string>
     <string name="language_choose">অ্যাপ যে ভাষায় দেখাবে তা বেছে নিন।</string>
-    <string name="ai_err_no_key">AI কী সেট করা নেই। local.properties-এ OPENAI_API_KEY যোগ করে আবার বিল্ড করুন।</string>
-    <string name="ai_err_no_network">ইন্টারনেট নেই। সংযোগ দেখে আবার জিজ্ঞাসা করুন।</string>
-    <string name="ai_err_unauthorised">API কী গ্রহণ করা হয়নি। local.properties-এ কী-টি দেখুন।</string>
-    <string name="ai_err_rate_limited">একসাথে অনেক প্রশ্ন হয়েছে। একটু পরে আবার চেষ্টা করুন।</string>
-    <string name="ai_err_server">AI সেবায় এখন সমস্যা হচ্ছে। কিছুক্ষণ পরে চেষ্টা করুন।</string>
-    <string name="ai_err_unknown">কাজ হয়নি। আবার জিজ্ঞাসা করুন।</string>
+    <string name="ai_err_no_key">এআই কনফিগারেশন নেই। অ্যাপ অ্যাডমিনকে এআই সার্ভিস সেট আপ করতে বলুন।</string>
+    <string name="ai_err_no_network">ইন্টারনেট সংযোগ নেই। নেটওয়ার্ক পরীক্ষা করে আবার চেষ্টা করুন।</string>
+    <string name="ai_err_unauthorised">এআই অথেনটিকেশন ব্যর্থ হয়েছে। এআই সার্ভিস কী আপডেট করতে হবে।</string>
+    <string name="ai_err_rate_limited">অনেক বেশি অনুরোধ। একটু পরে আবার চেষ্টা করুন।</string>
+    <string name="ai_err_server">এআই সার্ভিস সাময়িকভাবে বন্ধ। কিছুক্ষণ পর আবার চেষ্টা করুন।</string>
+    <string name="ai_err_unknown">উত্তর পেতে সমস্যা হয়েছে। আবার চেষ্টা করুন।</string>
     <string name="ai_thinking">ভাবছে…</string>
     <string name="ai_retry">আবার চেষ্টা করুন</string>
     <string name="answered_generally">সাধারণ জ্ঞান থেকে উত্তর</string>
     <string name="answered_from_course">আপনার অনুমোদিত কোর্স উপকরণ থেকে উত্তর</string>
-    <string name="ai_err_no_credit">এই AI অ্যাকাউন্টে ক্রেডিট নেই। ক্রেডিট যোগ করে আবার চেষ্টা করুন।</string>
+    <string name="ai_err_no_credit">এআই সার্ভিসের ব্যবহারের সীমা শেষ। পরে আবার চেষ্টা করুন।</string>
     <string name="err_legacy_office">পুরোনো .ppt ও .doc ফাইল চলে না। .pptx বা .docx হিসেবে সেভ করে আবার দিন।</string>
     <string name="read_pdf">PDF পড়ুন</string>
     <string name="read_original">মূল ফাইলটি খুলুন</string>
@@ -295,4 +295,5 @@ CSE 346, সাউথইস্ট ইউনিভার্সিটি
     <string name="ask_vivi_instead">ViVi কে জিজ্ঞাসা করুন</string>
     <string name="nav_vivi">ViVi</string>
     <string name="nav_saved">সংরক্ষিত</string>
+    <string name="ai_err_timeout">সময় শেষ হয়ে গেছে। আবার চেষ্টা করুন।</string>
 </resources>

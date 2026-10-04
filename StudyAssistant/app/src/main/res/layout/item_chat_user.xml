@@ -4,9 +4,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="end"
-    android:paddingStart="56dp"
+    android:paddingStart="48dp"
     android:paddingEnd="@dimen/space_md"
-    android:paddingBottom="@dimen/space_sm">
+    android:paddingBottom="@dimen/space_md">
 
     <TextView
         android:id="@+id/msgText"
@@ -19,5 +19,6 @@
         android:paddingBottom="12dp"
         android:lineSpacingExtra="3dp"
         android:textColor="@color/text_on_primary"
+        android:textIsSelectable="true"
         android:textSize="@dimen/text_body" />
 </LinearLayout>

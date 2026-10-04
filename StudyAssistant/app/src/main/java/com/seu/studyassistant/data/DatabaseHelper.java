@@ -452,11 +452,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /** UC6: keyword search across the materials of the courses a student is enrolled in. */
     public List<Material> searchMaterials(long userId, String keyword) {
         List<Material> list = new ArrayList<>();
-        String like = "%" + keyword.trim() + "%";
+        // The keyword is matched literally: % and _ typed by the student are escaped, so they
+        // do not act as SQL wildcards (a search for "50%" must not match everything).
+        String escaped = keyword.trim().replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
+        String like = "%" + escaped + "%";
         Cursor c = getReadableDatabase().rawQuery(
                 "SELECT m.id,m.course_id,m.title,m.type,m.body,m.approved FROM materials m " +
                 "JOIN enrollments e ON e.course_id=m.course_id " +
-                "WHERE e.user_uid=? AND m.approved=1 AND (m.title LIKE ? OR m.body LIKE ?) " +
+                "WHERE e.user_uid=? AND m.approved=1 AND (m.title LIKE ? ESCAPE '\\' OR m.body LIKE ? ESCAPE '\\') " +
                 "ORDER BY m.id",
                 new String[]{String.valueOf(uidOf(userId)), like, like});
         while (c.moveToNext()) list.add(readMaterial(c));
@@ -898,6 +901,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues v = new ContentValues();
         v.put("file_path", path);
         getWritableDatabase().update("materials", v, "id=?", new String[]{String.valueOf(materialId)});
+    }
+
+    /** The Firestore id of a course, for an external retrieval service; null if unknown. */
+    public String courseRemoteId(long courseId) {
+        String[] c = courseRemote(courseId);
+        return c == null ? null : c[0];
     }
 
     /** The Firestore id of a material, for downloading its file. */

@@ -20,15 +20,26 @@ val localProps = Properties().apply {
     val f = rootProject.file("local.properties")
     if (f.exists()) f.inputStream().use { load(it) }
 }
-val openAiKey: String = (localProps.getProperty("OPENAI_API_KEY") ?: "").trim()
+// AI and RAG configuration comes from local.properties (git-ignored) and is compiled into
+// BuildConfig, so no key appears in source, resources or git. The older OPENAI_API_KEY /
+// AI_BASE_URL / AI_MODEL names are still honoured so an existing local.properties keeps working.
+fun prop(vararg names: String, default: String = ""): String {
+    for (n in names) localProps.getProperty(n)?.trim()?.takeIf { it.isNotEmpty() }?.let { return it }
+    return default
+}
+fun quoted(v: String) = "\"" + v.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
 
-// Provider is swappable because OpenAI, Google Gemini, Groq, OpenRouter and Cerebras all
-// expose the SAME Chat Completions request/response shape - only the host and model name
-// differ. Override AI_BASE_URL and AI_MODEL in local.properties to move to a free provider
-// without touching a line of Java.
-val aiBaseUrl: String = (localProps.getProperty("AI_BASE_URL")
-    ?: "https://api.openai.com/v1/chat/completions").trim()
-val aiModel: String = (localProps.getProperty("AI_MODEL") ?: "gpt-4o-mini").trim()
+val llmProvider = prop("LLM_PROVIDER", default = "openai_compatible")
+val llmBaseUrl = prop("LLM_BASE_URL", "AI_BASE_URL", default = "https://api.openai.com/v1")
+val llmModel = prop("LLM_MODEL", "AI_MODEL", default = "gpt-4o-mini")
+val llmApiKey = prop("LLM_API_KEY", "OPENAI_API_KEY")
+val llmTimeout = prop("LLM_TIMEOUT_SECONDS", default = "45").toIntOrNull() ?: 45
+val llmMaxTokens = prop("LLM_MAX_TOKENS", default = "800").toIntOrNull() ?: 800
+val ragProvider = prop("RAG_PROVIDER", default = "local")
+val ragBaseUrl = prop("RAG_BASE_URL")
+val ragApiKey = prop("RAG_API_KEY")
+val ragAuthHeader = prop("RAG_AUTH_HEADER", default = "Authorization")
+val ragTopK = prop("RAG_TOP_K", default = "5").toIntOrNull() ?: 5
 
 android {
     namespace = "com.seu.studyassistant"
@@ -38,12 +49,20 @@ android {
         applicationId = "com.seu.studyassistant"
         minSdk = 24
         targetSdk = 37
-        versionCode = 3
-        versionName = "1.2"
+        versionCode = 4
+        versionName = "1.3"
 
-        buildConfigField("String", "OPENAI_API_KEY", "\"$openAiKey\"")
-        buildConfigField("String", "AI_BASE_URL", "\"$aiBaseUrl\"")
-        buildConfigField("String", "OPENAI_MODEL", "\"$aiModel\"")
+        buildConfigField("String", "LLM_PROVIDER", quoted(llmProvider))
+        buildConfigField("String", "LLM_BASE_URL", quoted(llmBaseUrl))
+        buildConfigField("String", "LLM_MODEL", quoted(llmModel))
+        buildConfigField("String", "LLM_API_KEY", quoted(llmApiKey))
+        buildConfigField("int", "LLM_TIMEOUT_SECONDS", llmTimeout.toString())
+        buildConfigField("int", "LLM_MAX_TOKENS", llmMaxTokens.toString())
+        buildConfigField("String", "RAG_PROVIDER", quoted(ragProvider))
+        buildConfigField("String", "RAG_BASE_URL", quoted(ragBaseUrl))
+        buildConfigField("String", "RAG_API_KEY", quoted(ragApiKey))
+        buildConfigField("String", "RAG_AUTH_HEADER", quoted(ragAuthHeader))
+        buildConfigField("int", "RAG_TOP_K", ragTopK.toString())
     }
 
     buildFeatures {

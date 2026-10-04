@@ -51,12 +51,30 @@ public class ChatActivity extends BaseActivity {
     private final List<Msg> messages = new ArrayList<>();
     private ChatAdapter adapter;
 
-    private RetrievalEngine engine;
+    private com.seu.studyassistant.engine.rag.RagRetriever rag;
     private final OpenAiClient ai = new OpenAiClient();
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private final Handler main = new Handler(Looper.getMainLooper());
 
     private boolean busy;
+    private View sendProgress;
+
+    /** Bubbles never span the whole screen: at most about 78% of its width. */
+    private int bubbleMaxWidth() {
+        return (int) (getResources().getDisplayMetrics().widthPixels * 0.78f);
+    }
+
+    private void scrollToLatest() {
+        if (!messages.isEmpty()) recycler.post(() -> recycler.smoothScrollToPosition(messages.size() - 1));
+    }
+
+    /** Send turns into a spinner while ViVi answers, so a second tap cannot send twice. */
+    private void setBusy(boolean b) {
+        busy = b;
+        btnSend.setEnabled(!b);
+        btnSend.setAlpha(b ? 0.55f : 1f);
+        if (sendProgress != null) sendProgress.setVisibility(b ? View.VISIBLE : View.GONE);
+    }
 
     /** Opens ViVi with this question already asked (from the course Ask screen). */
     public static final String EXTRA_QUESTION = "question";
@@ -86,14 +104,19 @@ public class ChatActivity extends BaseActivity {
         setContentView(R.layout.activity_chat);
         setupHeader(getString(R.string.ai_chat_title), true);
 
-        engine = new RetrievalEngine(db);
+        rag = com.seu.studyassistant.engine.rag.RagRetrievers.create(db);
         recycler = findViewById(R.id.recycler);
         etMessage = findViewById(R.id.etMessage);
         btnSend = findViewById(R.id.btnSend);
 
-        LinearLayoutManager lm = new LinearLayoutManager(this);
-        lm.setStackFromEnd(true);          // newest message sits at the bottom, like a chat
-        recycler.setLayoutManager(lm);
+        // Messages start at the top; each new one scrolls into view. (Stacking from the end
+        // left a short conversation floating at the bottom under a large empty area.)
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        sendProgress = findViewById(R.id.sendProgress);
+        // When the keyboard opens the list gets shorter: keep the newest message visible.
+        recycler.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
+            if (b < ob) scrollToLatest();
+        });
 
         adapter = new ChatAdapter();
         recycler.setAdapter(adapter);
@@ -128,6 +151,7 @@ public class ChatActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+        ai.cancel();
         io.shutdownNow();
         super.onDestroy();
     }
@@ -146,12 +170,12 @@ public class ChatActivity extends BaseActivity {
         etMessage.setText("");
         add(new Msg(Msg.USER, question));
         add(new Msg(Msg.TYPING, ""));
-        busy = true;
+        setBusy(true);
 
         // The free tier's daily cap covers the chat as well as the per-course Ask screen.
         if ("free".equals(u.tier) && db.questionsToday(u.id) >= FREE_DAILY_LIMIT) {
             removeTyping();
-            busy = false;
+            setBusy(false);
             add(new Msg(Msg.AI, getString(R.string.cap_reached, FREE_DAILY_LIMIT)));
             return;
         }
@@ -167,7 +191,7 @@ public class ChatActivity extends BaseActivity {
         io.execute(new Runnable() {
             @Override public void run() {
                 // RAG across every enrolled course; only approved material is ever searched.
-                final AnswerResult r = engine.askEverything(userId, retrievalQuery);
+                final AnswerResult r = rag.retrieveAll(userId, retrievalQuery);
                 List<String> excerpts = new ArrayList<>(), titles = new ArrayList<>();
                 if (!r.declined) {
                     excerpts = r.passages;
@@ -182,7 +206,7 @@ public class ChatActivity extends BaseActivity {
                 main.post(new Runnable() {
                     @Override public void run() {
                         if (isFinishing() || isDestroyed()) return;
-                        busy = false;
+                        setBusy(false);
                         removeTyping();
 
                         if (res.isOk()) {
@@ -226,7 +250,7 @@ public class ChatActivity extends BaseActivity {
     static List<Material> explicitCitations(String text, AnswerResult r) {
         List<Material> out = new ArrayList<>();
         java.util.Set<Long> seen = new java.util.HashSet<>();
-        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\[(\\d+)]").matcher(text);
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\[(\\d{1,3})]").matcher(text);
         while (m.find()) {
             int n = Integer.parseInt(m.group(1)) - 1;
             if (n >= 0 && n < r.passageSources.size()) {
@@ -271,7 +295,7 @@ public class ChatActivity extends BaseActivity {
     private void add(Msg m) {
         messages.add(m);
         adapter.notifyItemInserted(messages.size() - 1);
-        recycler.scrollToPosition(messages.size() - 1);
+        scrollToLatest();
     }
 
     private void removeTyping() {
@@ -285,7 +309,11 @@ public class ChatActivity extends BaseActivity {
     }
 
     /** A source label opens its material, or offers a choice when the answer cited several. */
-    private void openSources(final List<Material> sources) {
+    private void openSources(List<Material> all) {
+        // Passages from an external retrieval service have no local material to open.
+        final List<Material> sources = new ArrayList<>();
+        for (Material m : all) if (m.id > 0) sources.add(m);
+        if (sources.isEmpty()) return;
         if (sources.size() == 1) {
             open(MaterialViewActivity.class, EXTRA_MATERIAL_ID, sources.get(0).id);
             return;
@@ -311,7 +339,10 @@ public class ChatActivity extends BaseActivity {
             int layout = viewType == Msg.USER ? R.layout.item_chat_user
                     : viewType == Msg.TYPING ? R.layout.item_chat_typing
                     : R.layout.item_chat_ai;
-            return new Holder(getLayoutInflater().inflate(layout, parent, false));
+            Holder h = new Holder(getLayoutInflater().inflate(layout, parent, false));
+            if (h.text != null) h.text.setMaxWidth(bubbleMaxWidth());
+            if (h.sources != null) h.sources.setMaxWidth(bubbleMaxWidth());
+            return h;
         }
 
         @Override

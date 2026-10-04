@@ -319,8 +319,10 @@ public class RetrievalEngine {
                 "SELECT ch.material_id, ch.text, m.type, m.title FROM chunks ch " +
                 "JOIN materials m ON m.id = ch.material_id " +
                 "JOIN enrollments e ON e.course_id = ch.course_id " +
-                "WHERE e.user_id = ? AND m.approved = 1",
-                new String[]{String.valueOf(userId)});
+                "WHERE e.user_uid = ? AND m.approved = 1",
+                // Enrolments are keyed by Firebase uid since the cloud-sync schema; querying
+                // the old local user_id column crashed every ViVi question.
+                new String[]{String.valueOf(db.uidOf(userId))});
         while (c.moveToNext()) {
             Passage p = new Passage();
             p.materialId = c.getLong(0);

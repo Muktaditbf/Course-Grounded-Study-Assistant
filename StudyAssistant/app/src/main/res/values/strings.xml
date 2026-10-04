@@ -213,17 +213,17 @@ Answers only from teacher-approved material.</string>
     <string name="language_english">English</string>
     <string name="language_bangla">Bangla</string>
     <string name="language_choose">Choose the language the app is shown in.</string>
-    <string name="ai_err_no_key">AI key not set up. Add OPENAI_API_KEY to local.properties and rebuild.</string>
-    <string name="ai_err_no_network">No internet connection. Check your network and ask again.</string>
-    <string name="ai_err_unauthorised">That API key was rejected. Check the key in local.properties.</string>
-    <string name="ai_err_rate_limited">Too many questions just now. Wait a moment and ask again.</string>
-    <string name="ai_err_server">The AI service is having trouble right now. Try again shortly.</string>
-    <string name="ai_err_unknown">That did not work. Try asking again.</string>
+    <string name="ai_err_no_key">AI configuration is missing. Ask the app administrator to set up the AI service.</string>
+    <string name="ai_err_no_network">No internet connection. Check your network and try again.</string>
+    <string name="ai_err_unauthorised">AI authentication failed. The AI service key needs to be updated.</string>
+    <string name="ai_err_rate_limited">Too many requests. Please try again in a moment.</string>
+    <string name="ai_err_server">AI service is temporarily unavailable. Please try again shortly.</string>
+    <string name="ai_err_unknown">Something went wrong getting an answer. Please try again.</string>
     <string name="ai_thinking">Thinking…</string>
     <string name="ai_retry">Try again</string>
     <string name="answered_generally">Answered from general knowledge</string>
     <string name="answered_from_course">Answered from your approved course material</string>
-    <string name="ai_err_no_credit">This AI account has no credits left. Add credits, then ask again.</string>
+    <string name="ai_err_no_credit">The AI service has reached its usage limit. Please try again later.</string>
     <string name="err_legacy_office">Old .ppt and .doc files are not supported. Save as .pptx or .docx, then try again.</string>
     <string name="read_pdf">Read the PDF</string>
     <string name="read_original">Open the original file</string>
@@ -309,4 +309,5 @@ Answers only from teacher-approved material.</string>
     <string name="ask_vivi_instead">Ask ViVi instead</string>
     <string name="nav_vivi">ViVi</string>
     <string name="nav_saved">Saved</string>
+    <string name="ai_err_timeout">Request timed out. Please try again.</string>
 </resources>

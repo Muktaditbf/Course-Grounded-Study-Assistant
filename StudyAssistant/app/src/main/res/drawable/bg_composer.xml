@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The floating message composer: a bright pill that clearly reads as an active input. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/surface" />
+    <corners android:radius="999dp" />
+    <stroke android:width="1.5dp" android:color="@color/primary_tint" />
+</shape>

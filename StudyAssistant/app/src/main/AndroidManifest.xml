@@ -32,7 +32,9 @@
         <activity android:name=".ui.StudentDashboardActivity" android:exported="false" />
         <activity android:name=".ui.JoinCourseActivity" android:exported="false" />
         <activity android:name=".ui.CourseHomeActivity" android:exported="false" />
-        <activity android:name=".ui.AskQuestionActivity" android:exported="false" />
+        <!-- Answers arrive asynchronously; keep the screen (and its conversation) across rotation. -->
+        <activity android:name=".ui.AskQuestionActivity" android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden" />
         <activity android:name=".ui.MaterialViewActivity" android:exported="false" />
         <activity android:name=".ui.SearchActivity" android:exported="false" />
         <activity android:name=".ui.BookmarksActivity" android:exported="false" />
@@ -65,6 +67,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <activity android:name=".ui.ChatActivity" android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden" />
     </application>
 </manifest>

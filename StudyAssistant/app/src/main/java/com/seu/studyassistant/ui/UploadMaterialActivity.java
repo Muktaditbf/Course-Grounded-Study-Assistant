@@ -247,6 +247,8 @@ public class UploadMaterialActivity extends BaseActivity {
 
         String type = TYPE_KEYS[spType.getSelectedItemPosition()];
         boolean approve = cbApprove.isChecked();
+        // A second tap while this one is saving would create a duplicate material.
+        findViewById(R.id.btnSave).setEnabled(false);
 
         if (editing != null) {
             db.updateMaterial(editing.id, title, type, body, pickedFilePath != null,

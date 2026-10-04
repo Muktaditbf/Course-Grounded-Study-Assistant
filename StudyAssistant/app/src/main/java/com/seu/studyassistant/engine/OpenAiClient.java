@@ -6,52 +6,31 @@ import android.net.NetworkCapabilities;
 
 import androidx.annotation.Nullable;
 
-import com.seu.studyassistant.BuildConfig;
 import com.seu.studyassistant.R;
+import com.seu.studyassistant.engine.ai.ChatMessage;
+import com.seu.studyassistant.engine.ai.LlmConfig;
+import com.seu.studyassistant.engine.ai.LlmProvider;
+import com.seu.studyassistant.engine.ai.LlmProviders;
+import com.seu.studyassistant.engine.ai.LlmResponse;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Talks to a Chat Completions endpoint.
+ * The app's AI service. Screens call it with a question and retrieved course context; it builds
+ * the prompt and hands the messages to whichever provider local.properties configures
+ * (see LlmConfig / LlmProviders). Nothing here knows which provider that is.
  *
- * Every failure is mapped to a specific, user-facing reason rather than a silent no-op:
- * a request that goes wrong always comes back with something the UI can put on screen.
- * The key is read from BuildConfig, which is populated from local.properties at build time,
- * and is never logged - not even at the point where a 401 proves it is wrong.
+ * Every failure comes back as a {@link Failure} with a user-facing message - nothing is
+ * allowed to fail silently, and no technical detail or key reaches the screen.
  */
 public final class OpenAiClient {
 
-    /**
-     * Set from local.properties at build time. Defaults to OpenAI, but any provider that
-     * implements the Chat Completions API - Gemini, Groq, OpenRouter, Cerebras - works by
-     * changing AI_BASE_URL and AI_MODEL alone.
-     */
-    private static final String ENDPOINT = BuildConfig.AI_BASE_URL;
-    private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-
-    /**
-     * Tone only, no topic restriction: this assistant answers whatever it is asked. When the
-     * caller has approved course material for the question, that text is appended as context.
-     */
-    private static final String SYSTEM_PROMPT =
-            "You are a friendly study assistant for university students, used inside a phone app. "
-          + "Answer clearly and directly in plain language. Keep answers short enough to read on "
-          + "a phone screen - usually under 120 words - and use a short list when steps or items "
-          + "genuinely help. Do not invent citations.";
-
     /** Marks a ViVi reply that came from the model's own knowledge rather than the courses. */
     public static final String GENERAL_MARKER = "[GENERAL]";
+
+    /** What the model replies when the excerpts do not answer the question. */
+    public static final String NOT_COVERED = "NOT_IN_MATERIAL";
 
     /**
      * ViVi, the app-wide assistant. Unlike the course Ask screen it answers everything, but it
@@ -74,50 +53,6 @@ public final class OpenAiClient {
           + "5. Keep answers short enough for a phone screen (usually under 150 words); use short "
           + "lists for steps or items. Reply in the language of the question (English or Bangla).";
 
-    /**
-     * ViVi's reply. {@code excerpts} may be empty: then ViVi answers small talk or from general
-     * knowledge. {@code courses} lists the student's enrolled courses, so questions about
-     * their own courses ("what am I studying?") can be answered. Blocking: run off the main thread.
-     */
-    public Result askHybrid(Context ctx, String question, java.util.List<String> excerpts,
-                            java.util.List<String> titles, java.util.List<String> courses,
-                            @Nullable String history) {
-        if (!hasKey()) return Result.fail(Failure.NO_KEY);
-        if (!isOnline(ctx)) return Result.fail(Failure.NO_NETWORK);
-        String body;
-        try {
-            JSONArray messages = new JSONArray();
-            messages.put(new JSONObject().put("role", "system").put("content", VIVI_PROMPT));
-            if (courses != null && !courses.isEmpty()) {
-                StringBuilder c = new StringBuilder("The student is enrolled in these courses:\n");
-                for (String course : courses) c.append("- ").append(course).append('\n');
-                messages.put(new JSONObject().put("role", "system").put("content", c.toString()));
-            }
-            if (excerpts != null && !excerpts.isEmpty()) {
-                StringBuilder e = new StringBuilder("Course excerpts (teacher-approved):\n");
-                for (int i = 0; i < excerpts.size(); i++) {
-                    e.append('[').append(i + 1).append("] (").append(titles.get(i)).append(")\n")
-                            .append(excerpts.get(i)).append("\n\n");
-                }
-                messages.put(new JSONObject().put("role", "system").put("content", e.toString()));
-            }
-            String q = history == null || history.isEmpty() ? question
-                    : history + "\n\nCurrent message: " + question;
-            messages.put(new JSONObject().put("role", "user").put("content", q));
-            body = new JSONObject()
-                    .put("model", BuildConfig.OPENAI_MODEL)
-                    .put("messages", messages)
-                    .put("temperature", 0.4)
-                    .put("max_tokens", 700)
-                    .toString();
-        } catch (Exception e) {
-            return Result.fail(Failure.UNKNOWN);
-        }
-        return post(body);
-    }
-
-    /** What the model replies when the excerpts do not answer the question. */
-    public static final String NOT_COVERED = "NOT_IN_MATERIAL";
 
     /**
      * The grounded mode, used for every student question. The model is a reader, not a source:
@@ -137,8 +72,9 @@ public final class OpenAiClient {
           + "listing steps or items.\n"
           + "5. Reply in the same language as the question (English or Bangla).";
 
+
     /** Why a request failed, so the UI can show the right message. */
-    public enum Failure { NONE, NO_KEY, NO_NETWORK, UNAUTHORISED, RATE_LIMITED, NO_CREDIT, SERVER, UNKNOWN }
+    public enum Failure { NONE, NO_KEY, NO_NETWORK, TIMEOUT, UNAUTHORISED, RATE_LIMITED, NO_CREDIT, SERVER, UNKNOWN }
 
     /** One outcome: either {@code text} is set, or {@code failure} explains why it is not. */
     public static final class Result {
@@ -160,6 +96,7 @@ public final class OpenAiClient {
             switch (failure) {
                 case NO_KEY:        return R.string.ai_err_no_key;
                 case NO_NETWORK:    return R.string.ai_err_no_network;
+                case TIMEOUT:       return R.string.ai_err_timeout;
                 case UNAUTHORISED:  return R.string.ai_err_unauthorised;
                 case RATE_LIMITED:  return R.string.ai_err_rate_limited;
                 case NO_CREDIT:     return R.string.ai_err_no_credit;
@@ -169,15 +106,11 @@ public final class OpenAiClient {
         }
     }
 
-    private final OkHttpClient http = new OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(45, TimeUnit.SECONDS)
-            .build();
+    private final LlmConfig config = LlmConfig.fromBuild();
+    private final LlmProvider provider = LlmProviders.create(config);
 
-    public static boolean hasKey() {
-        String k = BuildConfig.OPENAI_API_KEY;
-        return k != null && !k.trim().isEmpty() && !k.startsWith("YOUR_KEY");
-    }
+    /** True when an AI key and model are configured. */
+    public static boolean hasKey() { return LlmConfig.fromBuild().isComplete(); }
 
     public static boolean isOnline(Context c) {
         ConnectivityManager cm =
@@ -187,160 +120,77 @@ public final class OpenAiClient {
         return caps != null && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 
-    /**
-     * Blocking call - run it off the main thread.
-     *
-     * @param courseContext approved course text to ground the answer in, or null for a plain
-     *                      general-knowledge answer.
-     */
-    public Result ask(Context ctx, String question, @Nullable String courseContext) {
-        if (!hasKey()) return Result.fail(Failure.NO_KEY);
-        if (!isOnline(ctx)) return Result.fail(Failure.NO_NETWORK);
+    /** Stops this screen's request in flight; called when the screen is destroyed. */
+    public void cancel() { provider.cancel(); }
 
-        String body;
-        try {
-            body = buildRequest(question, courseContext);
-        } catch (Exception e) {
-            return Result.fail(Failure.UNKNOWN);
-        }
-
-        Request request = new Request.Builder()
-                .url(ENDPOINT)
-                .addHeader("Authorization", "Bearer " + BuildConfig.OPENAI_API_KEY)
-                .post(RequestBody.create(body, JSON))
-                .build();
-
-        try (Response response = http.newCall(request).execute()) {
-            int code = response.code();
-            if (code == 401 || code == 403) return Result.fail(Failure.UNAUTHORISED);
-            if (code >= 500) return Result.fail(Failure.SERVER);
-
-            ResponseBody rb = response.body();
-            String payload = rb == null ? "" : rb.string();
-
-            // OpenAI returns 429 both for genuine rate limiting and for an account with no
-            // credits left. They need different advice, so the error code decides which.
-            if (code == 429) {
-                return Result.fail(isOutOfCredit(payload)
-                        ? Failure.NO_CREDIT : Failure.RATE_LIMITED);
-            }
-            if (!response.isSuccessful()) return Result.fail(Failure.UNKNOWN);
-
-            String answer = parseAnswer(payload);
-            return answer == null ? Result.fail(Failure.UNKNOWN) : Result.ok(answer);
-
-        } catch (IOException e) {
-            // Timeouts and DNS failures land here even when the network looked available.
-            return Result.fail(Failure.NO_NETWORK);
-        } catch (Exception e) {
-            return Result.fail(Failure.UNKNOWN);
-        }
-    }
+    // ------------------------------------------------------------------- ViVi
 
     /**
-     * Grounded answer: blocking, run it off the main thread. Excerpts are numbered in order and
-     * labelled with their material title so the model can cite them.
+     * ViVi's reply. {@code excerpts} may be empty: then ViVi answers small talk or from general
+     * knowledge. {@code courses} lists the student's enrolled courses, so questions about
+     * their own courses ("what am I studying?") can be answered. Blocking: run off the main thread.
      */
-    public Result askGrounded(Context ctx, String question, java.util.List<String> excerpts,
-                              java.util.List<String> titles, @Nullable String history) {
-        if (!hasKey()) return Result.fail(Failure.NO_KEY);
+    public Result askHybrid(Context ctx, String question, List<String> excerpts,
+                            List<String> titles, List<String> courses, @Nullable String history) {
+        List<ChatMessage> m = new ArrayList<>();
+        m.add(ChatMessage.system(VIVI_PROMPT));
+        if (courses != null && !courses.isEmpty()) {
+            StringBuilder c = new StringBuilder("The student is enrolled in these courses:\n");
+            for (String course : courses) c.append("- ").append(course).append('\n');
+            m.add(ChatMessage.system(c.toString()));
+        }
+        if (excerpts != null && !excerpts.isEmpty()) {
+            m.add(ChatMessage.system("Course excerpts (teacher-approved):\n" + numbered(excerpts, titles)));
+        }
+        m.add(ChatMessage.user(history == null || history.isEmpty() ? question
+                : history + "\n\nCurrent message: " + question));
+        return run(ctx, m, 0.4);
+    }
+
+    // ------------------------------------------------------------- course Ask
+
+    /**
+     * Grounded answer for the course Ask screen: blocking, run it off the main thread.
+     * Excerpts are numbered in order and labelled with their material title so the model can
+     * cite them.
+     */
+    public Result askGrounded(Context ctx, String question, List<String> excerpts,
+                              List<String> titles, @Nullable String history) {
+        List<ChatMessage> m = new ArrayList<>();
+        m.add(ChatMessage.system(GROUNDED_PROMPT));
+        m.add(ChatMessage.system("Course excerpts:\n" + numbered(excerpts, titles)));
+        m.add(ChatMessage.user(history == null || history.isEmpty() ? question
+                : history + "\n\nCurrent question: " + question));
+        return run(ctx, m, 0.1);   // faithful restatement, not creativity
+    }
+
+    // ---------------------------------------------------------------- shared
+
+    private static String numbered(List<String> excerpts, List<String> titles) {
+        StringBuilder e = new StringBuilder();
+        for (int i = 0; i < excerpts.size(); i++) {
+            String title = titles != null && i < titles.size() ? titles.get(i) : "";
+            e.append('[').append(i + 1).append("] (").append(title).append(")\n")
+                    .append(excerpts.get(i)).append("\n\n");
+        }
+        return e.toString();
+    }
+
+    private Result run(Context ctx, List<ChatMessage> messages, double temperature) {
+        if (!config.isComplete()) return Result.fail(Failure.NO_KEY);
         if (!isOnline(ctx)) return Result.fail(Failure.NO_NETWORK);
-        String body;
-        try {
-            StringBuilder ctxText = new StringBuilder("Course excerpts:\n");
-            for (int i = 0; i < excerpts.size(); i++) {
-                ctxText.append('[').append(i + 1).append("] (").append(titles.get(i)).append(")\n")
-                        .append(excerpts.get(i)).append("\n\n");
-            }
-            JSONArray messages = new JSONArray();
-            messages.put(new JSONObject().put("role", "system").put("content", GROUNDED_PROMPT));
-            messages.put(new JSONObject().put("role", "system").put("content", ctxText.toString()));
-            String q = history == null || history.isEmpty() ? question
-                    : history + "\n\nCurrent question: " + question;
-            messages.put(new JSONObject().put("role", "user").put("content", q));
-            body = new JSONObject()
-                    .put("model", BuildConfig.OPENAI_MODEL)
-                    .put("messages", messages)
-                    .put("temperature", 0.1)   // faithful restatement, not creativity
-                    .put("max_tokens", 600)
-                    .toString();
-        } catch (Exception e) {
-            return Result.fail(Failure.UNKNOWN);
-        }
-        return post(body);
-    }
 
-    private Result post(String body) {
-        Request request = new Request.Builder()
-                .url(ENDPOINT)
-                .addHeader("Authorization", "Bearer " + BuildConfig.OPENAI_API_KEY)
-                .post(RequestBody.create(body, JSON))
-                .build();
-        try (Response response = http.newCall(request).execute()) {
-            int code = response.code();
-            if (code == 401 || code == 403) return Result.fail(Failure.UNAUTHORISED);
-            if (code >= 500) return Result.fail(Failure.SERVER);
-            ResponseBody rb = response.body();
-            String payload = rb == null ? "" : rb.string();
-            if (code == 429) {
-                return Result.fail(isOutOfCredit(payload) ? Failure.NO_CREDIT : Failure.RATE_LIMITED);
-            }
-            if (!response.isSuccessful()) return Result.fail(Failure.UNKNOWN);
-            String answer = parseAnswer(payload);
-            return answer == null ? Result.fail(Failure.UNKNOWN) : Result.ok(answer);
-        } catch (IOException e) {
-            return Result.fail(Failure.NO_NETWORK);
-        } catch (Exception e) {
-            return Result.fail(Failure.UNKNOWN);
-        }
-    }
-
-    private String buildRequest(String question, @Nullable String courseContext) throws Exception {
-        JSONArray messages = new JSONArray();
-        messages.put(new JSONObject().put("role", "system").put("content", SYSTEM_PROMPT));
-
-        if (courseContext != null && !courseContext.trim().isEmpty()) {
-            messages.put(new JSONObject()
-                    .put("role", "system")
-                    .put("content", "The student's teacher has approved the course material below. "
-                            + "Prefer it when it answers the question, and say so naturally. If it "
-                            + "does not cover the question, answer from your own knowledge instead.\n\n"
-                            + courseContext));
-        }
-
-        messages.put(new JSONObject().put("role", "user").put("content", question));
-
-        return new JSONObject()
-                .put("model", BuildConfig.OPENAI_MODEL)
-                .put("messages", messages)
-                .put("temperature", 0.4)
-                .put("max_tokens", 500)
-                .toString();
-    }
-
-    private boolean isOutOfCredit(String payload) {
-        try {
-            JSONObject err = new JSONObject(payload).optJSONObject("error");
-            if (err == null) return false;
-            String type = err.optString("type", "");
-            String code = err.optString("code", "");
-            return type.contains("insufficient_quota") || code.contains("credit_balance");
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private String parseAnswer(String json) {
-        try {
-            JSONArray choices = new JSONObject(json).optJSONArray("choices");
-            if (choices == null || choices.length() == 0) return null;
-            String text = choices.getJSONObject(0)
-                    .getJSONObject("message")
-                    .optString("content", "")
-                    .trim();
-            return text.isEmpty() ? null : text;
-        } catch (Exception e) {
-            return null;
+        LlmResponse r = provider.complete(messages, temperature, config.maxTokens);
+        if (r.isOk()) return Result.ok(r.text);
+        switch (r.status) {
+            case NOT_CONFIGURED: return Result.fail(Failure.NO_KEY);
+            case AUTH_FAILED:    return Result.fail(Failure.UNAUTHORISED);
+            case RATE_LIMITED:   return Result.fail(Failure.RATE_LIMITED);
+            case QUOTA_EXCEEDED: return Result.fail(Failure.NO_CREDIT);
+            case SERVER_ERROR:   return Result.fail(Failure.SERVER);
+            case TIMEOUT:        return Result.fail(Failure.TIMEOUT);
+            case NETWORK:        return Result.fail(Failure.NO_NETWORK);
+            default:             return Result.fail(Failure.UNKNOWN);   // malformed, empty, bad request, cancelled
         }
     }
 }

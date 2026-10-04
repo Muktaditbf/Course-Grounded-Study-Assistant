@@ -38,7 +38,10 @@ public class AskQuestionActivity extends BaseActivity {
     private EditText etQuestion;
     private View answerBlock, declinedBlock, suggestBlock, loadingBlock, errorBlock;
     private LinearLayout sourcesContainer, relatedContainer, suggestContainer;
-    private RetrievalEngine engine;
+    private com.seu.studyassistant.engine.rag.RagRetriever rag;
+
+    /** True while a question is being answered; stops a double tap sending it twice. */
+    private boolean busy;
 
     private final OpenAiClient ai = new OpenAiClient();
     private final ExecutorService io = Executors.newSingleThreadExecutor();
@@ -53,7 +56,7 @@ public class AskQuestionActivity extends BaseActivity {
         setContentView(R.layout.activity_ask_question);
 
         courseId = getIntent().getLongExtra(EXTRA_COURSE_ID, -1);
-        engine = new RetrievalEngine(db);
+        rag = com.seu.studyassistant.engine.rag.RagRetrievers.create(db);
 
         etQuestion = findViewById(R.id.etQuestion);
         answerBlock = findViewById(R.id.answerBlock);
@@ -167,13 +170,15 @@ public class AskQuestionActivity extends BaseActivity {
         final User u = currentUser();
         if (u == null) { logout(); return; }
 
+        if (busy) return;
+        busy = true;
         lastQuestion = question;
         suggestBlock.setVisibility(View.GONE);
         showLoading();
 
         io.execute(new Runnable() {
             @Override public void run() {
-                final AnswerResult r = engine.ask(courseId, question);
+                final AnswerResult r = rag.retrieveCourse(courseId, question);
                 if (r.declined) {
                     post(() -> {
                         db.logQuestion(u.id, courseId, question, false);
@@ -212,6 +217,7 @@ public class AskQuestionActivity extends BaseActivity {
         main.post(new Runnable() {
             @Override public void run() {
                 if (isFinishing() || isDestroyed()) return;
+                busy = false;
                 loadingBlock.setVisibility(View.GONE);
                 r.run();
                 showRemainingCap();
@@ -222,7 +228,7 @@ public class AskQuestionActivity extends BaseActivity {
     /** The materials the answer actually cites ([1], [2]...), in first-cited order. */
     static List<Material> citedSources(String answer, AnswerResult r) {
         java.util.LinkedHashSet<Material> out = new java.util.LinkedHashSet<>();
-        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\[(\\d+)]").matcher(answer);
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\[(\\d{1,3})]").matcher(answer);
         java.util.Set<Long> seen = new java.util.HashSet<>();
         while (m.find()) {
             int n = Integer.parseInt(m.group(1)) - 1;
@@ -288,6 +294,7 @@ public class AskQuestionActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+        ai.cancel();   // the reply can no longer be shown; stop paying for it
         io.shutdownNow();
         super.onDestroy();
     }

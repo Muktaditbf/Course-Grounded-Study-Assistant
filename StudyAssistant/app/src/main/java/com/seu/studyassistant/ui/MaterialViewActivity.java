@@ -47,7 +47,11 @@ public class MaterialViewActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        refresh();
+    }
 
+    /** Checks access and renders; runs on resume and whenever synced data changes. */
+    private void refresh() {
         User u = currentUser();
         if (u == null) { logout(); return; }
 
@@ -83,7 +87,7 @@ public class MaterialViewActivity extends BaseActivity {
     @Override
     protected void onDataChanged() {
         // Re-run the access checks and re-render: a revoked or deleted material closes itself.
-        onResume();
+        refresh();
     }
 
     private void showManageMenu() {

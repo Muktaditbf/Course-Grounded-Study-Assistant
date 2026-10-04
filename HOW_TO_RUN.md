@@ -32,19 +32,42 @@ cd StudyAssistant
 
 Use the **release** build on real phones: it is shrunk and optimised, and noticeably faster. Without a release keystore in `local.properties` it is signed with the debug key, which is fine for testing.
 
-### Optional settings in `StudyAssistant/local.properties`
+### AI and RAG settings in `StudyAssistant/local.properties`
+
+`local.properties` is git-ignored; its values are compiled into `BuildConfig`, so keys never appear in source or git.
 
 ```properties
-OPENAI_API_KEY=your_key             # AI answers; without it the app shows matching passages instead
-AI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
-AI_MODEL=gemini-flash-lite-latest
-RELEASE_STORE_FILE=release.jks      # only for a Play Store release
+# AI (LLM). Any OpenAI-compatible service works by changing these three lines:
+LLM_PROVIDER=openai_compatible          # or: gemini (Google's native API)
+LLM_BASE_URL=https://api.groq.com/openai/v1
+LLM_MODEL=openai/gpt-oss-120b
+LLM_API_KEY=your_key
+LLM_TIMEOUT_SECONDS=45
+LLM_MAX_TOKENS=800
+
+# RAG. "local" = built-in on-device retrieval over approved material (no key needed).
+RAG_PROVIDER=local
+RAG_TOP_K=5
+# External retrieval service instead (falls back to local if it fails):
+# RAG_PROVIDER=rest
+# RAG_BASE_URL=https://your-rag-service/query
+# RAG_API_KEY=...
+# RAG_AUTH_HEADER=Authorization
+
+RELEASE_STORE_FILE=release.jks          # only for a Play Store release
 RELEASE_STORE_PASSWORD=...
 RELEASE_KEY_ALIAS=...
 RELEASE_KEY_PASSWORD=...
 ```
 
-A key in `local.properties` is compiled into the APK, so never share or upload an APK built with your personal key.
+| Provider | LLM_PROVIDER | LLM_BASE_URL | Example LLM_MODEL |
+|---|---|---|---|
+| Groq | openai_compatible | `https://api.groq.com/openai/v1` | `openai/gpt-oss-120b` |
+| OpenAI | openai_compatible | `https://api.openai.com/v1` | `gpt-4o-mini` |
+| OpenRouter | openai_compatible | `https://openrouter.ai/api/v1` | any listed model |
+| Gemini | gemini | *(leave empty)* | `gemini-2.5-flash` |
+
+The external RAG service receives `POST {"query", "top_k", "course_id"}` and must answer `{"results": [{"text", "title"}]}`. Rebuild after changing any value. A key in `local.properties` is compiled into the APK, so never share or upload an APK built with your personal key.
 
 ## 3. Use
 
