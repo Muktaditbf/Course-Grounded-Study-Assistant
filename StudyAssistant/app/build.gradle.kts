@@ -38,8 +38,8 @@ android {
         applicationId = "com.seu.studyassistant"
         minSdk = 24
         targetSdk = 37
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
 
         buildConfigField("String", "OPENAI_API_KEY", "\"$openAiKey\"")
         buildConfigField("String", "AI_BASE_URL", "\"$aiBaseUrl\"")
@@ -113,4 +113,7 @@ dependencies {
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
+    // Frosted-glass blur behind the floating navigation bar (RenderEffect on Android 12+).
+    implementation("com.github.Dimezis:BlurView:version-2.0.6")
 }

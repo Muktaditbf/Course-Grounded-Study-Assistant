@@ -187,8 +187,8 @@ public class BookmarksActivity extends BaseActivity {
 
         // Left unanchored, the bar sits on top of the bottom navigation and Undo lands on
         // the same pixels as the Settings tab.
-        View nav = findViewById(R.id.bottomNav);
-        if (nav != null && nav.getVisibility() == View.VISIBLE) bar.setAnchorView(nav);
+        View nav = findViewById(R.id.floatingNav);
+        if (nav != null) bar.setAnchorView(nav);
         bar.show();
     }
 }

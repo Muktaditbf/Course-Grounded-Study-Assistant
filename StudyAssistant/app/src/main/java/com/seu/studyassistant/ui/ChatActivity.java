@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,7 @@ import com.seu.studyassistant.R;
 import com.seu.studyassistant.engine.AnswerResult;
 import com.seu.studyassistant.engine.OpenAiClient;
 import com.seu.studyassistant.engine.RetrievalEngine;
+import com.seu.studyassistant.model.Course;
 import com.seu.studyassistant.model.Material;
 import com.seu.studyassistant.model.User;
 
@@ -56,14 +58,22 @@ public class ChatActivity extends BaseActivity {
 
     private boolean busy;
 
+    /** Opens ViVi with this question already asked (from the course Ask screen). */
+    public static final String EXTRA_QUESTION = "question";
+
     /** One bubble. */
     static class Msg {
         static final int USER = 0, AI = 1, TYPING = 2;
+        /** Where an AI answer came from, shown as a small label under the bubble. */
+        static final int LABEL_NONE = 0, LABEL_COURSE = 1, LABEL_GENERAL = 2;
         final int kind;
         final String text;
-        final String sources;      // null when the answer was not grounded
-        Msg(int kind, String text, String sources) {
-            this.kind = kind; this.text = text; this.sources = sources;
+        final int label;
+        final List<Material> sources;   // the cited materials, for LABEL_COURSE
+        Msg(int kind, String text) { this(kind, text, LABEL_NONE, null); }
+        Msg(int kind, String text, int label, List<Material> sources) {
+            this.kind = kind; this.text = text; this.label = label;
+            this.sources = sources == null ? new ArrayList<Material>() : sources;
         }
     }
 
@@ -88,7 +98,7 @@ public class ChatActivity extends BaseActivity {
         adapter = new ChatAdapter();
         recycler.setAdapter(adapter);
 
-        messages.add(new Msg(Msg.AI, getString(R.string.ai_chat_welcome), null));
+        messages.add(new Msg(Msg.AI, getString(R.string.ai_chat_welcome)));
         adapter.notifyDataSetChanged();
 
         btnSend.setOnClickListener(new View.OnClickListener() {
@@ -100,10 +110,17 @@ public class ChatActivity extends BaseActivity {
             return true;
         });
 
+        // Arriving from a course's "Ask ViVi instead": ask that question straight away.
+        String handed = getIntent().getStringExtra(EXTRA_QUESTION);
+        if (handed != null && !handed.trim().isEmpty() && savedInstanceState == null) {
+            etMessage.setText(handed);
+            send();
+        }
+
         setHeaderAction(getString(R.string.clear_chat), new View.OnClickListener() {
             @Override public void onClick(View v) {
                 messages.clear();
-                messages.add(new Msg(Msg.AI, getString(R.string.ai_chat_welcome), null));
+                messages.add(new Msg(Msg.AI, getString(R.string.ai_chat_welcome)));
                 adapter.notifyDataSetChanged();
             }
         });
@@ -127,15 +144,15 @@ public class ChatActivity extends BaseActivity {
         if (question.isEmpty()) return;
 
         etMessage.setText("");
-        add(new Msg(Msg.USER, question, null));
-        add(new Msg(Msg.TYPING, "", null));
+        add(new Msg(Msg.USER, question));
+        add(new Msg(Msg.TYPING, ""));
         busy = true;
 
         // The free tier's daily cap covers the chat as well as the per-course Ask screen.
         if ("free".equals(u.tier) && db.questionsToday(u.id) >= FREE_DAILY_LIMIT) {
             removeTyping();
             busy = false;
-            add(new Msg(Msg.AI, getString(R.string.cap_reached, FREE_DAILY_LIMIT), null));
+            add(new Msg(Msg.AI, getString(R.string.cap_reached, FREE_DAILY_LIMIT)));
             return;
         }
 
@@ -149,15 +166,18 @@ public class ChatActivity extends BaseActivity {
         // Retrieval runs with the network call, off the main thread, so typing never stalls.
         io.execute(new Runnable() {
             @Override public void run() {
+                // RAG across every enrolled course; only approved material is ever searched.
                 final AnswerResult r = engine.askEverything(userId, retrievalQuery);
-                final OpenAiClient.Result res;
-                if (r.declined) {
-                    res = null;
-                } else {
-                    java.util.List<String> titles = new java.util.ArrayList<>();
+                List<String> excerpts = new ArrayList<>(), titles = new ArrayList<>();
+                if (!r.declined) {
+                    excerpts = r.passages;
                     for (Material m : r.passageSources) titles.add(m.title);
-                    res = ai.askGrounded(getApplicationContext(), question, r.passages, titles, history);
                 }
+                List<String> courses = new ArrayList<>();
+                for (Course c : db.coursesForStudent(userId)) courses.add(c.code + " - " + c.title);
+
+                final OpenAiClient.Result res = ai.askHybrid(getApplicationContext(), question,
+                        excerpts, titles, courses, history);
 
                 main.post(new Runnable() {
                     @Override public void run() {
@@ -165,25 +185,56 @@ public class ChatActivity extends BaseActivity {
                         busy = false;
                         removeTyping();
 
-                        // Strict grounding, as on the Ask screen: no guessing outside the course.
-                        if (r.declined || (res != null && res.isOk()
-                                && res.text.trim().startsWith(OpenAiClient.NOT_COVERED))) {
-                            db.logQuestion(u.id, -1, question, false);
-                            add(new Msg(Msg.AI, getString(R.string.chat_not_covered), null));
-                            return;
+                        if (res.isOk()) {
+                            db.logQuestion(u.id, -1, question, true);
+                            add(parseReply(res.text, r));
+                        } else if (!r.declined) {
+                            // No AI available: the teacher's own passages still answer it.
+                            db.logQuestion(u.id, -1, question, true);
+                            add(new Msg(Msg.AI, r.answer, Msg.LABEL_COURSE, r.sources));
+                        } else {
+                            add(new Msg(Msg.AI, getString(res.messageRes())));
                         }
-                        db.logQuestion(u.id, -1, question, true);
-                        if (res == null || !res.isOk()) {
-                            // No AI available: show the teacher's own passages with their sources.
-                            add(new Msg(Msg.AI, r.answer, sourceNames(r.sources)));
-                            return;
-                        }
-                        add(new Msg(Msg.AI, res.text,
-                                sourceNames(AskQuestionActivity.citedSources(res.text, r))));
                     }
                 });
             }
         });
+    }
+
+    /**
+     * Turns ViVi's reply into a bubble and its label. A reply starting with the general marker
+     * came from the model's own knowledge; explicit [n] citations mean it came from the
+     * courses; neither (greetings, small talk, "who made you") gets no label at all.
+     */
+    static Msg parseReply(String raw, AnswerResult r) {
+        String text = raw.trim();
+        String marker = OpenAiClient.GENERAL_MARKER;
+        if (text.regionMatches(true, 0, marker, 0, marker.length())) {
+            return new Msg(Msg.AI, text.substring(marker.length()).trim(), Msg.LABEL_GENERAL, null);
+        }
+        // A marker the model put mid-reply still means general knowledge; drop it from the text.
+        if (text.contains(marker)) {
+            return new Msg(Msg.AI, text.replace(marker, "").trim(), Msg.LABEL_GENERAL, null);
+        }
+        List<Material> cited = explicitCitations(text, r);
+        return cited.isEmpty()
+                ? new Msg(Msg.AI, text)
+                : new Msg(Msg.AI, text, Msg.LABEL_COURSE, cited);
+    }
+
+    /** Materials cited as [n] in the reply - only ones actually cited, never a guess. */
+    static List<Material> explicitCitations(String text, AnswerResult r) {
+        List<Material> out = new ArrayList<>();
+        java.util.Set<Long> seen = new java.util.HashSet<>();
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("\\[(\\d+)]").matcher(text);
+        while (m.find()) {
+            int n = Integer.parseInt(m.group(1)) - 1;
+            if (n >= 0 && n < r.passageSources.size()) {
+                Material mat = r.passageSources.get(n);
+                if (seen.add(mat.id)) out.add(mat);
+            }
+        }
+        return out;
     }
 
     private String previousUserQuestion() {
@@ -217,16 +268,6 @@ public class ChatActivity extends BaseActivity {
         return sb.length() == 0 ? "" : "Earlier in this conversation:\n" + sb;
     }
 
-    private String sourceNames(List<Material> sources) {
-        if (sources == null || sources.isEmpty()) return null;
-        StringBuilder sb = new StringBuilder();
-        for (Material m : sources) {
-            if (sb.length() > 0) sb.append(", ");
-            sb.append(m.title);
-        }
-        return getString(R.string.ai_sources_prefix, sb.toString());
-    }
-
     private void add(Msg m) {
         messages.add(m);
         adapter.notifyItemInserted(messages.size() - 1);
@@ -241,6 +282,21 @@ public class ChatActivity extends BaseActivity {
                 return;
             }
         }
+    }
+
+    /** A source label opens its material, or offers a choice when the answer cited several. */
+    private void openSources(final List<Material> sources) {
+        if (sources.size() == 1) {
+            open(MaterialViewActivity.class, EXTRA_MATERIAL_ID, sources.get(0).id);
+            return;
+        }
+        String[] names = new String[sources.size()];
+        for (int i = 0; i < names.length; i++) names[i] = sources.get(i).title;
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.choose_source)
+                .setItems(names, (d, which) ->
+                        open(MaterialViewActivity.class, EXTRA_MATERIAL_ID, sources.get(which).id))
+                .show();
     }
 
     // ---------------------------------------------------------------- adapter
@@ -265,10 +321,30 @@ public class ChatActivity extends BaseActivity {
 
             Holder h = (Holder) holder;
             h.text.setText(m.text);
-            if (h.sources != null) {
-                boolean show = m.sources != null;
-                h.sources.setVisibility(show ? View.VISIBLE : View.GONE);
-                if (show) h.sources.setText(m.sources);
+            if (h.sources == null) return;
+
+            if (m.label == Msg.LABEL_COURSE && !m.sources.isEmpty()) {
+                StringBuilder names = new StringBuilder();
+                for (Material mat : m.sources) {
+                    if (names.length() > 0) names.append(" · ");
+                    names.append(mat.title);
+                }
+                h.sources.setVisibility(View.VISIBLE);
+                h.sources.setText(getString(R.string.label_from_courses, names));
+                h.sources.setBackgroundResource(R.drawable.bg_label_course);
+                h.sources.setTextColor(ContextCompat.getColor(ChatActivity.this, R.color.locked_green_text));
+                final List<Material> src = m.sources;
+                h.sources.setOnClickListener(new View.OnClickListener() {
+                    @Override public void onClick(View v) { openSources(src); }
+                });
+            } else if (m.label == Msg.LABEL_GENERAL) {
+                h.sources.setVisibility(View.VISIBLE);
+                h.sources.setText(R.string.label_general);
+                h.sources.setBackgroundResource(R.drawable.bg_label_general);
+                h.sources.setTextColor(ContextCompat.getColor(ChatActivity.this, R.color.violet));
+                h.sources.setOnClickListener(null);
+            } else {
+                h.sources.setVisibility(View.GONE);
             }
         }
 

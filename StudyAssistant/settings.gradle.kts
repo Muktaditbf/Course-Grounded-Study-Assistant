@@ -10,6 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // BlurView (real frosted-glass blur behind the floating navigation bar)
+        maven { url = uri("https://jitpack.io") }
     }
 }
 

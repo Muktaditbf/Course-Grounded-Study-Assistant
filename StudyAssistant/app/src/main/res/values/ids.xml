@@ -3,4 +3,5 @@
     <!-- Assigned to the floating assistant BaseActivity injects at runtime. -->
     <item name="fabAi" type="id" />
     <item name="tag_animated" type="id" />
+    <item name="tag_base_padding" type="id" />
 </resources>

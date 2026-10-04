@@ -151,15 +151,4 @@
                 android:nestedScrollingEnabled="false" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/nav_height"
-        android:background="@color/surface"
-        app:menu="@menu/nav_student"
-        app:itemIconTint="@color/nav_tint"
-        app:itemTextColor="@color/nav_tint"
-        app:labelVisibilityMode="labeled"
-        app:elevation="8dp" />
 </LinearLayout>

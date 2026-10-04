@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Floating navigation for the student screens, after the reference design: a frosted-glass pill
+  holding the five destinations, and a separate round glass button for ViVi. BaseActivity floats
+  it over the content (content scrolls underneath and shows through the blur) and lifts it above
+  the system gesture bar.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/floatingNav"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/navBlur"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/nav_height"
+        android:layout_weight="1"
+        android:background="@drawable/bg_glass_pill"
+        android:elevation="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="6dp">
+
+            <LinearLayout
+                android:id="@+id/tabHome"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_nav_tab"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/nav_home">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_home"
+                    android:importantForAccessibility="no"
+                    app:tint="@color/nav_tab_tint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/nav_home"
+                    android:maxLines="1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/nav_tab_tint" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tabSearch"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_nav_tab"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/search">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_search"
+                    android:importantForAccessibility="no"
+                    app:tint="@color/nav_tab_tint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/search"
+                    android:maxLines="1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/nav_tab_tint" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tabSaved"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_nav_tab"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/nav_saved">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_bookmark"
+                    android:importantForAccessibility="no"
+                    app:tint="@color/nav_tab_tint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/nav_saved"
+                    android:maxLines="1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/nav_tab_tint" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tabProgress"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_nav_tab"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/progress">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_chart"
+                    android:importantForAccessibility="no"
+                    app:tint="@color/nav_tab_tint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/progress"
+                    android:maxLines="1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/nav_tab_tint" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tabSettings"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_nav_tab"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/nav_settings">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_settings"
+                    android:importantForAccessibility="no"
+                    app:tint="@color/nav_tab_tint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/nav_settings"
+                    android:maxLines="1"
+                    android:textSize="10.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/nav_tab_tint" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </eightbitlab.com.blurview.BlurView>
+
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/viviBlur"
+        android:layout_width="@dimen/nav_round_size"
+        android:layout_height="@dimen/nav_round_size"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/bg_glass_round"
+        android:elevation="12dp">
+
+        <ImageView
+            android:id="@+id/btnVivi"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="11dp"
+            android:src="@drawable/ic_vivi"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/nav_vivi" />
+    </eightbitlab.com.blurview.BlurView>
+</LinearLayout>

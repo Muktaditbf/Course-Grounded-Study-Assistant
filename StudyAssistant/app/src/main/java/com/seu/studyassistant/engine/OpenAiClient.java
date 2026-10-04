@@ -50,6 +50,72 @@ public final class OpenAiClient {
           + "a phone screen - usually under 120 words - and use a short list when steps or items "
           + "genuinely help. Do not invent citations.";
 
+    /** Marks a ViVi reply that came from the model's own knowledge rather than the courses. */
+    public static final String GENERAL_MARKER = "[GENERAL]";
+
+    /**
+     * ViVi, the app-wide assistant. Unlike the course Ask screen it answers everything, but it
+     * must say where each answer came from: course excerpts are cited as [n], and anything
+     * answered from general knowledge starts with GENERAL_MARKER so the app can label it.
+     */
+    private static final String VIVI_PROMPT =
+            "You are ViVi, a friendly study assistant inside a university course app. Your name is "
+          + "ViVi. If anyone asks who made, built or created you, answer that MUKTADI made you.\n"
+          + "How to answer:\n"
+          + "1. Greetings, small talk, thanks, or questions about yourself: reply naturally and "
+          + "briefly, with no marker and no citations.\n"
+          + "2. If numbered course excerpts are provided and they answer the question, answer from "
+          + "them and cite the excerpt after each sentence or bullet, like [1] or [2][3]. Do not "
+          + "add facts that are not in the excerpts to that part of the answer.\n"
+          + "3. If no excerpts are provided, or they do not answer the question, answer accurately "
+          + "from your own knowledge and begin your reply with exactly " + "[GENERAL]" + " "
+          + "followed by a space. Never cite excerpts in such an answer.\n"
+          + "4. Never invent course content, material titles or citations.\n"
+          + "5. Keep answers short enough for a phone screen (usually under 150 words); use short "
+          + "lists for steps or items. Reply in the language of the question (English or Bangla).";
+
+    /**
+     * ViVi's reply. {@code excerpts} may be empty: then ViVi answers small talk or from general
+     * knowledge. {@code courses} lists the student's enrolled courses, so questions about
+     * their own courses ("what am I studying?") can be answered. Blocking: run off the main thread.
+     */
+    public Result askHybrid(Context ctx, String question, java.util.List<String> excerpts,
+                            java.util.List<String> titles, java.util.List<String> courses,
+                            @Nullable String history) {
+        if (!hasKey()) return Result.fail(Failure.NO_KEY);
+        if (!isOnline(ctx)) return Result.fail(Failure.NO_NETWORK);
+        String body;
+        try {
+            JSONArray messages = new JSONArray();
+            messages.put(new JSONObject().put("role", "system").put("content", VIVI_PROMPT));
+            if (courses != null && !courses.isEmpty()) {
+                StringBuilder c = new StringBuilder("The student is enrolled in these courses:\n");
+                for (String course : courses) c.append("- ").append(course).append('\n');
+                messages.put(new JSONObject().put("role", "system").put("content", c.toString()));
+            }
+            if (excerpts != null && !excerpts.isEmpty()) {
+                StringBuilder e = new StringBuilder("Course excerpts (teacher-approved):\n");
+                for (int i = 0; i < excerpts.size(); i++) {
+                    e.append('[').append(i + 1).append("] (").append(titles.get(i)).append(")\n")
+                            .append(excerpts.get(i)).append("\n\n");
+                }
+                messages.put(new JSONObject().put("role", "system").put("content", e.toString()));
+            }
+            String q = history == null || history.isEmpty() ? question
+                    : history + "\n\nCurrent message: " + question;
+            messages.put(new JSONObject().put("role", "user").put("content", q));
+            body = new JSONObject()
+                    .put("model", BuildConfig.OPENAI_MODEL)
+                    .put("messages", messages)
+                    .put("temperature", 0.4)
+                    .put("max_tokens", 700)
+                    .toString();
+        } catch (Exception e) {
+            return Result.fail(Failure.UNKNOWN);
+        }
+        return post(body);
+    }
+
     /** What the model replies when the excerpts do not answer the question. */
     public static final String NOT_COVERED = "NOT_IN_MATERIAL";
 

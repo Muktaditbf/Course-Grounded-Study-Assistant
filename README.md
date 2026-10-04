@@ -13,6 +13,8 @@ Built for **CSE 346 (Software Engineering)** as the native Android evolution (SR
 
 | Feature | Description |
 |---|---|
+| **ViVi assistant** | A chatbot that answers anything. Course questions are answered from approved material across all your courses with a "📚 From your courses" label; everything else gets a "✨ General knowledge" label. |
+| **Floating glass navigation** | Pill-shaped frosted-glass bar (Home, Search, Saved, Progress, Settings) with a round ViVi button, edge-to-edge layout, light and dark themes. |
 | **Content Lock** | Answers come only from material the teacher has approved. If the material does not cover a question, the app declines instead of guessing. |
 | **Source citations** | Every answer cites the passages it used, like [1] and [2], and each source opens the original file. |
 | **Original files** | PDF, PowerPoint and Word uploads are shown to students as real pages and slides. |
@@ -114,6 +116,7 @@ There are no built-in accounts. Sign up as a **teacher** and verify your email, 
 ## Documentation
 
 - [How to run](HOW_TO_RUN.md)
+- [Design prompt](DESIGN_PROMPT.md): the UI direction, written for AI design tools
 - [Requirements traceability](REQUIREMENTS_TRACEABILITY.md): maps FR1–FR10, NFR11–NFR16 and UC1–UC10 to the code
 - [Project guide (PDF)](Study_Assistant_Project_Guide.pdf)
 

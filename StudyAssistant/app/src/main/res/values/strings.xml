@@ -232,10 +232,10 @@ Answers only from teacher-approved material.</string>
     <string name="pdf_missing">That file is no longer on this device. Ask your teacher to upload it again.</string>
     <string name="pdf_unreadable">This PDF could not be opened. It may be damaged.</string>
     <string name="reading_text">Text version</string>
-    <string name="ai_chat">Ask AI</string>
-    <string name="ai_chat_title">Study Assistant</string>
-    <string name="ai_chat_hint">Ask anything about your courses</string>
-    <string name="ai_chat_welcome">Hi! I can see every material your teachers have approved across all your courses. Ask me anything.</string>
+    <string name="ai_chat">ViVi</string>
+    <string name="ai_chat_title">ViVi</string>
+    <string name="ai_chat_hint">Ask ViVi anything</string>
+    <string name="ai_chat_welcome">Hi, I\'m ViVi! 👋 Ask me anything. For questions about your courses I\'ll answer from your teachers\' approved materials and show you where it came from.</string>
     <string name="ai_chat_send">Send</string>
     <string name="ai_sources_prefix">From: %1$s</string>
     <string name="ai_general_badge">General knowledge</string>
@@ -303,4 +303,10 @@ Answers only from teacher-approved material.</string>
     <string name="password_google_only">You sign in with Google, so there is no password to change here. Use Forgot password on the login screen if you want to add one.</string>
     <string name="answered_from_excerpts">From your approved course material (AI unavailable, showing the passages)</string>
     <string name="chat_not_covered">Your approved course materials do not cover this, so I will not guess. Try rephrasing, or ask your teacher to approve material on this topic.</string>
+    <string name="label_from_courses">📚 From your courses: %1$s</string>
+    <string name="label_general">✨ General knowledge, not from your course materials</string>
+    <string name="choose_source">Open a source</string>
+    <string name="ask_vivi_instead">Ask ViVi instead</string>
+    <string name="nav_vivi">ViVi</string>
+    <string name="nav_saved">Saved</string>
 </resources>

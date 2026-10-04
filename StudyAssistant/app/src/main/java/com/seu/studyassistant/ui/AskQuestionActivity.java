@@ -72,6 +72,17 @@ public class AskQuestionActivity extends BaseActivity {
             @Override public void onClick(View v) { ask(); }
         });
 
+        // Outside the course's material: hand the question to ViVi, who answers anything.
+        findViewById(R.id.btnAskVivi).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                android.content.Intent i = new android.content.Intent(
+                        AskQuestionActivity.this, ChatActivity.class);
+                if (lastQuestion != null) i.putExtra(ChatActivity.EXTRA_QUESTION, lastQuestion);
+                startActivity(i);
+                applyOpenTransition();
+            }
+        });
+
         findViewById(R.id.btnAiRetry).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if (lastQuestion != null) send(lastQuestion);

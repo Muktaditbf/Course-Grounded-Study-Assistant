@@ -297,6 +297,18 @@
                     android:text="@string/declined_hint"
                     android:textColor="#B45309"
                     android:textSize="@dimen/text_caption" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAskVivi"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:text="@string/ask_vivi_instead"
+                    app:icon="@drawable/ic_vivi"
+                    app:iconTint="@null"
+                    app:iconSize="22dp"
+                    app:iconGravity="textStart"
+                    style="@style/SecondaryButton"
+                    xmlns:app="http://schemas.android.com/apk/res-auto" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

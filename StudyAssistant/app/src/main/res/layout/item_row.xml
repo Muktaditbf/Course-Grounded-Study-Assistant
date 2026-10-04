@@ -7,6 +7,7 @@
   the original stripe. The foreground ripple is on the root so the whole card responds.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:stateListAnimator="@animator/press_scale"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/card_min_height"

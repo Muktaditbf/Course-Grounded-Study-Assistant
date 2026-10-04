@@ -11,7 +11,9 @@
     <!-- Shape: generous radii read as modern -->
     <dimen name="radius_sm">10dp</dimen>
     <dimen name="radius_md">16dp</dimen>
-    <dimen name="radius_lg">22dp</dimen>
+    <dimen name="radius_lg">24dp</dimen>
+    <dimen name="radius_xl">28dp</dimen>
+    <dimen name="radius_xxl">32dp</dimen>
     <dimen name="radius_pill">28dp</dimen>
 
     <!-- Type scale -->
@@ -31,5 +33,9 @@
 
     <dimen name="button_height">56dp</dimen>
     <dimen name="input_height">56dp</dimen>
-    <dimen name="nav_height">68dp</dimen>
+    <dimen name="nav_height">66dp</dimen>
+    <!-- Floating navigation: inset from the screen edges, lifted above the gesture bar -->
+    <dimen name="nav_float_margin">16dp</dimen>
+    <dimen name="nav_round_size">66dp</dimen>
+    <dimen name="nav_clearance">104dp</dimen>
 </resources>

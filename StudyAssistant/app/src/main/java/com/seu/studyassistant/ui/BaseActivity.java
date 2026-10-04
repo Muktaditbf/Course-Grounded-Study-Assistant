@@ -17,9 +17,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.os.LocaleListCompat;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.navigation.NavigationBarView;
 import com.seu.studyassistant.R;
 import com.seu.studyassistant.data.CloudRepo;
 import com.seu.studyassistant.data.DatabaseHelper;
@@ -161,7 +158,52 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
+        applyEdgeToEdge();
         attachAiBubble();
+    }
+
+    /**
+     * Draws the app behind the status and navigation bars (enforced anyway for apps targeting
+     * Android 15+), then pads the screen's root so nothing sits under them. The keyboard is
+     * part of the bottom inset, so text fields stay visible while typing on every Android version.
+     */
+    private void applyEdgeToEdge() {
+        ViewGroup frame = findViewById(android.R.id.content);
+        if (frame == null || frame.getChildCount() == 0) return;
+        final View content = frame.getChildAt(0);
+
+        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        getWindow().setStatusBarColor(android.graphics.Color.TRANSPARENT);
+        getWindow().setNavigationBarColor(android.graphics.Color.TRANSPARENT);
+        boolean night = (getResources().getConfiguration().uiMode
+                & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
+                == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+        androidx.core.view.WindowInsetsControllerCompat bars =
+                new androidx.core.view.WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
+        bars.setAppearanceLightStatusBars(!night);
+        bars.setAppearanceLightNavigationBars(!night);
+
+        final int l = content.getPaddingLeft(), t = content.getPaddingTop();
+        final int r = content.getPaddingRight(), b = content.getPaddingBottom();
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(content, (v, insets) -> {
+            androidx.core.graphics.Insets sys = insets.getInsets(
+                    androidx.core.view.WindowInsetsCompat.Type.systemBars()
+                            | androidx.core.view.WindowInsetsCompat.Type.displayCutout());
+            androidx.core.graphics.Insets ime = insets.getInsets(
+                    androidx.core.view.WindowInsetsCompat.Type.ime());
+            v.setPadding(l + sys.left, t + sys.top, r + sys.right, b + Math.max(sys.bottom, ime.bottom));
+            return insets;
+        });
+    }
+
+    /** Frosted-glass blur of the screen behind a floating control. */
+    private void setupGlass(eightbitlab.com.blurview.BlurView glass, View behind) {
+        if (glass == null || !(behind instanceof ViewGroup)) return;
+        glass.setupWith((ViewGroup) behind)
+                .setFrameClearDrawable(getWindow().getDecorView().getBackground())
+                .setBlurRadius(20f)
+                .setOverlayColor(ContextCompat.getColor(this, R.color.glass_overlay));
+        glass.setClipToOutline(true);
     }
 
     /** Screens that must not show it: the assistant itself, and anything pre-login. */
@@ -178,31 +220,28 @@ public abstract class BaseActivity extends AppCompatActivity {
         View content = root.getChildAt(0);
         if (!(content instanceof ViewGroup)) return;
 
-        // Extended rather than a bare icon: a lone sparkle does not tell a first-time student
-        // what it does, and this is the feature the whole app is built around.
-        ExtendedFloatingActionButton fab = new ExtendedFloatingActionButton(this);
-        fab.setId(R.id.fabAi);
-        fab.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_ai_spark));
-        fab.setText(getString(R.string.ai_chat));
-        fab.setAllCaps(false);
-        fab.setContentDescription(getString(R.string.ai_chat));
-        fab.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
-                ContextCompat.getColor(this, R.color.primary)));
-        int onPrimary = ContextCompat.getColor(this, R.color.text_on_primary);
-        fab.setTextColor(onPrimary);
-        fab.setIconTint(android.content.res.ColorStateList.valueOf(onPrimary));
-        fab.setOnClickListener(new View.OnClickListener() {
+        // ViVi's round glass button, the same one the floating navigation carries.
+        int size = getResources().getDimensionPixelSize(R.dimen.nav_round_size);
+        eightbitlab.com.blurview.BlurView glass = new eightbitlab.com.blurview.BlurView(this);
+        glass.setId(R.id.fabAi);
+        glass.setBackgroundResource(R.drawable.bg_glass_round);
+        glass.setElevation(dp(12));
+        android.widget.ImageView face = new android.widget.ImageView(this);
+        face.setImageResource(R.drawable.ic_vivi);
+        face.setPadding(dp(11), dp(11), dp(11), dp(11));
+        face.setContentDescription(getString(R.string.ai_chat));
+        face.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) { open(ChatActivity.class); }
         });
+        glass.addView(face, new FrameLayout.LayoutParams(size, size));
 
-        FrameLayout overlay = new FrameLayout(this);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        final FrameLayout overlay = new FrameLayout(this);
+        final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(size, size);
         lp.gravity = android.view.Gravity.BOTTOM | android.view.Gravity.END;
-        lp.rightMargin = dp(16);
-        // Clear the bottom navigation where one exists, otherwise sit on the safe area.
-        lp.bottomMargin = findViewById(R.id.bottomNav) != null ? dp(84) : dp(24);
-        overlay.addView(fab, lp);
+        lp.rightMargin = getResources().getDimensionPixelSize(R.dimen.nav_float_margin);
+        overlay.addView(glass, lp);
+        liftAboveGestureBar(glass, lp);
+        setupGlass(glass, content);
 
         // The overlay must not swallow taps meant for the screen underneath.
         overlay.setClickable(false);
@@ -225,9 +264,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         ViewGroup scroller = findScroller(content);
         if (scroller == null) return;
 
+        // The original padding is remembered, so a screen that gets both the ViVi button and
+        // the navigation bar is padded once for the larger of the two, not twice.
+        Object base = scroller.getTag(R.id.tag_base_padding);
+        int basePadding = base instanceof Integer ? (Integer) base : scroller.getPaddingBottom();
+        scroller.setTag(R.id.tag_base_padding, basePadding);
         scroller.setClipToPadding(false);
         scroller.setPadding(scroller.getPaddingLeft(), scroller.getPaddingTop(),
-                scroller.getPaddingRight(), scroller.getPaddingBottom() + dp(76));
+                scroller.getPaddingRight(),
+                basePadding + getResources().getDimensionPixelSize(R.dimen.nav_clearance));
     }
 
     /** Depth-first search for the nearest scrolling container. */
@@ -275,37 +320,74 @@ public abstract class BaseActivity extends AppCompatActivity {
      * selected tab is passed in and re-selecting it is a no-op.
      */
     protected void setupBottomNav(final int selectedId) {
-        BottomNavigationView nav = findViewById(R.id.bottomNav);
-        if (nav == null) return;
-
         // The bar is the STUDENT shell. A teacher reaching a shared screen (Notifications)
         // must not be offered Home / Search / Saved / Progress, which all belong to the
         // student role and would drop them into the wrong dashboard.
         User u = currentUser();
-        if (u != null && u.isTeacher()) {
-            nav.setVisibility(View.GONE);
-            return;
+        if (u == null || u.isTeacher()) return;
+
+        ViewGroup frame = findViewById(android.R.id.content);
+        if (frame == null || frame.getChildCount() == 0 || findViewById(R.id.floatingNav) != null) return;
+        View content = frame.getChildAt(0);
+
+        // The navigation carries ViVi's round button, so the standalone one goes.
+        View loose = findViewById(R.id.fabAi);
+        if (loose != null && loose.getParent() instanceof View) frame.removeView((View) loose.getParent());
+
+        View nav = getLayoutInflater().inflate(R.layout.view_floating_nav, frame, false);
+        int margin = getResources().getDimensionPixelSize(R.dimen.nav_float_margin);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        lp.gravity = android.view.Gravity.BOTTOM;
+        lp.leftMargin = margin;
+        lp.rightMargin = margin;
+        frame.addView(nav, lp);
+        liftAboveGestureBar(nav, lp);
+
+        setupGlass((eightbitlab.com.blurview.BlurView) nav.findViewById(R.id.navBlur), content);
+        setupGlass((eightbitlab.com.blurview.BlurView) nav.findViewById(R.id.viviBlur), content);
+        keepLastItemClearOf(content);
+
+        final int[][] tabs = {
+                {R.id.tabHome, R.id.nav_home}, {R.id.tabSearch, R.id.nav_search},
+                {R.id.tabSaved, R.id.nav_saved}, {R.id.tabProgress, R.id.nav_progress},
+                {R.id.tabSettings, R.id.nav_settings}};
+        for (final int[] tab : tabs) {
+            final View t = nav.findViewById(tab[0]);
+            t.setSelected(tab[1] == selectedId);
+            t.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    if (tab[1] == selectedId) return;
+                    v.performHapticFeedback(android.view.HapticFeedbackConstants.CLOCK_TICK);
+                    Anim.pulse(v);
+                    if (tab[1] == R.id.nav_home) navTo(StudentDashboardActivity.class);
+                    else if (tab[1] == R.id.nav_search) navTo(SearchActivity.class);
+                    else if (tab[1] == R.id.nav_saved) navTo(BookmarksActivity.class);
+                    else if (tab[1] == R.id.nav_progress) navTo(ProgressActivity.class);
+                    else if (tab[1] == R.id.nav_settings) navTo(SettingsActivity.class);
+                }
+            });
         }
-
-        nav.setVisibility(View.VISIBLE);
-        nav.setSelectedItemId(selectedId);
-        nav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                if (id == selectedId) return true;
-
-                if (id == R.id.nav_home) navTo(StudentDashboardActivity.class);
-                else if (id == R.id.nav_search) navTo(SearchActivity.class);
-                else if (id == R.id.nav_saved) navTo(BookmarksActivity.class);
-                else if (id == R.id.nav_progress) navTo(ProgressActivity.class);
-                else if (id == R.id.nav_settings) navTo(SettingsActivity.class);
-
-                // Returning false leaves the CURRENT tab checked while the next screen opens.
-                // Returning true would tick the tab being navigated away from, so the wrong
-                // tab stays highlighted after Back.
-                return false;
+        nav.findViewById(R.id.btnVivi).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                v.performHapticFeedback(android.view.HapticFeedbackConstants.CLOCK_TICK);
+                open(ChatActivity.class);
             }
+        });
+    }
+
+    /** Keeps a floating control a little above the system gesture bar, whatever its height. */
+    private void liftAboveGestureBar(final View v, final FrameLayout.LayoutParams lp) {
+        final int base = getResources().getDimensionPixelSize(R.dimen.nav_float_margin) - dp(4);
+        lp.bottomMargin = base;
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(v, (view, insets) -> {
+            int bottom = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars()).bottom;
+            FrameLayout.LayoutParams p = (FrameLayout.LayoutParams) view.getLayoutParams();
+            if (p.bottomMargin != base + bottom) {
+                p.bottomMargin = base + bottom;
+                view.setLayoutParams(p);
+            }
+            return insets;
         });
     }
 
